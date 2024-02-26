@@ -4,5 +4,5 @@ module.exports = {
     images: {
         domains: ['stackfood.6am.one'],
     },
-    staticPageGenerationTimeout: 220, // Aumentar el tiempo de espera a 120 segundos (o ajusta según sea necesario)
+    staticPageGenerationTimeout: 320, // Aumentar el tiempo de espera a 120 segundos (o ajusta según sea necesario)
 }
