@@ -61,7 +61,8 @@ const HorizontalFoodCard = (props) => {
         handleClickQuantityButton,
         addToCartLoading,
         isRestaurantDetails,
-        inWishListPage = "false"
+        inWishListPage = "false",
+        horizontal
     } = props
     const theme = useTheme();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -113,8 +114,8 @@ const HorizontalFoodCard = (props) => {
                                 )}`,
                                 marginLeft: languageDirection === "rtl" && ".8rem !important",
                                 '&:hover': {
-                                    transform: 'scale(1.1)',
-                                },
+                                    transform: 'scale(1.04)',
+                                }
                             }}
                         >
                             <CustomImageContainer
@@ -126,31 +127,32 @@ const HorizontalFoodCard = (props) => {
                                 borderRadius="3px"
                                 objectFit="cover"
                             />
-                            <Stack
-                                position="absolute"
-                                top="10%"
-                                left="0"
-                                zIndex="1"
-                            >
-                                {handleBadge(
-                                    product,
-                                    currencySymbol,
-                                    currencySymbolDirection,
-                                    digitAfterDecimalPoint,
-                                    product?.available_date_ends
-                                )}
-                            </Stack>
 
                             {!isAvailable(
                                 available_time_starts,
                                 available_time_ends
-                            ) && (
-                                    <CustomOverlayBox>
-                                        <Typography align="center" variant="h5">
-                                            {t('Not Available now')}
-                                        </Typography>
-                                    </CustomOverlayBox>
-                                )}
+                            ) ? (
+                                <CustomOverlayBox>
+                                    <Typography align="center" variant="h5">
+                                        {t('Not Available now')}
+                                    </Typography>
+                                </CustomOverlayBox>
+                            ) : (
+                                <Stack
+                                    position="absolute"
+                                    top="10%"
+                                    left="0"
+                                    zIndex="1"
+                                >
+                                    {handleBadge(
+                                        product,
+                                        currencySymbol,
+                                        currencySymbolDirection,
+                                        digitAfterDecimalPoint,
+                                        product?.available_date_ends
+                                    )}
+                                </Stack>
+                            )}
                         </Stack>
                         <Stack gap="7px" width="100%" >
                             <Stack>
@@ -269,6 +271,7 @@ const HorizontalFoodCard = (props) => {
                                     setIncrOpen={setIncrOpen}
                                     incrOpen={incrOpen}
                                     addToCartLoading={addToCartLoading}
+                                    horizontal={horizontal}
                                 />
                             )}
                         </Stack>
@@ -295,6 +298,7 @@ const HorizontalFoodCard = (props) => {
                                 setIncrOpen={setIncrOpen}
                                 incrOpen={incrOpen}
                                 position="-30px"
+                                horizontal={horizontal}
                             />
                         )}
                     </Box>

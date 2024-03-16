@@ -35,6 +35,7 @@ const FoodVerticalCard = (props) => {
         handleClickQuantityButton,
         hasBackGroundSection,
         isRestaurantDetails,
+        horizontal
     } = props
 
     const [isTransformed, setIstransformed] = useState(false);
@@ -42,8 +43,6 @@ const FoodVerticalCard = (props) => {
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
     return (
         <CustomFoodCardNew
-            height="285px"
-            smheight={(isRestaurantDetails && isSmall) ? "245px" : "230px"}
             maxwidth="250px"
             onClick={(e) => handleFoodDetailModal(e)}
             onMouseEnter={() =>
@@ -60,7 +59,7 @@ const FoodVerticalCard = (props) => {
                     : theme.palette.cardBackground2
             }
         >
-            <CustomStackFullWidth spacing={1.3}>
+            <CustomStackFullWidth  >
                 <ProductCardMedia
                     id={product?.id}
                     onClick={handleFoodDetailModal}
@@ -83,6 +82,7 @@ const FoodVerticalCard = (props) => {
                     incrOpen={incrOpen}
                     isRestaurantDetails={isRestaurantDetails}
                     rating_count={product?.rating_count}
+                    horizontal={horizontal}
                 />
                 <CustomStackFullWidth sx={{ padding: '5px' }}>
                     <Stack
@@ -94,7 +94,7 @@ const FoodVerticalCard = (props) => {
                     >
                         <Stack flexDirection="row" alignItems="center" gap="5px">
                             <Typography
-                                fontSize="14px"
+                                fontSize="13px"
                                 fontWeight="500"
                                 maxWidth={{xs:"120px", sm: "130px", md:"150px"}}
                                 noWrap
@@ -116,7 +116,7 @@ const FoodVerticalCard = (props) => {
                         </Stack>
 
                     </Stack>
-                    <Stack flexDirection="row" gap="5px">
+                    <Stack flexDirection="row" gap="5px" marginTop="2px" marginBottom="2px">
                         <Typography
                             fontSize={{ xs: "12px", md: "14px" }}
                             fontWeight={400}
@@ -126,52 +126,6 @@ const FoodVerticalCard = (props) => {
                         </Typography>
                         {((product?.avg_rating !== 0 && isRestaurantDetails && !isSmall) || (!isRestaurantDetails && product?.avg_rating !== 0)) ? <FoodRating product_avg_rating={product?.avg_rating} /> : ""}
                     </Stack>
-
-                    {/*<div*/}
-                    {/*    style={{*/}
-                    {/*        overflow: 'hidden',*/}
-                    {/*        textOverflow: 'ellipsis',*/}
-                    {/*        whiteSpace: 'nowrap',*/}
-                    {/*        display: 'flex',*/}
-                    {/*        flexDirection: 'row',*/}
-                    {/*        marginTop: '3px',*/}
-                    {/*        width: '100%',*/}
-                    {/*    }}*/}
-                    {/*>*/}
-                    {/*    {product?.cuisines?.length > 0 &&*/}
-                    {/*        product?.cuisines?.map((cuisine, index) => (*/}
-                    {/*            <Typography*/}
-                    {/*                key={index}*/}
-                    {/*                align="left"*/}
-                    {/*                fontSize="12px"*/}
-                    {/*                color={theme.palette.neutral[600]}*/}
-                    {/*            >*/}
-                    {/*                {' '}*/}
-                    {/*                {cuisine?.name}{' '}*/}
-                    {/*                {product?.cuisines?.length - 1 === index*/}
-                    {/*                    ? ''*/}
-                    {/*                    : ','}*/}
-                    {/*            </Typography>*/}
-                    {/*        ))}*/}
-                    {/*</div>*/}
-
-                    {/* <Stack
-                        width="100%"
-                        justifyContent="space-between"
-                        direction={(isRestaurantDetails && isSmall) ? "column" : "row"}
-                        alignItems={(isRestaurantDetails && isSmall) ? "start" : "center"}
-                        position="relative"
-                        mt={{ xs: '0px', sm: '2px', md: '4px' }}
-                    > */}
-                    {/* <Stack>
-                            <Typography
-                                fontSize="12px"
-                                fontWeight={500}
-                                color={theme.palette.text.custom}
-                            >
-                                {product?.min_delivery_time}-{product?.max_delivery_time} {t('min')}
-                            </Typography>
-                        </Stack> */}
                     <StartPriceView
                         data={product}
                         handleBadge={handleBadge}

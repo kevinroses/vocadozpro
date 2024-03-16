@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import RestaurantBoxCard from '../restaurant-details/RestaurantBoxCard'
 import { useSelector } from 'react-redux'
-import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
+import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
 import { useQuery } from 'react-query'
 //import LinearProgress from '@mui/material/LinearProgress'
 import CustomePagination from '../pagination/Pagination'
 import { useTranslation } from 'react-i18next'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
-import { CustomPaperBigCard, CustomStackFullWidth } from "../../styled-components/CustomStyles.style";
+import { CustomPaperBigCard, CustomStackFullWidth } from "@/styled-components/CustomStyles.style";
 
 import { onErrorResponse } from '../ErrorResponse'
 import RestaurantListShimmer from './RestaurantListShimmer'
@@ -25,7 +25,7 @@ import 'simplebar-react/dist/simplebar.min.css'
 import 'simplebar-react/dist/simplebar.min.css'
 import { Stack } from "@mui/system";
 import CustomEmptyResult from "../empty-view/CustomEmptyResult";
-import { noRestaurantsImage } from "../../utils/LocalImages";
+import { noRestaurantsImage } from "@/utils/LocalImages";
 import CustomShimmerRestaurant from "../CustomShimmer/CustomShimmerRestaurant";
 
 const RestaurantList = () => {
@@ -109,6 +109,19 @@ const RestaurantList = () => {
         })
         setForFilter(true)
     }
+    const handleReset = () => {
+        const data = checkedFilterKey?.map((item) => ({
+            ...item,
+            isActive: false
+        }));
+        setCheckedFilterKey(data)
+        setPriceAndRating({
+            price:[],
+            rating:0
+        })
+        //handleDropClose()
+
+    };
     return (
         <>
             {languageDirection && (
@@ -206,6 +219,7 @@ const RestaurantList = () => {
                                                 }
                                                 rating_count={restaurantData?.rating_count}
                                                 coupons={restaurantData?.coupons}
+                                                opening_time={restaurantData?.current_opening_time}
                                             />
                                         </Grid>
                                     )
@@ -261,6 +275,7 @@ const RestaurantList = () => {
                             setCheckedFilterKey={setCheckedFilterKey}
                             handleChangeRatings={handleChangeRatings}
                             priceAndRating={priceAndRating}
+                            handleReset={handleReset}
 
                         />
                     </Popover>

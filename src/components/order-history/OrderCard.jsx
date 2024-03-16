@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from "react";
 import { alpha, Button, Grid, Stack, Typography } from '@mui/material'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import Link from 'next/link'
@@ -14,7 +14,7 @@ import {
     TrackButton,
     TrackhButton,
 } from './OrderHistory.style'
-import { getAmount, getDateFormat } from '../../utils/customFunctions'
+import { getAmount, getDateFormat } from "@/utils/customFunctions"
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
@@ -24,11 +24,11 @@ import { Box } from '@mui/system'
 import {
     setDeliveryManInfoByDispatch,
     setOrderDetailsByDispatch,
-} from '../../redux/slices/searchFilter'
+} from "@/redux/slices/searchFilter"
 import {
     CustomColouredTypography,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { PrimaryButton } from '../products-page/FoodOrRestaurant'
 import startReview from '../../../public/static/star-review.png'
 import Card from '@mui/material/Card'
@@ -36,10 +36,12 @@ import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { getToken } from '../checkout-page/functions/getGuestUserId'
 import Reorder from '../order-details/Reorder'
+import ReviewSideDrawer from "@/components/order-details/ReviewSideDrawer";
 const OrderCard = ({ order, index, isXs, offset, limit }) => {
     const { t } = useTranslation()
     const router = useRouter()
     const theme = useTheme()
+    const [openReviewModal, setOpenReviewModal] = useState(false)
     const isXSmall = useMediaQuery(theme.breakpoints.down('sm'))
     const { global } = useSelector((state) => state.globalSettings)
     const restaurantImage = global?.base_urls?.restaurant_image_url
@@ -80,7 +82,8 @@ const OrderCard = ({ order, index, isXs, offset, limit }) => {
         })
     }
     const handleRateButtonClick = () => {
-        router.push(`/rate-and-review/${order?.id}`)
+        dispatch(setDeliveryManInfoByDispatch(order?.delivery_man))
+        setOpenReviewModal(true)
     }
     const deliveredInformation = () => (
         <Stack flexDirection="row" gap="20px" justifyContent="flex-end" pt={{ xs: "10px", sm: "0px", md: "0px" }}>
@@ -243,11 +246,16 @@ const OrderCard = ({ order, index, isXs, offset, limit }) => {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={4.5} md={4.5} align="right">
-                        {order?.order_status == 'delivered'
+                        {(order?.order_status == 'delivered' && !order?.is_reviewed) || (order?.order_status == 'delivered' && !order?.is_reviewed && !order?.is_dm_reviewed)
                             ? deliveredInformation()
                             : notDeliveredInformation()}
                     </Grid>
                 </Grid>
+                <ReviewSideDrawer
+                    open={openReviewModal}
+                    onClose={() => setOpenReviewModal(false)}
+                    orderId={order?.id}
+                />
             </Card>
         </>
     )

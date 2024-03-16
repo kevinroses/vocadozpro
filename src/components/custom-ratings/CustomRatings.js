@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types'
 import { Rating } from '@mui/material'
 import { Stack } from '@mui/material'
@@ -13,6 +13,9 @@ const CustomRatings = ({
     color,
 }) => {
     const [value, setValue] = useState(ratingValue ? ratingValue : 0)
+    useEffect(() => {
+        setValue(ratingValue)
+    }, [ratingValue]);
     const handleChange = (event, newValue) => {
         if (!readOnly) {
             setValue(newValue)
@@ -30,11 +33,11 @@ const CustomRatings = ({
                 value={value}
                 onChange={(event, newValue) => handleChange(event, newValue)}
             />
-            {readOnly && (
-                <CustomColouredTypography color={color} smallFont="12px">
-                    ({ratingValue})
-                </CustomColouredTypography>
-            )}
+            {/*{readOnly && (*/}
+            {/*    <CustomColouredTypography color={color} smallFont="12px">*/}
+            {/*        ({ratingValue})*/}
+            {/*    </CustomColouredTypography>*/}
+            {/*)}*/}
         </Stack>
     )
 }

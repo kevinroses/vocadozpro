@@ -127,12 +127,12 @@ const NavCuisines = ({
                             <>
                                 {cuisines?.slice(0, 12)?.map((item, index) => {
                                     return (
-                                        <>
+                                        <React.Fragment   key={item?.id}>
                                             {index % 2 === 0 ? (
                                                 <Grid
                                                     item
                                                     md={6}
-                                                    key={item?.id}
+
                                                 >
                                                     <NavCuisinesList
                                                         item={item}
@@ -161,7 +161,7 @@ const NavCuisines = ({
                                                     />{' '}
                                                 </Grid>
                                             )}
-                                        </>
+                                        </React.Fragment>
                                     )
                                 })}
                             </>

@@ -22,11 +22,10 @@ const RestaurantTab = (props) => {
         responsiveTop,
         forFilter,
         scrollToSection5,
-        inView
+        inView,
+        checkedFilterKey,
+        setCheckedFilterKey
     } = props
-    const [checkedFilterKey, setCheckedFilterKey] = useState(
-        AllRestaurantFilterData
-    )
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
     const theme = useTheme()
@@ -49,7 +48,15 @@ const RestaurantTab = (props) => {
     const handleClearAll = () => {
         handleDropClose()
     }
+    const handleReset = () => {
+        const data = checkedFilterKey?.map((item) => ({
+            ...item,
+            isActive: false
+        }));
+        setCheckedFilterKey(data)
+        handleDropClose()
 
+    };
     return (
         <div>
             <Stack direction="row" justifyContent="flex-end" spacing={3}>
@@ -140,6 +147,7 @@ const RestaurantTab = (props) => {
                 //disableRestoreFocus
             >
                 <RestaurantFilterCard
+                    handleReset={handleReset}
                     homeRestaurant="true"
                     checkboxData={checkedFilterKey}
                     handleDropClose={handleDropClose}

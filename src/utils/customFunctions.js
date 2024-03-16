@@ -40,11 +40,19 @@ export const getAmount = (
     digitAfterDecimalPoint
 ) => {
     let newAmount = truncate(amount?.toString(), digitAfterDecimalPoint)
-    if (newAmount > 99999) {
-        newAmount = (newAmount / 1000)?.toFixed(digitAfterDecimalPoint) + "k";
-        return `${currency_symbol}${newAmount}`
-    } else {
-
+    if (newAmount > 10000) {
+        if (newAmount >= 1000000000) { // Billion
+            newAmount = (newAmount / 1000000000)?.toFixed(digitAfterDecimalPoint) + "B";
+            return `${currency_symbol}${newAmount}`
+        } else if (newAmount >= 1000000) { // Million
+            newAmount = (newAmount / 1000000)?.toFixed(digitAfterDecimalPoint) + "M";
+            return `${currency_symbol}${newAmount}`
+        } else if (newAmount >= 1000) { // Thousand
+            newAmount = (newAmount / 1000)?.toFixed(digitAfterDecimalPoint) + "k";
+            return `${currency_symbol}${newAmount}`
+        }
+    }
+    else {
         if (currency_symbol_direction === 'left') {
             return `${currency_symbol}${newAmount?.toFixed(digitAfterDecimalPoint)}`
         } else if (currency_symbol_direction === 'right') {
@@ -1230,7 +1238,6 @@ export const isRTLLanguage = (value) => {
 }
 export const removeDuplicates = (array, property) => {
     const uniqueValues = {}
-    console.log({array});
     return array.filter((item) => {
         if (!uniqueValues[item[property]]) {
             uniqueValues[item[property]] = true
@@ -1273,7 +1280,7 @@ export const DistanceCalculate = ({ distance }) => {
 
 export function capitalizeEachWord(str) {
     return str
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  }
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}

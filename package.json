@@ -1,4 +1,4 @@
-{
+                  {
     "name": "StackFood",
     "version": "2.4.0",
     "private": true,
@@ -50,10 +50,12 @@
         "react-hot-toast": "^2.2.0",
         "react-i18next": "^11.15.5",
         "react-intersection-observer": "^9.4.3",
+        "react-otp-input": "^3.1.1",
         "react-phone-input-2": "^2.15.1",
         "react-query": "^3.34.19",
         "react-redux": "^7.2.6",
         "react-router": "^6.2.1",
+        "react-share": "4",
         "react-slick": "^0.29.0",
         "react-ui-scrollspy": "^2.3.0",
         "redux-persist": "^6.0.0",
@@ -69,7 +71,7 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
-        "start": "next start -p 3015"
+        "start": "next start -p 3000"
     },
     "browserslist": {
         "production": [

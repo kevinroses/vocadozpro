@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from 'react'
-
 import { useQuery } from 'react-query'
-import { ProductsApi } from '../../hooks/react-query/config/productsApi'
-import Loading from '../custom-loading/Loading'
+import { ProductsApi } from "@/hooks/react-query/config/productsApi"
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
-
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import SearchFilterWithResults from './SearchFilterWithResults'
-import Skeleton from '@mui/material/Skeleton'
 import { getFilterChoices } from './getFilterChoices'
 import Meta from '../Meta'
 import { onErrorResponse } from '../ErrorResponse'
-import CustomContainer from '../container'
-import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
-import { searchMockData } from './SearchMockData'
-import { setFilterbyByDispatch, setFoodOrRestaurant } from "../../redux/slices/searchFilter";
-import { setSearchTagData } from "../../redux/slices/searchTagSlice";
+import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
+import { setFilterbyByDispatch, setFoodOrRestaurant } from "@/redux/slices/searchFilter";
+import { setSearchTagData } from "@/redux/slices/searchTagSlice";
 
 const ProductSearchPage = ({
     product_type,
@@ -233,6 +227,7 @@ const ProductSearchPage = ({
             <CustomStackFullWidth mb="5rem" sx={{ minHeight: '70vh' }}>
                 {pageData && (
                     <SearchFilterWithResults
+                        filterData={filterData}
                         searchValue={searchValue}
                         foodOrRestaurant={foodOrRestaurant}
                         setFoodOrRestaurant={setFoodOrRestaurant}

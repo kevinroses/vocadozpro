@@ -9,7 +9,7 @@ const index = ({ configData }) => {
     return (
         <>
             <Meta title={`Forgot Password - ${configData?.business_name}`} />
-            <ForgotPassword />
+            {/* <ForgotPassword /> */}
         </>
     )
 }

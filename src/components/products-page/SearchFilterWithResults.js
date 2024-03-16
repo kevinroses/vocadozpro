@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 
 import { Grid, Stack, useMediaQuery } from "@mui/material";
 import FoodOrRestaurant from './FoodOrRestaurant'
@@ -12,7 +12,7 @@ import RestaurantsData from '../category/RestaurantsData'
 import CustomEmptyResult from '../empty-view/CustomEmptyResult'
 import { useTheme } from '@mui/material/styles'
 import { AnimationDots } from './AnimationDots'
-import { noFoodFoundImage, noRestaurantsImage } from '../../utils/LocalImages'
+import { noFoodFoundImage, noRestaurantsImage } from "@/utils/LocalImages"
 import CustomePagination from "../pagination/Pagination";
 
 const SearchFilterWithResults = ({
@@ -32,11 +32,11 @@ const SearchFilterWithResults = ({
     popularFoodisLoading,
     restaurantIsLoading,
     page,
-    restaurantType, totalData
+    restaurantType, totalData,
+                                     filterData
 
 }) => {
     const theme = useTheme()
-
     return (
         <CustomStackFullWidth
             spacing={2}
@@ -49,6 +49,7 @@ const SearchFilterWithResults = ({
                 <Grid item xs={12} sm={12} md={12} align="center">
                     {!page && !restaurantType && (
                         <FoodOrRestaurant
+                            filterData={filterData}
                             foodOrRestaurant={foodOrRestaurant}
                             setFoodOrRestaurant={setFoodOrRestaurant}
                         />

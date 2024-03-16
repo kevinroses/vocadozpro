@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Stack, Typography } from '@mui/material'
+import { Box, Stack, Typography, useTheme } from '@mui/material'
 import { useFormik } from 'formik'
 import { CustomStackFullWidth } from '../../../styled-components/CustomStyles.style'
 import { useTranslation } from 'react-i18next'
@@ -10,8 +10,11 @@ import { useForgotPassword } from '../../../hooks/react-query/config/forgot-pass
 import * as Yup from 'yup'
 import toast from 'react-hot-toast'
 import { onErrorResponse } from '../../ErrorResponse'
-const ForgotPasswordNumberForm = ({ data, goNext, handleFirstForm }) => {
+import forgotPasswordImage from '../../../assets/images/forgotPasswordImage.svg'
+import CustomImageContainer from '../../CustomImageContainer'
+const ForgotPasswordNumberForm = ({ data, goNext, handleFirstForm, setModalFor }) => {
     const { t } = useTranslation()
+    const theme = useTheme();
     const { global, token } = useSelector((state) => state.globalSettings)
     const phoneFormik = useFormik({
         initialValues: {
@@ -25,7 +28,7 @@ const ForgotPasswordNumberForm = ({ data, goNext, handleFirstForm }) => {
         onSubmit: async (values, helpers) => {
             try {
                 formSubmitHandler(values)
-            } catch (err) {}
+            } catch (err) { }
         },
     })
 
@@ -53,14 +56,21 @@ const ForgotPasswordNumberForm = ({ data, goNext, handleFirstForm }) => {
         phoneFormik.setFieldValue('phone', `+${value}`)
     }
     return (
-        <Box>
-            <CustomStackFullWidth>
-                <Stack>
-                    <Typography>
-                        {t('Please enter your register Mobile Number')}
-                    </Typography>
-                </Stack>
-                <Stack mt="2rem" padding="0 20px">
+        <Stack padding={{ xs: "15", sm: "30px 35px" }} >
+            <CustomStackFullWidth alignItems="center" gap="20px" maxWidth="340px">
+                <CustomImageContainer
+                    src={forgotPasswordImage.src}
+                    alt='logo'
+                    width="160px"
+                    objectFit='contained'
+                />
+                <Typography fontSize="16px" fontWeight={600} sx={{ color: theme.palette.text.formHeader }}>
+                    {t('Forgot Password')}
+                </Typography>
+                <Typography fontSize="14px" sx={{ textAlign: "center", color: theme.palette.neutral[600] }}>
+                    {t('Don’t worry! Give your registered number & get OTP to update your password.')}
+                </Typography>
+                <CustomStackFullWidth>
                     <form noValidate onSubmit={phoneFormik.handleSubmit}>
                         <CustomPhoneInput
                             value={phoneFormik.values.phone}
@@ -70,7 +80,6 @@ const ForgotPasswordNumberForm = ({ data, goNext, handleFirstForm }) => {
                             errors={phoneFormik.errors.phone}
                             rtlChange="true"
                         />
-
                         <LoadingButton
                             type="submit"
                             fullWidth
@@ -78,12 +87,29 @@ const ForgotPasswordNumberForm = ({ data, goNext, handleFirstForm }) => {
                             sx={{ mt: 3, mb: 2 }}
                             loading={isLoading}
                         >
-                            {t('Next')}
+                            {t('GET OTP')}
                         </LoadingButton>
+                        <Stack mt="10px">
+                            <Typography
+                                textAlign="center"
+                                sx={{
+                                    cursor: "pointer",
+                                    color: theme.palette.neutral[500],
+                                    "&:hover": {
+                                        color: theme.palette.primary.main,
+                                    }
+                                }}
+                                onClick={() => {
+                                    setModalFor('sign-in')
+                                    // goNext()
+                                }}>
+                                {t("Go Back")}
+                            </Typography>
+                        </Stack>
                     </form>
-                </Stack>
+                </CustomStackFullWidth>
             </CustomStackFullWidth>
-        </Box>
+        </Stack>
     )
 }
 export default ForgotPasswordNumberForm

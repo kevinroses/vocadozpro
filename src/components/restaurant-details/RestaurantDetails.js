@@ -1,30 +1,28 @@
 import React, { useEffect, useRef, useState } from "react";
 import { alpha, Box, Grid, Typography } from "@mui/material";
 import TopBanner from "./HeadingBannerSection/TopBanner";
-import { CustomStackFullWidth } from "../../styled-components/CustomStyles.style";
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import RecommendProduct from "./RecommendProduct";
 import CustomContainer from "../container";
 import RestaurantCategoryBar from "./RestaurantCategoryBar";
-import { useGetAllProductsOfARestaurant } from "../../hooks/custom-hooks/useGetAllProductsOfARestaurant";
-import { useGetAllCategories } from "../../hooks/custom-hooks/useGetAllCategories";
+import { useGetAllProductsOfARestaurant } from "@/hooks/custom-hooks/useGetAllProductsOfARestaurant";
+import { useGetAllCategories } from "@/hooks/custom-hooks/useGetAllCategories";
 import CategoriesWiseFood from "./CategoriesWiseFood";
-import { isAvailable, restaurantDiscountTag } from "../../utils/customFunctions";
-
+import { isAvailable, restaurantDiscountTag } from "@/utils/customFunctions";
 import RestaurentDetailsShimmer from "./RestaurantShimmer/RestaurentDetailsShimmer";
-import { useGetRecommendProducts } from "../../hooks/react-query/config/useGetRecommendProduct";
-
+import { useGetRecommendProducts } from "@/hooks/react-query/config/useGetRecommendProduct";
 import { debounce } from "lodash";
 import CustomSearch from "../custom-search/CustomSearch";
 import { Stack } from "@mui/system";
 import { t } from "i18next";
-import { ProductApis } from "../../hooks/react-query/config/productsApi";
-import { useQuery } from "react-query";
-import { useRestaurentFoodSearch } from "../../hooks/custom-hooks/useRestaurentFoodSearch";
-import { usePopularFoods } from "../../hooks/react-query/restaurants/usePopularFoods";
+import { useRestaurentFoodSearch } from "@/hooks/custom-hooks/useRestaurentFoodSearch";
+import { usePopularFoods } from "@/hooks/react-query/restaurants/usePopularFoods";
 import RestaurantAnnouncementMessege from "./RestaurantAnnouncementMessege";
 import { useSelector } from "react-redux";
+import { useInView } from "react-intersection-observer";
+import FloatingDiscountTag from "@/components/restaurant-details/FloatingDiscountTag";
 
 const getCombinedCategoriesAndProducts = (
 	all_categories,
@@ -104,6 +102,7 @@ const RestaurantDetails = ({ restaurantData, configData }) => {
 	const isSmall = useMediaQuery(theme.breakpoints.down("md"));
 	const refs = useRef([]);
 	const restaurantCategoryIds = restaurantData?.category_ids;
+	const { ref, inView } = useInView()
 	const handleOnSuccess = (res) => {
 		setAllFoods(res?.data?.products);
 	};
@@ -255,9 +254,9 @@ const RestaurantDetails = ({ restaurantData, configData }) => {
 
 	return (
 		<CustomContainer sx={{ mb: { xs: "7px", md: "0" } }}>
-			<CustomStackFullWidth pb={isSmall ? "1rem" : "3rem"} paddingTop={{ xs: "10px", md: "70px" }} spacing={2}>
+			<CustomStackFullWidth pb={isSmall ? "1rem" : "3rem"} paddingTop={{ xs: "10px", md: "70px" }}>
 				{restaurantData && <TopBanner details={restaurantData} />}
-				<CustomStackFullWidth spacing={3}>
+				<CustomStackFullWidth >
 					{!isFirstRender && (
 						<>
 							<RestaurantCategoryBar
@@ -278,8 +277,10 @@ const RestaurantDetails = ({ restaurantData, configData }) => {
 											theme.palette.neutral[1800],
 										position: "sticky",
 										zIndex: 998,
-										padding: "1rem 1rem 1rem 0",
-										maxWidth: "50%",
+										maxWidth: "100%",
+										width: "50%",
+									    alignSelf:"flex-end",
+										marginTop:"1.4rem",
 										top: {
 											xs: "199px",
 											sm: "270px",
@@ -294,6 +295,8 @@ const RestaurantDetails = ({ restaurantData, configData }) => {
 										//isLoading={isLoadingSearchFood}
 										searchFrom="restaurantDetails"
 										selectedValue={searchKey}
+										backgroundColor={theme.palette.neutral[200]}
+										borderRadius="10px"
 									/>
 								</Stack>
 							)}
@@ -310,6 +313,7 @@ const RestaurantDetails = ({ restaurantData, configData }) => {
 											}
 										/>
 										<CategoriesWiseFood
+											disRef={ref}
 											data={item}
 											handleFocusedSection={
 												handleFocusedSection
@@ -330,6 +334,10 @@ const RestaurantDetails = ({ restaurantData, configData }) => {
 							)}
 						</>
 					)}
+					{!inView && restaurantDiscount &&  <FloatingDiscountTag
+						resDiscount={restaurantData?.discount}
+						freeDelivery={restaurantData?.free_delivery}
+						restaurantDiscount={restaurantDiscount}/>}
 				</CustomStackFullWidth>
 			</CustomStackFullWidth>
 		</CustomContainer>

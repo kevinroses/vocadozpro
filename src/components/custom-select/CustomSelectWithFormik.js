@@ -16,6 +16,7 @@ const CustomSelectWithFormik = (props) => {
         fieldProps,
         required,
         value,
+        height
     } = props
     const [age, setAge] = React.useState(value)
     const theme=useTheme()
@@ -34,7 +35,8 @@ const CustomSelectWithFormik = (props) => {
                 <InputLabel
                     required={required}
                     id="demo-simple-select-label"
-                    sx={{ color: (theme) => theme.palette.neutral[1000] }}
+                    sx={{ color: (theme) => theme.palette.neutral[1000],
+                        fontSize: '13px'}}
                 >
                     {inputLabel}
                 </InputLabel>
@@ -47,12 +49,15 @@ const CustomSelectWithFormik = (props) => {
                     error={Boolean(touched && errors)}
                     helperText={touched && errors}
                     {...fieldProps}
+                    sx={{height:height??"inherit",borderRadius:"5px"}}
+
                 >
                     {selectFieldData?.length > 0 &&
                         selectFieldData.map((item, index) => {
                             return (
                                 <MenuItem key={index} value={item.value} sx={{
-
+                                    maxWidth:"100%",
+                                    fontSize:"13px",
                                     '&:hover': {
                                         backgroundColor: 'primary.main',
                                     },

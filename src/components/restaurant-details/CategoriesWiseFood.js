@@ -1,11 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Grid, Typography } from '@mui/material'
-import { restaurantDiscountTag } from '../../utils/customFunctions'
+import { alpha, Grid, Typography } from "@mui/material";
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-
 import FoodCard from '../food-card/FoodCard'
-
 import { Stack } from '@mui/system'
 import CustomImageContainer from '../CustomImageContainer'
 import fire_image from '../../../public/static/fire.svg'
@@ -17,19 +14,19 @@ import heroImg from '../../../public/static/heroHome.svg'
 import ImageNotFound from '../../../public/static/no-image-found.png'
 import { DiscountImageGrid } from './restaurant-details.style'
 import { t } from "i18next";
+
 const CategoriesWiseFood = ({
     data,
     handleFocusedSection,
     indexNumber,
-    restaurantDiscount,
-                                hasFreeDelivery
+    restaurantDiscount, hasFreeDelivery,disRef
 }) => {
     const theme = useTheme()
     const ref2 = useRef(null)
     const { global } = useSelector((state) => state.globalSettings)
     const [isInPosition, setIsInPosition] = useState(false)
-    let i = 0
 
+    let i = 0
     const scrollHandler = () => {
         const element = ref2.current
         const rect = element?.getBoundingClientRect()
@@ -87,7 +84,7 @@ const CategoriesWiseFood = ({
                                     height="26px"
                                 />
                                 <Typography
-                                    fontWeight="700"
+                                    fontWeight="500"
                                     fontSize={{ xs: "16px", sm: "18px", md: "20px" }}
                                     color={theme.palette.neutral[1000]}
                                 >
@@ -102,15 +99,15 @@ const CategoriesWiseFood = ({
                                 xs={12}
                                 sm={12}
                                 md={12}
+
                                 sx={{
                                     padding: {
                                         xs: '10px',
-                                        sm: '1rem',
-                                        md: '1rem',
+                                        sm: '.6rem',
+                                        md: '.6rem',
                                     },
-                                    background: (theme) =>
-                                        theme.palette.sectionBg,
-                                    marginTop: '1rem',
+                                    background: (theme) => alpha( theme.palette.primary.main,.15),
+                                    marginTop: '.5rem',
                                 }}
                             >
                                 {data?.products?.map((food) => {
@@ -137,6 +134,7 @@ const CategoriesWiseFood = ({
                                                         sm: '8px',
                                                     },
                                                 }}
+                                                padding=".5rem"
                                             >
                                                 <FoodCard
                                                     product={food}
@@ -157,6 +155,7 @@ const CategoriesWiseFood = ({
                         )}
                         {indexNumber === 0 && restaurantDiscount && (
                             <DiscountImageGrid
+                                ref={disRef}
                                 item
                                 xs={12}
                                 sm={12}
@@ -207,7 +206,7 @@ const CategoriesWiseFood = ({
                             paddingTop="5px"
                         >
                             <Typography
-                                fontWeight="700"
+                                fontWeight="500"
                                 fontSize={{ xs: "16px", sm: "18px", md: "20px" }}
                                 color={theme.palette.neutral[1000]}
                             >
@@ -234,7 +233,7 @@ const CategoriesWiseFood = ({
                                                 item
                                                 xs={6}
                                                 sm={4}
-                                                md={3}
+                                                md={2.4}
                                                 align="left"
                                                 pb={{ xs: "0rem", sm: ".5rem", md: "1.2rem" }}
                                             >

@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-
-import Container from "@mui/material/Container";
-
 import { useWishListGet } from "@/hooks/react-query/config/wish-list/useWishListGet";
 import { setWishList } from "@/redux/slices/wishList";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,18 +12,12 @@ import PushNotificationLayout from "../PushNotificationLayout";
 import { onErrorResponse, onSingleErrorResponse } from "../ErrorResponse";
 import { useQuery } from "react-query";
 import { BannerApi } from "@/hooks/react-query/config/bannerApi";
-import { CategoryApi } from "../../hooks/react-query/config/categoryApi";
 import { CampaignApi } from "@/hooks/react-query/config/campaignApi";
 import {
     MostReviewedApi,
     PopularFoodNearbyApi
 } from "@/hooks/react-query/config/productsApi";
-import { RestaurantsApi } from "../../hooks/react-query/config/restaurantApi";
 import FeatureCatagories from "./featured-categories/FeatureCatagories";
-import FoodCampaign from "./food-campaign/FoodCampaign";
-import BestReviewedFood from "./food-campaign/best-reviewed-foods/BestReviewedFood";
-import PopularResturant from "./PopularResturant";
-import NearbyPopularFood from "./new-popular-food/NearbyPopularFood";
 import Restaurant from "./Restaurant";
 import Cuisines from "./cuisines";
 import HeroSectionWithSearch from "./hero-section-with-search";
@@ -49,13 +39,15 @@ import DifferentFoodCompontent from "./DefferntFoodCompontent";
 import NewRestaurant from "./NewRestaurant";
 import { Box } from "@mui/system";
 import PromotionalBanner from "./PromotionalBanner";
-import { setSearchTagData, setSelectedName, setSelectedValue } from "@/redux/slices/searchTagSlice";
-import { setFilterbyByDispatch, setFoodOrRestaurant } from "@/redux/slices/searchFilter";
+import { setSearchTagData, setSelectedName, setSelectedValue, setSort_by } from "@/redux/slices/searchTagSlice";
+import { setFilterbyByDispatch, setFoodOrRestaurant, setSortbyByDispatch } from "@/redux/slices/searchFilter";
 
 
 const Homes = ({ configData }) => {
-
+    const { global } = useSelector((state) => state.globalSettings);
     const [fetchedData, setFetcheedData] = useState({});
+    const { filterData,foodOrRestaurant } = useSelector((state) => state.searchFilterStore)
+    const [sort_by,setSort_by]=useState('')
     const { searchTagData } = useSelector((state) => state.searchTags)
     const router = useRouter();
     const { query, page, restaurantType, tags } = router.query;
@@ -73,7 +65,7 @@ const Homes = ({ configData }) => {
         getToken = localStorage.getItem("token");
     }
     useEffect(() => {
-        if (getToken) {
+        if (getToken ) {
             refetch().then();
         }
     }, [getToken, fetchedData]);
@@ -165,12 +157,11 @@ const Homes = ({ configData }) => {
                 dispatch(setFoodOrRestaurant('products'))
                 dispatch(setSelectedValue(""))
                 dispatch(setSelectedName(""))
+                setSort_by("")
             }
         }
         dispatch(setFilterbyByDispatch(activeFilters))
-
     }, [tags,page,restaurantType,query]);
-
     return (
         <>
             <PushNotificationLayout>
@@ -186,7 +177,7 @@ const Homes = ({ configData }) => {
                         >{t("Find Best Restaurants and Foods")}</Typography>
                     </CustomStackFullWidth>
                 </CustomContainer>
-                <SearchFilterTag tags={tags} query={query} page={page} />
+                <SearchFilterTag sort_by={sort_by} setSort_by={setSort_by} tags={tags} query={query} page={page} />
                 {(query || page || restaurantType || tags) ? (
                     <CustomContainer>
                         <ProductSearchPage
@@ -216,8 +207,10 @@ const Homes = ({ configData }) => {
                                 isLoading={isLoading}
                                 isLoadingNearByPopularRestaurantData={isLoadingNearByPopularRestaurantData} />
                             <NewRestaurant />
-                            <Cuisines />
-                            <PromotionalBanner />
+                            {global &&  <Cuisines /> }
+
+                            {global?.banner_data?.promotional_banner_image &&  <PromotionalBanner global={global} /> }
+
                             <Restaurant />
                         </CustomContainer>
                     </>

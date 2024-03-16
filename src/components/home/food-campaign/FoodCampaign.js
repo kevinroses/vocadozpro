@@ -57,7 +57,7 @@ const FoodCampaign = ({ data, isLoading }) => {
             {
                 breakpoint: 3600,
                 settings: {
-                    slidesToShow: 4.1,
+                    slidesToShow: 4.5,
                     slidesToScroll: 1,
                     infinite: false,
                     // dots: true
@@ -75,7 +75,7 @@ const FoodCampaign = ({ data, isLoading }) => {
             {
                 breakpoint: 2800,
                 settings: {
-                    slidesToShow: 4.1,
+                    slidesToShow: 4.5,
                     slidesToScroll: 1,
                     infinite: false,
                     // dots: true
@@ -84,7 +84,7 @@ const FoodCampaign = ({ data, isLoading }) => {
             {
                 breakpoint: 2400,
                 settings: {
-                    slidesToShow: 4.2,
+                    slidesToShow: 4.5,
                     slidesToScroll: 1,
                     infinite: false,
                     // dots: true
@@ -93,7 +93,7 @@ const FoodCampaign = ({ data, isLoading }) => {
             {
                 breakpoint: 2000,
                 settings: {
-                    slidesToShow: 4.2,
+                    slidesToShow: 4.5,
                     slidesToScroll: 1,
                     infinite: false,
                     // dots: true
@@ -156,7 +156,7 @@ const FoodCampaign = ({ data, isLoading }) => {
             {
                 breakpoint: 540,
                 settings: {
-                    slidesToShow: 1.5,
+                    slidesToShow: 1.8,
                     slidesToScroll: 1,
                     infinite: false,
                 },
@@ -179,7 +179,7 @@ const FoodCampaign = ({ data, isLoading }) => {
         <>
             <Grid
                 container
-                paddingTop={campaignFoods?.length > 0 && '1.9rem'}
+                paddingTop={campaignFoods?.length > 0 && { xs: "0.5rem", sm: "1.9rem" }}
             >
                 <CustomGridWithBgColor
                     foodsize={campaignFoods?.length}
@@ -210,9 +210,6 @@ const FoodCampaign = ({ data, isLoading }) => {
 
                         </Stack>}
 
-                    {hoverOn && campaignFoods?.length >= 5 && (
-                        <CustomSideOverLay left="unset" right="0" />
-                    )}
                     <CustomStackFullWidth justifyContent="right">
                         {!isLoading ? (
                             <CustomStackFullWidth>

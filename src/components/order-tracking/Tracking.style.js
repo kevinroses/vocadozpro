@@ -18,8 +18,11 @@ export const HeadingBox = styled(Box)(() => ({
     padding: '10px 0px 20px 0px',
     textAlign: 'center'
 }))
-export const StepBox = styled(Box)(() => ({
+export const StepBox = styled(Box)(({theme}) => ({
     padding: '35px 0px 10px 0px',
-    width: '100%'
+    width: '100%',
+    [theme.breakpoints.down("md")]: {
+        padding: '25px 0px 10px 0px',
+    },
 
 }))

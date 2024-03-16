@@ -3,29 +3,29 @@ import CustomModal from '../../../custom-modal/CustomModal'
 import PhoneInputForm from './PhoneInputForm'
 import CustomImageContainer from '../../../CustomImageContainer'
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
-import { usePostEmail } from '../../../../hooks/react-query/social-login/usePostEmail'
+import { usePostEmail } from "@/hooks/react-query/social-login/usePostEmail"
 import { onErrorResponse } from '../../../ErrorResponse'
 import OtpForm from '../../forgot-password/OtpForm'
-import { useVerifyPhone } from '../../../../hooks/react-query/otp/useVerifyPhone'
+import { useVerifyPhone } from "@/hooks/react-query/otp/useVerifyPhone"
 import { toast } from 'react-hot-toast'
 import facebookLatest from '../../../../../public/static/facebookLatest.png'
-import { alpha, Stack } from "@mui/material";
+import { alpha, Button, Stack } from "@mui/material";
 import {
     CustomColouredTypography,
     CustomStackFullWidth,
-} from '../../../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     setJwtTokenByDispatch,
     setUserInfoByDispatch,
-} from '../../../../redux/slices/fbCredentials'
-import { facebookAppId } from '../../../../utils/staticCredentials'
+} from "@/redux/slices/fbCredentials"
+import { facebookAppId } from "@/utils/staticCredentials"
 import { useTheme } from "@mui/styles";
 
 const FbLoginComp = (props) => {
-    const { handleSuccess, global, handleParentModalClose,setModalFor,setMedium } = props
-    const theme=useTheme()
+    const { handleSuccess, global, handleParentModalClose, setModalFor, setMedium, isSingle } = props
+    const theme = useTheme()
     const [openModal, setOpenModal] = useState(false)
     const [openOtpModal, setOpenOtpModal] = useState(false)
     const [otpData, setOtpData] = useState({ phone: '' })
@@ -64,27 +64,31 @@ const FbLoginComp = (props) => {
         }
     }
     const responseFacebook = async (res) => {
+
         dispatch(setUserInfoByDispatch(res))
         dispatch(setJwtTokenByDispatch(res))
-        await mutate(
-            {
-                email: res?.email,
-                token: res?.accessToken,
-                unique_id: res?.id,
-                medium: 'facebook',
-                phone: res?.phone,
-            },
-            {
-                onSuccess: handlePostRequestOnSuccess,
-                onError: (error) => {
-                    error?.response?.data?.errors?.forEach((item) =>
-                        item.code === 'email'
-                            ? handleToken()
-                            : toast.error(item.message)
-                    )
+        if (res?.status !== "unknown") {
+            await mutate(
+                {
+                    email: res?.email,
+                    token: res?.accessToken,
+                    unique_id: res?.id,
+                    medium: 'facebook',
+                    phone: res?.phone,
                 },
-            }
-        )
+                {
+                    onSuccess: handlePostRequestOnSuccess,
+                    onError: (error) => {
+                        error?.response?.data?.errors?.forEach((item) =>
+                            item.code === 'email'
+                                ? handleToken()
+                                : toast.error(item.message)
+                        )
+                    },
+                }
+            )
+        }
+
     }
     // const handleRegistrationOnSuccess = (token) => {
     //     //registration on success func remaining
@@ -107,7 +111,7 @@ const FbLoginComp = (props) => {
     }
     const { t } = useTranslation()
     return (
-        <>
+        <Stack width={isSingle ? '100%' : 'fit-content'} maxWidth="355px" justifyContent="center">
             <FacebookLogin
                 appId={appId}
                 autoLoad={false}
@@ -126,27 +130,21 @@ const FbLoginComp = (props) => {
                                 height: '45px',
                                 width: '100%',
                                 borderRadius: '10px',
-                                padding: '10px 25px',
+                                padding: '10px',
                                 textAlign: 'center',
-                                boxShadow:`0px 2px 3px 0px rgba(0, 0, 0, 0.17), 0px 0px 3px 0px rgba(0, 0, 0, 0.08)`
+                                transition: 'box-shadow 0.3s',
+                                '&:hover': {
+                                    boxShadow: `0px 5px 10px 0px rgba(0, 0, 0, 0.3), 0px 2px 5px 0px rgba(0, 0, 0, 0.15)`,
+
+                                }
                             }}
                         >
                             <CustomStackFullWidth
                                 direction="row"
                                 alignItems="center"
-                                spacing={1}
+                                justifyContent="center"
+                                spacing={2}
                             >
-
-                                <CustomColouredTypography
-
-                                    sx={{
-                                        color: (theme) =>
-                                            theme.palette.whiteContainer.main,
-                                        fontWeight:"400"
-                                    }}
-                                >
-                                    {t('Sign up with')}
-                                </CustomColouredTypography>
                                 <CustomImageContainer
                                     src={facebookLatest.src}
                                     alt="facebook"
@@ -155,6 +153,18 @@ const FbLoginComp = (props) => {
                                     objectFit="cover"
                                     borderRadius="50%"
                                 />
+                                {isSingle &&
+                                    <CustomColouredTypography
+                                        sx={{
+                                            color: (theme) =>
+                                                theme.palette.whiteContainer.main,
+                                            fontWeight: "400"
+                                        }}
+                                    >
+                                        {t('Continue with Facebook')}
+                                    </CustomColouredTypography>
+                                }
+
                             </CustomStackFullWidth>
                         </Stack>
                     </div>
@@ -183,7 +193,7 @@ const FbLoginComp = (props) => {
                     isLoading={isLoading}
                 />
             </CustomModal>
-        </>
+        </Stack>
     )
 }
 

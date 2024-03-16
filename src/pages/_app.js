@@ -7,9 +7,9 @@ import { ThemeProvider } from '@mui/material/styles'
 import { Provider, useDispatch } from "react-redux";
 import { Toaster } from 'react-hot-toast'
 import { createTheme } from '../theme/index'
-import { store } from '../redux/store'
+import { store } from "@/redux/store"
 import ScrollToTop from '../components/scroll-top/ScrollToTop'
-import { WrapperForApp } from '../App.style'
+import { WrapperForApp } from "@/App.style"
 import createEmotionCache from '../utils/create-emotion-cache'
 import Navigation from '../components/navbar'
 import '../styles/global.css'

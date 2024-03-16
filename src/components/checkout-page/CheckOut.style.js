@@ -37,7 +37,7 @@ export const DeliveryCaption = styled(Typography)(
             : '20px',
         paddingBottom: no_margin_bottom
             ? (no_margin_bottom = 'true' ? 'none' : '20px')
-            : '20px',
+            : '15px',
     })
 )
 
@@ -56,9 +56,8 @@ export const PrefarableCaption = styled(Typography)(({ theme }) => ({
     },
 }))
 
-export const SaveAddressBox = styled(Box)(() => ({
-    padding: '1rem',
-    textAlign: 'center',
+export const SaveAddressBox = styled(Button)(() => ({
+
 }))
 
 export const AddNewButton = styled(Button)(() => ({
@@ -116,9 +115,10 @@ export const CouponTitle = styled(Typography)(({ theme }) => ({
 export const CouponButton = styled(LoadingButton)(({ theme }) => ({
     // background: '#EF7822',
     // color: 'white',
-    fontSize: '14px',
-    height: '30px',
-    borderRadius: '30px',
+    fontSize: '12px',
+    height: '34px',
+    borderRadius: '5px',
+    padding:"8px 16px"
     // [theme.breakpoints.up('xs')]: {
     //     width: '110px',
     //     height: '37px',

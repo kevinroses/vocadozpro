@@ -3,7 +3,7 @@ import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style
 import CustomImageContainer from '../CustomImageContainer'
 import CloseIcon from '@mui/icons-material/Close'
 import { Stack } from '@mui/system'
-import { Typography } from '@mui/material'
+import { alpha, Typography } from "@mui/material";
 import StarIcon from '@mui/icons-material/Star'
 import { useTheme } from '@mui/material/styles'
 import { CustomStackForFoodModal } from './FoodModalStyle'
@@ -35,9 +35,23 @@ const FoodModalTopSection = ({
     }
     return (
         <CustomStackFullWidth sx={{ position: 'relative' }}>
-            <button onClick={handleModalClose} className="closebtn">
-                <CloseIcon sx={{ fontSize: '16px' }} />
-            </button>
+            <IconButton onClick={handleModalClose}   sx={{
+                zIndex: "999",
+                position: "absolute",
+                top: 0,
+                right:0,
+                backgroundColor:"rgba(255, 255, 255, 0.7)",
+                borderRadius: "50%",
+                "&:hover": {
+                    backgroundColor:alpha("rgba(255, 255, 255, 0.7)",.5),
+                }
+                // [theme.breakpoints.down("sm")]: {
+                //     top: -30,
+                //     right: -30,
+                // },
+            }}>
+                <CloseIcon sx={{ fontSize: '16px',fontWeight:"bold" }} />
+            </IconButton>
             <CustomImageContainer
                 src={image}
                 width="100%"
@@ -55,7 +69,11 @@ const FoodModalTopSection = ({
                     )}
                     {router.pathname !== `/restaurant/[id]` ? (
                         <Typography
-                            sx={{ cursor: 'pointer' }}
+                            sx={{ cursor: 'pointer',
+                                transition: 'background 1s, color 1s',
+                             "&:hover":{
+                                color:theme=>theme.palette.primary.main
+                            }}}
                             fontSize="14px"
                             fontWeight="400"
                             color={theme.palette.whiteContainer.main}

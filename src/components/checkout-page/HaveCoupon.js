@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Grid, InputAdornment, InputBase } from '@mui/material'
+import { Grid, InputAdornment, InputBase, Typography } from "@mui/material";
 import {
     CouponButton,
     CouponGrid,
@@ -8,33 +8,40 @@ import {
     InputField,
 } from './CheckOut.style'
 import { useQuery } from 'react-query'
-import { CouponApi } from '../../hooks/react-query/config/couponApi'
+import { CouponApi } from "@/hooks/react-query/config/couponApi"
 import { useTranslation } from 'react-i18next'
 import { onErrorResponse } from '../ErrorResponse'
 import { toast } from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { setCouponInfo, setCouponType } from '../../redux/slices/global'
-import {
-    CustomPaperBigCard,
-    CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+import { setCouponInfo, setCouponType } from "@/redux/slices/global"
 import { useTheme } from '@mui/material/styles'
-import { cartItemsTotalAmount, getAmount } from '../../utils/customFunctions'
+import { cartItemsTotalAmount, getAmount } from "@/utils/customFunctions"
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import CouponStartSvg from './assets/couponStartSvg'
+import CustomPopover from "@/components/custom-popover/CustomPopover";
+import CheckOutPromo from "@/components/checkout-page/order-summary/CheckOutPromo";
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from "@mui/material/IconButton";
 const HaveCoupon = ({
     restaurant_id,
     setCouponDiscount,
     couponDiscount,
     cartList,
-                        total_order_amount
+                        total_order_amount,
+                        couponCode,
+                        setCouponCode,
+    data,
+                        anchorEl,
+                        setAnchorEl,
+                        handleClose
 }) => {
     const theme = useTheme()
     const router = useRouter();
     const { method } = router.query;
-    const [couponCode, setCouponCode] = useState(null)
     const [zoneId, setZoneId] = useState(0)
     const [enable, setEnable] = useState(false)
+    const[inputValue,setInputValue] = useState(null)
+    const [isRefetchCall, setIsRefetchCall] = useState(false)
     const { t } = useTranslation()
     const dispatch = useDispatch()
     let currencySymbol
@@ -48,29 +55,7 @@ const HaveCoupon = ({
         currencySymbolDirection = global.currency_symbol_direction
         digitAfterDecimalPoint = global.digit_after_decimal_point
     }
-    // const handleSuccess = (response) => {
-    //     const totalCartPrice = getAmount(cartItemsTotalAmount(cartList))
-    //     const min_purchase = getAmount(
-    //         response?.data?.min_purchase,
-    //         currencySymbolDirection,
-    //         currencySymbol,
-    //         digitAfterDecimalPoint
-    //     )
-    //     if (totalCartPrice < response?.data?.min_purchase) {
-    //         toast.error(`${t('Minimum purchase amount')} ${min_purchase}`)
-    //     } else {
-    //         dispatch(setCouponInfo(response.data))
-    //         toast.success(t('Coupon Applied'))
-    //         dispatch(setCouponType(response.data.coupon_type))
-    //         setCouponDiscount({ ...response.data, zoneId: zoneId })
-    //
-    //         if (typeof window !== 'undefined') {
-    //             if (response) {
-    //                 localStorage.setItem('coupon', response.data.code)
-    //             }
-    //         }
-    //     }
-    // }
+
     const handleSuccess = (response) => {
         const totalCartPrice = getAmount(cartItemsTotalAmount(cartList))
             const min_purchase = getAmount(
@@ -83,6 +68,7 @@ const HaveCoupon = ({
             Number.parseInt(response?.data?.min_purchase) <=
             Number.parseInt(totalCartPrice)
         ) {
+
             if(response?.data?.discount_type === "percent"){
                 dispatch(setCouponInfo(response.data));
                 toast.success(t("Coupon Applied"));
@@ -94,7 +80,7 @@ const HaveCoupon = ({
                             }
                         }
             }else {
-                if( response?.data?.discount && total_order_amount >= response?.data?.discount){
+                if( totalCartPrice >= response?.data?.discount){
                     dispatch(setCouponInfo(response.data));
                     toast.success(t("Coupon Applied"));
                     dispatch(setCouponType(response.data.coupon_type));
@@ -115,11 +101,13 @@ const HaveCoupon = ({
                 `$${t('Minimum purchase amount')} ${min_purchase}`
             );
         }
+        handleClose()
     };
-    const { isLoading, refetch } = useQuery(
+    const { isLoading, refetch ,isRefetching} = useQuery(
         'apply-coupon',
         () => CouponApi.applyCoupon(couponCode, restaurant_id),
         {
+            retry:0,
             onSuccess: handleSuccess,
             onError: onErrorResponse,
             enabled: false,
@@ -132,12 +120,11 @@ const HaveCoupon = ({
     }
     useEffect(() => {
         setCouponCode(couponStorage)
+        setInputValue(couponStorage)
         if (typeof window !== 'undefined') {
             let zoneid = JSON.parse(localStorage.getItem('zoneid'))
-
             setZoneId(zoneid[0])
         }
-
         if (couponStorage) {
             setEnable(true)
         }
@@ -146,15 +133,24 @@ const HaveCoupon = ({
         }
     }, [])
     const removeCoupon = () => {
+        setInputValue(null)
         setCouponDiscount(null)
         localStorage.removeItem('coupon')
         setCouponCode(null)
         //dispatch(setCouponInfo(null))
     }
-    const handleApply = () => {
-        refetch().then()
+    const handleApply = (value) => {
+        setIsRefetchCall(true)
+        setInputValue(value)
+        setCouponCode(value)
+
     }
-    const borderColor = theme.palette.neutral[400]
+    useEffect(() => {
+        if(couponCode && isRefetchCall){
+            refetch().then()
+        }
+    }, [couponCode]);
+    const borderColor = theme.palette.primary.main
     return (
         <Grid container spacing={{ xs: 1, md: 2 }} justifyContent="flex-start">
             { method !== "offline" && 
@@ -166,12 +162,12 @@ const HaveCoupon = ({
                         display: 'flex',
                         flexDirection: 'row',
                         padding: '3px',
-                        borderRadius: '30px',
+                        borderRadius: '8px',
                         alignItems: 'center',
                     }}
                 >
                     <InputBase
-                        placeholder={t('Coupon code')}
+                        placeholder={t('Enter Voucher')}
                         sx={{
                             ml: 1,
                             flex: 1,
@@ -181,8 +177,8 @@ const HaveCoupon = ({
                                 padding: '5px 0px 5px',
                             },
                         }}
-                        onChange={(e) => setCouponCode(e.target.value)}
-                        value={couponCode ? couponCode : ''}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        value={inputValue ? inputValue : ''}
                         startAdornment={
                             <InputAdornment position="start">
                                 <CouponStartSvg />
@@ -195,27 +191,36 @@ const HaveCoupon = ({
                                 loading={isLoading}
                                 loadingPosition="start"
                                 variant="contained"
-                                onClick={handleApply}
-                                disabled={couponCode === '' || !couponCode}
+                                onClick={()=>handleApply(inputValue)}
+                                disabled={ inputValue==="" || !inputValue}
                             >
                                 {t('Apply Now')}
                             </CouponButton>
                         )}
                         {couponStorage && (
-                            <CouponButton
+                            <IconButton
                                 // loading={isLoading}
                                 loadingPosition="start"
                                 variant="contained"
                                 onClick={removeCoupon}
                             >
-                                {t('Remove')}
-                            </CouponButton>
+                               <CloseIcon sx={{fontSize:"16px"}}/>
+                            </IconButton>
                         )}
                     </>
                 </InputField>
             </Grid>
-
             }
+            <CustomPopover
+                anchorEl={anchorEl}
+                setAnchorEl={setAnchorEl}
+                handleClose={handleClose}
+                padding="20px 10px 10px 10px"
+                maxWidth="450px"
+
+            >
+                <CheckOutPromo loading={isLoading || isRefetching} handleClose={handleClose} data={data} handleApply={handleApply}/>
+            </CustomPopover>
         </Grid>
     )
 }

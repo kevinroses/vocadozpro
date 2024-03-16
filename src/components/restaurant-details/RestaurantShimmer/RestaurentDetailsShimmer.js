@@ -11,7 +11,7 @@ const RestaurantDetailsShimmer = ({ showComponent }) => {
     return (
         <>
             {showComponent ? (
-                <Grid container spacing={2}>
+                <Grid container spacing={2} paddingTop="1rem">
                     {[...Array(6)].map((item) => (
                         <Grid
                             item

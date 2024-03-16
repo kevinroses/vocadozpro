@@ -1,49 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
 import Box from '@mui/material/Box'
 import {
-    CustomAppbarFilter,
-    CustomTypographyForSideDrawerFilter,
     WrapperForSideDrawerFilter,
-} from '../../gurbage/admin/components/filter/SideDrawerFilter.style'
+} from "@/gurbage/admin/components/filter/SideDrawerFilter.style"
 import Toolbar from '@mui/material/Toolbar'
 import { Stack } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import CustomDateRangePicker from '../custom-date-range-picker/CustomDateRangePicker'
-import CustomMultiSelectTags from '../custom-multi-select-tags/CustomMultiSelectTags'
-import {
-    CustomButtonGray,
-    CustomButtonPrimary,
-} from '../../styled-components/CustomButtons.style'
-//import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css'
 import { useTranslation } from 'react-i18next'
-import { CustomColouredTypography } from '../../styled-components/CustomStyles.style'
-import CustomSlider from '../custom-slider/CustomSlider'
-import CustomRatings from '../custom-ratings/CustomRatings'
 import CustomGroupCheckbox from '../custom-group-checkboxs/CustomGroupCheckbox'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-    setFilterbyByCuisineDispatch,
     setFilterbyByDispatch,
-    setFilterDrawerOpenByDispatch,
-    setPriceByDispatch,
-    setRatingByDispatch,
-    setSortbyByDispatch,
-} from '../../redux/slices/searchFilter'
-import { setIconicSidebar } from '../../redux/slices/layout'
-import ButtonGroups from './ButtonGroups'
-import { useGetCuisines } from '../../hooks/react-query/cuisines/useGetCuisines'
-import SimpleBar from 'simplebar-react'
-import { searchMockData } from './SearchMockData'
+
+} from "@/redux/slices/searchFilter"
+
 
 const FilterCard = ({
-    setSideDrawerOpen,
-    handleDropClose,
-    handleFilter,
-    handleClearAll,
-    foodOrRestaurant,
-    sideDrawerOpen,
     stateData,
     setStateData,
 }) => {

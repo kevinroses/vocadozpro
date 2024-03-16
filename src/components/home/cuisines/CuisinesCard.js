@@ -21,13 +21,14 @@ const CuisinesCard = ({ item }) => {
                         paddingY={{ xs: '5px', md: '12px' }}
                         borderRadius="50%"
                         sx={{
-                            transition: `${theme.transitions.create(
-                                ['background-color', 'transform'],
-                                {
-                                    duration:
-                                        theme.transitions.duration.standard,
-                                }
-                            )}`,
+                            // transition: `${theme.transitions.create(
+                            //     ['background-color', 'transform'],
+                            //     {
+                            //         duration:
+                            //             theme.transitions.duration.standard,
+                            //     }
+                            // )}`,
+                            transition: "transform 0.5s ease-in-out",
                             '&:hover': {
                                 transform: 'scale(1.1)',
                             },
@@ -39,7 +40,7 @@ const CuisinesCard = ({ item }) => {
                             maxWidth="100px"
                             width="100%"
                             borderRadius="50%"
-                            objectFit="contained"
+                            objectFit="cover"
                             smMb="5px"
                             smHeight="50px"
                             smMaxWidth="50px"
@@ -48,7 +49,7 @@ const CuisinesCard = ({ item }) => {
                     </Stack>{' '}
                     <Typography
                         textAlign="center"
-                        fontSize={{ xs: '13px', sm: '14px', md:"14px" }}
+                        fontSize={{ xs: '13px', sm: '14px', md: "14px" }}
                         fontWeight="400"
                         sx={{
                             color: (theme) => theme.palette.neutral[1000],

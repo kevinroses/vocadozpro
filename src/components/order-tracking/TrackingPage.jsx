@@ -18,18 +18,13 @@ import {
     OrderDetailGrid,
     StepBox,
 } from './Tracking.style'
-import GoogleMapComponent from '../landingpage/google-map/GoogleMapComponent'
-import { getDateFormat } from '../../utils/customFunctions'
 import MapComponent from '../restaurant-details/google-address/MapComponent'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
-import ChatIcon from '@mui/icons-material/Chat'
-import Link from 'next/link'
-import CustomFormatedDateTime from '../date/CustomFormatedDateTime'
+} from "@/styled-components/CustomStyles.style"
 import CustomFormatedTime from '../date/CustomFormatedTime'
 import DeliverymanInfo from './DeliverymanInfo'
 import DeliverymanShimmer from './DeliverymanShimmer'
@@ -83,7 +78,6 @@ const TrackingPage = ({ data, guestOrderTracking }) => {
     const deliveryLong = data?.delivery_address?.longitude
     const resLat = data?.restaurant.latitude
     const resLong = data?.restaurant.longitude
-
     const { t } = useTranslation()
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
@@ -98,54 +92,10 @@ const TrackingPage = ({ data, guestOrderTracking }) => {
         <RTL direction={languageDirection}>
             <CustomStackFullWidth>
                     <Grid container item md={12} xs={12} mb="1rem">
-                        {/*<Grid item md={12} xs={12}>*/}
-                        {/*    {data ? (*/}
-                        {/*        <HeadingBox>*/}
-                        {/*            <Typography*/}
-                        {/*                sx={{*/}
-                        {/*                    color: (theme) =>*/}
-                        {/*                        theme.palette.primary.main,*/}
-                        {/*                    fontSize: '36px',*/}
-                        {/*                    fontWeight: '600',*/}
-                        {/*                }}*/}
-                        {/*            >*/}
-                        {/*                #{data?.id}*/}
-                        {/*            </Typography>*/}
-                        {/*            <CustomStackFullWidth*/}
-                        {/*                alignItems="center"*/}
-                        {/*                justifyContent="center"*/}
-                        {/*                direction="row"*/}
-                        {/*                spacing={0.5}*/}
-                        {/*            >*/}
-                        {/*                <Typography>*/}
-                        {/*                    {t('Order placed at')}*/}
-                        {/*                </Typography>*/}
-                        {/*                <Typography>*/}
-                        {/*                    <CustomFormatedDateTime*/}
-                        {/*                        date={data?.created_at}*/}
-                        {/*                    />*/}
-                        {/*                </Typography>*/}
-                        {/*            </CustomStackFullWidth>*/}
-                        {/*        </HeadingBox>*/}
-                        {/*    ) : (*/}
-                        {/*        <CustomStackFullWidth alignItems="center">*/}
-                        {/*            <Skeleton*/}
-                        {/*                variant="text"*/}
-                        {/*                width="20%"*/}
-                        {/*                height="20px"*/}
-                        {/*            />*/}
-                        {/*            <Skeleton*/}
-                        {/*                variant="text"*/}
-                        {/*                width="20%"*/}
-                        {/*                height="20px"*/}
-                        {/*            />*/}
-                        {/*        </CustomStackFullWidth>*/}
-                        {/*    )}*/}
-                        {/*    <Divider />*/}
-                        {/*</Grid>*/}
+
                         <Grid item md={12} xs={12}>
                             <SimpleBar
-                                style={{ height: isSmall ? '175px' : '150px' }}
+                                style={{ height: isSmall ? '120px' : '150px' }}
                             >
                                 <RTL>
                                     <StepBox>
@@ -160,7 +110,7 @@ const TrackingPage = ({ data, guestOrderTracking }) => {
                                                             {t(labels.label)}
                                                         </Typography>
                                                         {data ? (
-                                                            <Typography fontSize="12px" color={theme.palette.neutral[600]}>
+                                                            <Typography fontSize={{xs:"10px",sm:"12px" }} color={theme.palette.neutral[600]}>
                                                                 {labels.time !==
                                                                     null ? (
                                                                     <CustomFormatedTime
@@ -185,11 +135,13 @@ const TrackingPage = ({ data, guestOrderTracking }) => {
                         </Grid>
                         <Grid item md={12} xs={12} p="1.4rem">
                             <MapComponent
-                                latitude={deliveryLat}
-                                longitude={deliveryLong}
+                                latitude={resLat}
+                                longitude={resLong}
+                                resLat={data?.delivery_man?.lat}
+                                resLong={data?.delivery_man?.lng}
                             />
                         </Grid>
-                        <Grid item md={12} xs={12} align="center" p="1.4rem">
+                        {data?.order_type==="delivery" &&  <Grid item md={12} xs={12} align="center" p="1.4rem">
                             {data ? (
                                 data?.delivery_man ? (
                                     <DeliverymanInfo data={data} />
@@ -203,7 +155,8 @@ const TrackingPage = ({ data, guestOrderTracking }) => {
                             ) : (
                                 <DeliverymanShimmer />
                             )}
-                        </Grid>
+                        </Grid> }
+
                     </Grid>
 
             </CustomStackFullWidth>

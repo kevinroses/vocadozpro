@@ -41,6 +41,12 @@ const CssTextField = styled(TextField)(({ theme, border }) => ({
         },
     },
 }))
+const CustomAutocomplete = styled(Autocomplete)(({ theme }) => ({
+    // Override the z-index for the popover
+    '& .MuiAutocomplete-root': {
+        zIndex: 1500 , // Change this value as needed
+    },
+}));
 const CustomMapSearch = ({
     border,
     setSearchKey,
@@ -65,7 +71,7 @@ const CustomMapSearch = ({
                         width: '100%',
                     }}
                 >
-                    <Autocomplete
+                    <CustomAutocomplete
                         fullWidth
                         freeSolo
                         id="combo-box-demo"

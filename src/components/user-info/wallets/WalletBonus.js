@@ -11,14 +11,14 @@ import 'slick-carousel/slick/slick.css'
 import img from '../../../../public/static/profile/walletbonus.png'
 import { t } from 'i18next'
 
-import { getAmount } from '../../../utils/customFunctions'
-import { CustomDateFormat } from '../../../utils/CustomDateAndTimeFormat'
+import { getAmount } from "@/utils/customFunctions"
+import { CustomDateFormat } from "@/utils/CustomDateAndTimeFormat"
 const WalletFundBonus = ({ walleBonus, isLoading }) => {
 
     const settings = {
         dots: false,
         //infinite: true,
-        slidesToShow: 2,
+        slidesToShow: 1,
         slidesToScroll: 2,
         //autoplay: true,
         //speed: 800,

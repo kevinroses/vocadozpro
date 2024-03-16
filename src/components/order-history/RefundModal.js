@@ -1,12 +1,12 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Dialog from '@mui/material/Dialog'
-import { Button, Stack } from '@mui/material'
+import { Button, Drawer, Stack } from "@mui/material";
 import DialogTitle from '@mui/material/DialogTitle'
 import Typography from '@mui/material/Typography'
 import DialogActions from '@mui/material/DialogActions'
 
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import { WrapperForCustomDialogConfirm } from '../custom-dialog/confirm/CustomDialogConfirm.style'
 import CustomSelectWithFormik from '../custom-select/CustomSelectWithFormik'
 import DialogContent from '@mui/material/DialogContent'
@@ -86,17 +86,18 @@ const RefundModal = (props) => {
     }
     // const imageUrl = `${productImageUrl}/${review.food_image}`
     return (
-        <Dialog
+        <Drawer
+            anchor="right"
             open={open}
             onClose={onClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+            variant="temporary"
+            sx={{ zIndex: '1200', minWidth: "375px" }}
         >
-            <WrapperForCustomDialogConfirm sx={{ position: 'relative' }}>
+            <Stack maxWidth="511px" width="100%"  >
                 <button className="closebtn" onClick={onClose}>
                     <CloseIcon sx={{ fontSize: '16px' }} />
                 </button>
-                <CustomStackFullWidth spacing={1}>
+                <CustomStackFullWidth spacing={1} paddingTop="3rem" paddingX="1rem">
                     <Stack alignItems="center" justifyContent="center" paddingX="50px">
                         <RefundSvg/>
                         <Typography fontSize="16px" fontWeight="700" paddingTop="24px" >
@@ -129,6 +130,7 @@ const RefundModal = (props) => {
                                             fieldProps={RefundRequestFormik.getFieldProps(
                                                 'customer_reason'
                                             )}
+                                            height="47px"
                                         />
                                     </CustomStackFullWidth>
                                     <CustomStackFullWidth>
@@ -154,9 +156,10 @@ const RefundModal = (props) => {
                                             multiline="true"
                                             rows="2"
                                             placeholder="Enter note"
+                                            height="70"
                                         />
                                     </CustomStackFullWidth>
-                                    <CustomStackFullWidth >
+                                    <CustomStackFullWidth sx={{paddingTop:".5rem"}} >
                                         <MultiFileUploader
                                             fileImagesHandler={
                                                 fileImagesHandler
@@ -172,36 +175,34 @@ const RefundModal = (props) => {
                                             acceptedFileInputFormat={
                                                 acceptedFileInputFormat
                                             }
-                                            labelText={t('Upload photo')}
-                                            width="6rem"
+                                            labelText={t('browse your file')}
+                                            width="100%"
                                             gridControl="true"
+                                            fullWidth={true}
+
                                         />
                                     </CustomStackFullWidth>
-                                    <CustomStackFullWidth justifyContent="flex-end" alignItems="flex-end">
-                                        <DialogActions sx={{ padding: '0px' }}>
-                                            <Stack
-                                                alignItems="center"
-                                                justifyContent="center"
-                                                width="100%"
-                                            >
-                                                <LoadingButton
-                                                    type="submit"
-                                                    variant="contained"
+                                    <Stack
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        width="100%"
+                                    >
+                                        <LoadingButton
+                                            type="submit"
+                                            variant="contained"
 
-                                                    loading={refundIsLoading}
-                                                >
-                                                    {t('Submit Request')}
-                                                </LoadingButton>
-                                            </Stack>
-                                        </DialogActions>
-                                    </CustomStackFullWidth>
+                                            loading={refundIsLoading}
+                                        >
+                                            {t('Submit Request')}
+                                        </LoadingButton>
+                                    </Stack>
                                 </Stack>
                             </form>
                         </CustomStackFullWidth>
                     </DialogContent>
                 </CustomStackFullWidth>
-            </WrapperForCustomDialogConfirm>
-        </Dialog>
+            </Stack>
+        </Drawer>
     )
 }
 

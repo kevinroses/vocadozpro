@@ -3,7 +3,7 @@ import {
     CustomStackFullWidth,
     CustomViewAll,
     SliderCustom,
-} from '../../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import CustomShimmerCategories from '../../CustomShimmer/CustomShimmerCategories'
 import { Grid, IconButton, Stack, Typography } from '@mui/material'
 import { CustomTypography } from '../../custom-tables/Tables.style'
@@ -19,16 +19,9 @@ import { settings } from './SliderSettings'
 import CustomImageContainer from '../../CustomImageContainer'
 import cuisine_image from '../../../../public/static/cuisine_image.svg'
 import { useTheme } from '@emotion/react'
-import { AllRoutes } from '../../../AllRoutes'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+
 import Skeleton from '@mui/material/Skeleton'
-import { LeftArrowStyle, RightArrowStyle } from '../HomeStyle'
-import {
-    CustomIconButton,
-    CustomSideOverLay,
-} from '../food-campaign/FoodCampaign.style'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+
 import { HandleNext, HandlePrev } from '../../CustomSliderIcon'
 import { useSelector } from 'react-redux'
 
@@ -44,7 +37,7 @@ const Cuisines = () => {
         speed: 500,
         slidesToShow: 8,
         slidesToScroll: 1,
-        nextArrow: hoverOn && <HandleNext />,
+        nextArrow: hoverOn && <HandleNext overLay={true} />,
         prevArrow: hoverOn && <HandlePrev />,
         responsive: [
             {
@@ -106,7 +99,7 @@ const Cuisines = () => {
                     {!cuisines ? (
                         <CustomStackFullWidth
                             spacing={1}
-                            sx={{ paddingTop: '1.9rem' }}
+                            paddingTop={{ xs: "1rem", sm: "1.9rem" }}
                         >
                             <Skeleton
                                 width={120}
@@ -123,7 +116,7 @@ const Cuisines = () => {
                         cuisines?.length > 0 && (
                             <Grid
                                 container
-                                sx={{ paddingTop: '1.9rem' }}
+                                sx={{ paddingTop: { xs: "1rem", sm: "1.9rem" } }}
                                 gap="1.2rem"
                             >
                                 <Grid item xs={12} md={12}>
@@ -133,25 +126,25 @@ const Cuisines = () => {
                                         justifyContent="space-between"
                                     >
                                         <Stack direction="row" justifyContent="space-between" width="100%">
-                                           <Stack direction="row" spacing={1}>
-                                               <CustomImageContainer
-                                                   src={cuisine_image.src}
-                                                   width="26px"
-                                                   height="26px"
-                                               />
-                                               <Typography
-                                                   fontSize={{ xs: "16px", md: "20px" }}
-                                                   fontWeight={{ xs: "500", md: "700" }}
-                                                   color={
-                                                       theme.palette.neutral[1000]
-                                                   }
-                                               >
-                                                   {t('Cuisines')}
-                                               </Typography>
-                                           </Stack>
+                                            <Stack direction="row" spacing={1}>
+                                                <CustomImageContainer
+                                                    src={cuisine_image.src}
+                                                    width="26px"
+                                                    height="26px"
+                                                />
+                                                <Typography
+                                                    fontSize={{ xs: "16px", md: "20px" }}
+                                                    fontWeight={{ xs: "500", md: "700" }}
+                                                    color={
+                                                        theme.palette.neutral[1000]
+                                                    }
+                                                >
+                                                    {t('Cuisines')}
+                                                </Typography>
+                                            </Stack>
 
 
-                                            <CustomViewAll onClick={() => router.push('/cuisines')} sx={{marginInlineEnd:"10px"}}>{t("Explore More")}</CustomViewAll>
+                                            <CustomViewAll onClick={() => router.push('/cuisines')} sx={{ marginInlineEnd: "10px" }}>{t("Explore More")}</CustomViewAll>
                                         </Stack>
                                     </CustomStackFullWidth>
                                 </Grid>
@@ -169,12 +162,7 @@ const Cuisines = () => {
                                     onMouseEnter={() => setHoverOn(true)}
                                     onMouseLeave={() => setHoverOn(false)}
                                 >
-                                    {hoverOn && cuisines?.length >= 7 && (
-                                        <CustomSideOverLay
-                                            left="unset"
-                                            right="0"
-                                        />
-                                    )}
+
                                     {cuisines && cuisines?.length > 0 && (
                                         <Grid item xs={12} md={12}>
                                             <SliderCustom>

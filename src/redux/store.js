@@ -35,7 +35,7 @@ import editProfileReducer from "./slices/editProfile"
 const persistConfig = {
     key: 'stack-food',
     storage: storage,
-    blacklist: ['searchFilterStore', 'storedData',"scrollPosition"],
+    blacklist: ['searchFilterStore', 'storedData',"scrollPosition","globalSettings"],
 }
 const reducers = combineReducers({
     counter: counterReducer,

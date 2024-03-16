@@ -9,6 +9,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import { ScrollToBottom } from './ChatView'
 import ImagePreviewOnModal from '../image-preview-on-modal'
 
+import SimpleBar from 'simplebar-react'
+import 'simplebar-react/dist/simplebar.min.css'
+
 const ChatMessages = ({ conversationData, scrollBottom }) => {
     const [messagesData, setMessagesData] = useState([])
     const [isMessage, setIsMessage] = useState(false)
@@ -58,19 +61,16 @@ const ChatMessages = ({ conversationData, scrollBottom }) => {
                 <CustomModal
                     openModal={openModal}
                     setModalOpen={handleModalClose}
+                    maxWidth="500px"
                 >
-                    <ImagePreviewOnModal
-                        modalImage={modalImage}
-                        handleModalClose={handleModalClose}
-                    />
+                    <SimpleBar style={{ maxHeight: "600px" }}>
+                        <ImagePreviewOnModal
+                            modalImage={modalImage}
+                            handleModalClose={handleModalClose}
+                        />
+                    </SimpleBar>
                 </CustomModal>
-                {/*{conversationData.length > 0 &&*/}
-                {/*    conversationData.length === 1 && (*/}
-                {/*        <ScrollToBottom channelId={channelId} />*/}
-                {/*    )}*/}
                 {scrollBottom && <ScrollToBottom />}
-
-                {/*<Stack ref={messagesEndRef}></Stack>*/}
             </>
         </Box>
     )

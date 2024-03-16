@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import {
     CustomOverlayBox,
-    CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+    CustomStackFullWidth, SliderCustom
+} from "@/styled-components/CustomStyles.style";
 import CustomImageContainer from '../CustomImageContainer'
 import { alpha, Button, Divider, Grid, IconButton, TextField, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,12 +14,12 @@ import {
     getAmount,
     getNumberWithConvertedDecimalPoint,
     isAvailable,
-} from '../../utils/customFunctions'
+} from "@/utils/customFunctions"
 import { t } from 'i18next'
-import { addWishListRes, removeWishListRes } from '../../redux/slices/wishList'
-import { useWishListResDelete } from '../../hooks/react-query/config/wish-list/useWishListResDelete'
+import { addWishListRes, removeWishListRes } from "@/redux/slices/wishList"
+import { useWishListResDelete } from "@/hooks/react-query/config/wish-list/useWishListResDelete"
 import { useMutation } from 'react-query'
-import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
+import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
 import { toast } from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
@@ -41,7 +41,47 @@ import { useRouter } from 'next/router'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import MapComponent from "./google-address/MapComponent";
 import { RTL } from '../RTL/RTL'
-
+import {
+    EmailIcon,
+    EmailShareButton,
+    FacebookIcon,
+    FacebookMessengerIcon,
+    FacebookMessengerShareButton,
+    FacebookShareButton,
+    HatenaIcon,
+    HatenaShareButton,
+    InstapaperIcon,
+    InstapaperShareButton,
+    LineIcon,
+    LineShareButton,
+    LinkedinIcon,
+    LinkedinShareButton,
+    LivejournalIcon,
+    LivejournalShareButton,
+    MailruIcon,
+    MailruShareButton,
+    OKIcon,
+    OKShareButton,
+    PinterestIcon,
+    PinterestShareButton,
+    PocketIcon,
+    PocketShareButton,
+    RedditIcon,
+    RedditShareButton,
+    TelegramIcon,
+    TelegramShareButton,
+    TumblrIcon,
+    TumblrShareButton,
+    TwitterIcon,
+    TwitterShareButton,
+    WhatsappIcon,
+    WhatsappShareButton,
+} from "react-share";
+import Slider from "react-slick";
+import { shareSettings } from "./shareSettings";
+import { facebookAppId } from "../../utils/staticCredentials";
+import RestaurantMapView from "@/components/restaurant-details/RestaurantMapView";
+import RestaurantReviewModal from "@/components/restaurant-details/RestaurantReviewModal";
 const RestaurantLeftDetails = (props) => {
     const {
         details,
@@ -62,11 +102,14 @@ const RestaurantLeftDetails = (props) => {
     const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
     const [openModal, setOpenModal] = useState(false)
     const [openShareModal, setOpenShareModal] = useState(false)
+    const [openReviewModal, setOpenReviewModal]=useState(false)
     const { t } = useTranslation()
     let languageDirection = undefined
     if (typeof window !== 'undefined') {
         languageDirection = localStorage.getItem('direction')
     }
+    const facebookAppId=facebookAppId
+    const size=isSmall ? 30 : 40
     const {
         logo,
         name,
@@ -392,12 +435,15 @@ const RestaurantLeftDetails = (props) => {
                             >
                                 {details?.name}
                             </Typography>
+
                             <Stack direction="row" spacing={1} alignItems="center">
                                 <FoodRating product_avg_rating={details?.avg_rating} />
                             </Stack>
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                <Link href={`/review/${details?.id}`} passHref>
+                            {details?.rating_count ?
+                                <Stack direction="row" spacing={1} alignItems="center">
+
                                     <Typography
+                                        onClick={()=>setOpenReviewModal(true)}
                                         color={theme.palette.neutral[1000]}
                                         fontSize="13px"
                                         sx={{
@@ -408,10 +454,11 @@ const RestaurantLeftDetails = (props) => {
                                         {JSON.stringify(details?.rating_count)}{' '}
                                         {t('Ratings')}
                                     </Typography>
-                                </Link>
-                                <Divider orientation="vertical" flexItem width="3px" height="100%" sx={{ opacity: 1, backgroundColor: theme.palette.neutral[300] }} />
-                                <Link href={`/review/${details?.id}`} passHref>
+
+                                    <Divider orientation="vertical" flexItem width="3px" height="100%" sx={{ opacity: 1, backgroundColor: theme.palette.neutral[300] }} />
+
                                     <Typography
+                                        onClick={()=>setOpenReviewModal(true)}
                                         color={theme.palette.neutral[1000]}
                                         fontSize="13px"
                                         sx={{
@@ -422,8 +469,9 @@ const RestaurantLeftDetails = (props) => {
                                         {JSON.stringify(details?.reviews_comments_count)}{' '}
                                         {t('Reviews')}
                                     </Typography>
-                                </Link>
-                            </Stack>
+
+                                </Stack>:null}
+
 
                             {/* <Typography
                             fontSize="12px"
@@ -535,7 +583,7 @@ const RestaurantLeftDetails = (props) => {
             <CustomModal
                 openModal={openShareModal}
                 setModalOpen={setOpenShareModal}
-                maxWidth={{ xs: "90%", md: "40%" }}
+                maxWidth="550px"
             >
                 <CustomStackFullWidth
                     direction="row"
@@ -572,16 +620,74 @@ const RestaurantLeftDetails = (props) => {
                             value={currentRoute}
                             fontWeight={400}
                             InputProps={{
+                                style: {
+                                    height: '40px !important', // Adjust the height as needed
+                                    fontSize: '12px',
+
+                                },
                                 readOnly: true,
                             }}
                         />
-                        <Button variant="contained" onClick={() => handleCopy(currentRoute)}><ContentCopyIcon /></Button>
+                        <Button sx={{minWidth:"45px",padding:"8px 10px"}} variant="contained" onClick={() => handleCopy(currentRoute)}><ContentCopyIcon /></Button>
+                    </Stack>
+                    <Stack marginTop=".5rem">
+                        <SliderCustom
+                            nopadding="true"
+                        >
+                            <Slider {...shareSettings}>
+                                <FacebookMessengerShareButton
+                                    url={currentRoute}
+                                    appId={facebookAppId}
+                                >
+                                    <FacebookMessengerIcon size={size ? size : 40} round />
+                                </FacebookMessengerShareButton>
+                                <TwitterShareButton url={currentRoute}>
+                                    <TwitterIcon size={size ? size : 40} round />
+                                </TwitterShareButton>
+                                <WhatsappShareButton url={currentRoute} separator=":: ">
+                                    <WhatsappIcon size={size ? size : 40} round />
+                                </WhatsappShareButton>
+                                <LinkedinShareButton
+                                    url={currentRoute}
+                                    source={currentRoute}
+                                >
+                                    <LinkedinIcon size={size ? size : 40} round />
+                                </LinkedinShareButton>
+                                <TelegramShareButton url={currentRoute}>
+                                    <TelegramIcon size={size ? size : 40} round />
+                                </TelegramShareButton>
+                                <EmailShareButton
+                                    url={currentRoute}
+                                >
+                                    <EmailIcon size={size ? size : 40} round />
+                                </EmailShareButton>
+                                <RedditShareButton
+                                    url={currentRoute}
+                                    windowWidth={660}
+                                    windowHeight={460}
+                                >
+                                    <RedditIcon size={size ? size : 40} round />
+                                </RedditShareButton>
+                                <TumblrShareButton
+                                    url={String(window.location.origin)}
+                                >
+                                    <TumblrIcon size={size ? size : 40} round />
+                                </TumblrShareButton>
+                                <LivejournalShareButton url={currentRoute} >
+                                    <LivejournalIcon size={size ? size : 40} round />
+                                </LivejournalShareButton>
+                                <LineShareButton url={currentRoute} >
+                                    <LineIcon size={size ? size : 40} round />
+                                </LineShareButton>
+                            </Slider>
+                        </SliderCustom>
                     </Stack>
                 </CustomStackFullWidth>
             </CustomModal>
             <CustomModal
                 openModal={openModal}
                 setModalOpen={setOpenModal}
+                maxWidth="670px"
             >
                 <CustomStackFullWidth
                     direction="row"
@@ -594,22 +700,61 @@ const RestaurantLeftDetails = (props) => {
                         sx={{
                             zIndex: "99",
                             position: "absolute",
-                            top: 0,
-                            right: 0,
+                            top: "-4%",
+                            right: "-5%",
                             backgroundColor: (theme) => theme.palette.neutral[100],
                             borderRadius: "50%",
+                            "&:hover": {
+                                backgroundColor:(theme) => theme.palette.neutral[200]},
                             [theme.breakpoints.down("md")]: {
-                                top: 10,
-                                right: 5,
+                                top: "2%",
+                                right: "0%",
                             },
                         }}
                     >
-                        <CloseIcon sx={{ fontSize: "24px", fontWeight: "500" }} />
+                        <CloseIcon sx={{ fontSize: "16px", fontWeight: "500" }} />
                     </IconButton>
                 </CustomStackFullWidth>
-                <Box p="1rem">
-                    <MapComponent latitude={details?.latitude} longitude={details?.longitude} />
-                </Box>
+               <RestaurantMapView details={details} restaurantCoverUrl={restaurantCoverUrl}/>
+            </CustomModal>
+            <CustomModal
+                openModal={openReviewModal}
+                setModalOpen={setOpenReviewModal}
+                maxWidth="670px"
+            >
+                <CustomStackFullWidth
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                    sx={{ position: "relative",padding:"1rem" }}
+
+                >
+                    <IconButton
+                        onClick={() => setOpenReviewModal(false)}
+                        sx={{
+                            zIndex: "99",
+                            position: "absolute",
+                            top: "-4%",
+                            right: "-5%",
+                            backgroundColor: (theme) => theme.palette.neutral[100],
+                            borderRadius: "50%",
+                            "&:hover": {
+                                backgroundColor:(theme) => theme.palette.neutral[200]},
+                            [theme.breakpoints.down("md")]: {
+                                top: "1%",
+                                right: "0%",
+                            },
+                        }}
+                    >
+                        <CloseIcon sx={{ fontSize: "16px", fontWeight: "500" }} />
+                    </IconButton>
+                    <RestaurantReviewModal product_avg_rating={details?.avg_rating}
+                                           reviews_comments_count={details?.reviews_comments_count}
+                                           rating_count={details?.rating_count}
+                                           id={details?.id}
+                    />
+                </CustomStackFullWidth>
+
             </CustomModal>
         </CustomStackFullWidth>
     )

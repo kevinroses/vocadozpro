@@ -13,11 +13,13 @@ import { useQuery } from 'react-query'
 import { OrderApi } from '../../hooks/react-query/config/orderApi'
 import { clearOfflinePaymentInfo, setOrderDetailsModal } from '../../redux/slices/OfflinePayment'
 import CircularLoader from '../loader/CircularLoader'
-import { getGuestId } from './functions/getGuestUserId'
+import { getGuestId, getToken } from "./functions/getGuestUserId";
 
 export default function SuccessCard({ id }) {
     const { guestUserInfo } = useSelector((state) => state.guestUserInfo);
     const guestId = getGuestId();
+    const { t } = useTranslation()
+
     const { data: trackData, refetch, isLoading: trackDataIsLoading, isFetching: trackDataIsFetching } = useQuery(
         [`category-tracking`, id],
         () => OrderApi.orderTracking(id, guestUserInfo?.contact_person_number, guestId)
@@ -31,7 +33,7 @@ export default function SuccessCard({ id }) {
     dispatch(setClearCart())
     dispatch(clearOfflinePaymentInfo());
     dispatch(setOrderDetailsModal(false));
-    const { t } = useTranslation()
+
     return (
         <CustomStackFullWidth
             height="100%"
@@ -39,11 +41,13 @@ export default function SuccessCard({ id }) {
             justifyContent="center"
             spacing={2}
             pt="30px"
+
         >
             <CustomStackFullWidth
                 alignItems="center"
                 justifyContent="center"
                 spacing={1}
+                sx={{maxWidth:"700px"}}
             >
                 <CheckCircleIcon
                     sx={{
@@ -72,6 +76,16 @@ export default function SuccessCard({ id }) {
                         'Your order is placed Successfully. We start our delivery process and you will receive your food soon.'
                     )}
                 </Typography>
+                {! getToken() &&
+                    <Typography
+                        align="center"
+                        sx={{ mb: 1.5 }}
+
+                    >
+                        {t("Make sure to remember your order ID and phone number that is used in this order as you have ordered as guest user. Other wise you won’t be able to track your order in future.")}
+                    </Typography>}
+
+
                 <Typography align="center" sx={{ mb: 1.5 }}>
                     {t(`Your order is`)}
                     <span

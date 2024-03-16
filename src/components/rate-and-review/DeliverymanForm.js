@@ -1,28 +1,32 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Grid, Stack } from '@mui/material'
+import { Button, Grid, Stack, Typography } from "@mui/material";
 import {
     CustomColouredTypography,
     CustomStackFullWidth,
     CustomTypographyBold,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import CustomImageContainer from '../CustomImageContainer'
-import { getAmount } from '../../utils/customFunctions'
 import { CustomTypographyGray } from '../error/Errors.style'
 import Divider from '@mui/material/Divider'
 import CustomRatings from '../custom-ratings/CustomRatings'
 import CustomTextFieldWithFormik from '../form-fields/CustomTextFieldWithFormik'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from 'react-query'
 import { ReviewApi } from './ReviewApi'
 import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
 import { onErrorResponse } from '../ErrorResponse'
 import { CustomTypography } from '../custom-tables/Tables.style'
+import StarIcon from '@mui/icons-material/Star';
+import { useTheme } from "@mui/styles";
+import { setDeliveryManInfoByDispatch } from "@/redux/slices/searchFilter";
 
-const DeliverymanForm = ({ data, orderId }) => {
+const DeliverymanForm = ({ data, orderId,onClose,refetchTrackData }) => {
+    const theme=useTheme()
+    const dispatch=useDispatch()
     const { t } = useTranslation()
     const { global } = useSelector((state) => state.globalSettings)
     const productImage = global?.base_urls?.delivery_man_image_url
@@ -46,6 +50,14 @@ const DeliverymanForm = ({ data, orderId }) => {
     const handleChangeRatings = (value) => {
         formik.setFieldValue('rating', value)
     }
+    const handleSuccess=(response)=>{
+        formik.setFieldValue('rating', 0)
+        formik.setFieldValue('comment', '')
+        toast.success(response?.data?.message)
+        refetchTrackData()
+        //onClose()
+        // const restReviewItem
+    }
     const handleFormsubmit = (values) => {
         const formData = {
             ...values,
@@ -53,16 +65,18 @@ const DeliverymanForm = ({ data, orderId }) => {
             order_id: orderId,
         }
         mutate(formData, {
-            onSuccess: (response) => {
-                toast.success(response?.data?.message)
-            },
+            onSuccess:handleSuccess,
             onError: onErrorResponse,
         })
+    }
+    const notNow=(values) => {
+        dispatch(setDeliveryManInfoByDispatch(null))
+        //onClose()
     }
     return (
         <CustomStackFullWidth>
             <form onSubmit={formik.handleSubmit}>
-                <Grid container spacing={2}>
+                <Grid container spacing={1}>
                     <Grid item xs={12} md={12}>
                         <CustomStackFullWidth
                             direction="row"
@@ -77,20 +91,26 @@ const DeliverymanForm = ({ data, orderId }) => {
                             >
                                 <CustomImageContainer
                                     src={`${productImage}/${data?.image}`}
-                                    width="100px"
-                                    height="90px"
+                                    width="60px"
+                                    height="60px"
+                                    borderRadius="50%"
                                 />
                                 <Stack>
-                                    <CustomTypographyBold>
+                                    <CustomTypographyBold fontSize="13px" fontWeight="600">
                                         {data?.f_name.concat(' ', data?.l_name)}
                                     </CustomTypographyBold>
-                                    <CustomRatings
-                                        readOnly={true}
-                                        handleChangeRatings={
-                                            handleChangeRatings
-                                        }
-                                        ratingValue={data?.rating_count}
-                                    />
+                                    <Stack direction="row"  spacing={.5}>
+                                        <StarIcon sx={{width:"12px",height:"12px",color:theme=>theme.palette.primary.main}}/>
+                                        <Stack direction="row">
+                                            <Typography fontSize="10px" color={theme.palette.neutral[500]}>
+                                                {data?.avg_rating.toFixed(1)}
+                                            </Typography>
+                                            <Typography fontSize="10px" color={theme.palette.neutral[500]}>
+                                                ({data?.rating_count} )
+                                            </Typography>
+                                        </Stack>
+                                    </Stack>
+
                                 </Stack>
                             </Stack>
                         </CustomStackFullWidth>
@@ -100,9 +120,9 @@ const DeliverymanForm = ({ data, orderId }) => {
                     </Grid>
                     <Grid item xs={12} md={12} align="center">
                         <Stack alignItems="center">
-                            <CustomTypographyGray sx={{ fontSize: '18px' }}>
+                            <CustomTypographyBold fontSize="13px" fontWeight="600">
                                 {t('Rate the deliveryman')}
-                            </CustomTypographyGray>
+                            </CustomTypographyBold>
                             <CustomRatings
                                 handleChangeRatings={handleChangeRatings}
                                 ratingValue={formik.values.rating}
@@ -111,12 +131,12 @@ const DeliverymanForm = ({ data, orderId }) => {
                     </Grid>
                     <Grid item xs={12} md={12} align="center">
                         <Stack alignItems="center" spacing={1}>
-                            <CustomTypographyGray sx={{ fontSize: '18px' }}>
-                                {t('Share your opinion')}
+                            <CustomTypographyGray sx={{ fontSize: '14px' }} fontweight="400">
+                                {t('Share your valuable feedback')}
                             </CustomTypographyGray>
                             <CustomTextFieldWithFormik
                                 type="text"
-                                label={t('Comment')}
+                                label={t('Type here')}
                                 touched={formik.touched.comment}
                                 errors={formik.errors.comment}
                                 fieldProps={formik.getFieldProps('comment')}
@@ -127,16 +147,21 @@ const DeliverymanForm = ({ data, orderId }) => {
                             />
                         </Stack>
                     </Grid>
-                    <Grid item xs={12} md={12} mt="1rem">
-                        <LoadingButton
-                            fullWidth
-                            variant="contained"
-                            type="submit"
-                            loading={isLoading}
-                            // sx={{ width: '100%' }}
-                        >
-                            {t('Submit')}
-                        </LoadingButton>
+                    <Grid item xs={12} md={12}>
+                        <Stack spacing={1}>
+                            <LoadingButton
+                                fullWidth
+                                variant="contained"
+                                type="submit"
+                                loading={isLoading}
+                                // sx={{ width: '100%' }}
+                            >
+                                {t('Submit')}
+                            </LoadingButton>
+                            <Button onClick={notNow}>
+                                {t("Not Now")}
+                            </Button>
+                        </Stack>
                     </Grid>
                 </Grid>
             </form>

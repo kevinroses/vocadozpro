@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react'
 import { Box, Grid, Stack } from '@mui/material'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-import { useWishListResDelete } from '../../hooks/react-query/config/wish-list/useWishListResDelete'
+import { useWishListResDelete } from "@/hooks/react-query/config/wish-list/useWishListResDelete"
 import { useDispatch, useSelector } from 'react-redux'
-import { removeWishListRes } from '../../redux/slices/wishList'
+import { removeWishListRes } from "@/redux/slices/wishList"
 
 import WishListShimmer from './WishListShimmer'
 import WishListRestaurantCard from './WishListRestaurantCard'
 import { useTranslation } from 'react-i18next'
 import FoodOrRestaurant from '../products-page/FoodOrRestaurant'
 import CustomEmptyResult from '../empty-view/CustomEmptyResult'
-import { CustomPaperBigCard, NoDataFoundWrapper } from '../../styled-components/CustomStyles.style'
+import { CustomPaperBigCard, NoDataFoundWrapper } from "@/styled-components/CustomStyles.style"
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@emotion/react'
 import Meta from '../Meta'
-import { noFoodFoundImage, noRestaurantsImage } from '../../utils/LocalImages'
+import { noFoodFoundImage, noRestaurantsImage } from "@/utils/LocalImages"
 import FoodCard from '../food-card/FoodCard'
-import { setFoodOrRestaurant } from "../../redux/slices/searchFilter";
+import { setFoodOrRestaurant } from "@/redux/slices/searchFilter";
 
 const WishlistPage = () => {
     const { foodOrRestaurant } = useSelector((state) => state.searchFilterStore)
@@ -59,7 +59,7 @@ const WishlistPage = () => {
                 border={false}
                 sx={{ minHeight: !isXSmall && '558px', boxShadow: isXSmall && 'unset' }}
             >
-                <Box>
+                <Box sx={{with:"100%"}}>
                     <FoodOrRestaurant
                         foodOrRestaurant={foodOrRestaurant}
                         setFoodOrRestaurant={setFoodOrRestaurant}
@@ -70,12 +70,9 @@ const WishlistPage = () => {
                                 <>
                                     <Grid
                                         container
-                                        item
-                                        md={12}
-                                        xs={12}
                                         spacing={2}
                                         sx={{ paddingBlockStart: '1rem' }}
-                                        justifyContent="center"
+
                                     >
                                         {wishLists?.food?.map((product) => {
                                             return (
@@ -99,7 +96,7 @@ const WishlistPage = () => {
                                             )
                                         })}
                                         {wishLists?.food?.length === 0 && (
-                                            <Stack minHeight="30vh" pt={{ xs: "40px", md: "110px" }}>
+                                            <Stack alignItems="center" width="100%" justifyContent="center" minHeight="30vh" pt={{ xs: "40px", md: "110px" }}>
                                                 <CustomEmptyResult
                                                     label='No Favourite Food Found'
                                                     image={noFoodFoundImage}
@@ -114,12 +111,8 @@ const WishlistPage = () => {
                             {foodOrRestaurant === 'restaurants' && (
                                 <Grid
                                     container
-                                    item
-                                    md={12}
-                                    xs={12}
                                     spacing={2}
                                     sx={{ paddingBlockStart: '1rem' }}
-                                    justifyContent="center"
                                 >
                                     {wishLists?.restaurant?.map(
                                         (restaurantItem) => {
@@ -145,6 +138,7 @@ const WishlistPage = () => {
                                                                 ?.base_urls
                                                                 ?.restaurant_image_url
                                                         }
+                                                        rating={restaurantItem?.rating_count}
                                                     />
                                                 </Grid>
                                             )
@@ -152,7 +146,7 @@ const WishlistPage = () => {
                                     )}
                                     {wishLists?.restaurant?.length ===
                                         0 && (
-                                            <Stack minHeight="30vh" pt={{ xs: "60px", md: "110px" }}>
+                                            <Stack alignItems="center" width="100%" justifyContent="center" minHeight="30vh" pt={{ xs: "60px", md: "110px" }}>
                                                 <CustomEmptyResult
                                                     label='No Favourite Restaurant Found'
                                                     image={noRestaurantsImage}

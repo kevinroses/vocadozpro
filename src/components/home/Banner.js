@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {
     CustomStackFullWidth,
     SliderCustom,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 import FoodDetailModal from '../foodDetail-modal/FoodDetailModal'
 import { useSelector } from 'react-redux'
 import Skeleton from '@mui/material/Skeleton'
-import { handleBadge } from '../../utils/customFunctions'
+import { handleBadge } from "@/utils/customFunctions"
 import { HandleNext, HandlePrev } from '../CustomSliderIcon'
 const Banner = ({bannerIsLoading}) => {
     const router = useRouter()
@@ -94,18 +94,22 @@ const Banner = ({bannerIsLoading}) => {
     const bannerSettings = {
         infinite: bannerData?.length > 3 ? true : false,
         speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 1,
+        slidesToShow: 2,
         autoplay: true,
         dots: true,
         nextArrow: hoverOn && <HandleNext />,
         prevArrow: hoverOn && <HandlePrev />,
+        // centerMode:true,
+        // className: "center",
+        // centerPadding: "300px",
+        //draggable:false,
+       // swipeToSlide:true,
         responsive: [
             {
                 breakpoint: 1450,
                 settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
+                    slidesToShow: 2,
+                    //slidesToScroll: 1,
                     infinite: bannerData?.length > 3 ? true : false,
                     autoplay: true,
                 },
@@ -113,50 +117,58 @@ const Banner = ({bannerIsLoading}) => {
             {
                 breakpoint: 1024,
                 settings: {
-                    slidesToShow: 2.5,
-                    slidesToScroll: 1,
+                    slidesToShow: 2,
+                    //slidesToScroll: 1,
                     infinite: bannerData?.length > 3 ? true : false,
                     autoplay: true,
+
                 },
             },
             {
                 breakpoint: 850,
                 settings: {
-                    slidesToShow: 2,
+                    slidesToShow: 1,
                     infinite: bannerData?.length > 3 ? true : false,
-                    slidesToScroll: 1,
+                   // slidesToScroll: 1,
                     autoplay: true,
-                    // dots: true
+                    centerMode:true,
+                    centerPadding: "100px",
                 },
             },
             {
                 breakpoint: 790,
                 settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
+                    slidesToShow: 1,
+                    //slidesToScroll: 1,
                     infinite: bannerData?.length > 3 ? true : false,
                     dots: true,
                     autoplay: true,
+                    centerMode:true,
+                    centerPadding: "100px",
                 },
             },
 
             {
                 breakpoint: 600,
                 settings: {
-                    slidesToShow: 1.5,
-                    slidesToScroll: 1,
+                    slidesToShow: 1,
+                   // slidesToScroll: 1,
                     dots: true,
                     autoplay: true,
+                    centerMode:true,
+                    centerPadding: "80px",
                 },
             },
             {
                 breakpoint: 500,
                 settings: {
                     slidesToShow: 1,
-                    slidesToScroll: 1,
+                    ///slidesToScroll: 1,
                     initialSlide: 1,
                     dots: true,
                     autoplay: true,
+                    centerMode:true,
+                    centerPadding: "30px",
                 },
             },
         ],

@@ -1,25 +1,28 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { GoogleMap, useJsApiLoader, Marker, MarkerF, InfoWindowF } from "@react-google-maps/api";
-import { CircularProgress } from '@mui/material'
+import { Box, CircularProgress, Divider, IconButton, useTheme } from '@mui/material'
 import { Stack } from '@mui/material'
-import markerIcon from '../../../../public/static/markerIcon.png'
-import MapMarker from "../../landingpage/google-map/MapMarker";
-import { Box } from "@mui/system";
 import { t } from "i18next";
-import { useTheme } from "@emotion/react";
+import { IconWrapper, grayscaleMapStyles } from '@/components/landingpage/google-map/Map.style';
+import { CustomStackFullWidth } from '@/styled-components/CustomStyles.style';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import NearMeIcon from '@mui/icons-material/NearMe';
+import MapMarker from "@/components/landingpage/google-map/MapMarker";
+import RestaurantMarker from "@/components/restaurant-details/RestaurantMarker";
+import DeliveryManMarker from "@/components/restaurant-details/google-address/DeliveryManMarker";
 
 const containerStyle = {
     width: '100%',
-    height: '450px',
+    height: '250px',
 }
 
-const MapComponent = ({ latitude, longitude, data,handleRouteToRestaurant }) => {
+const MapComponent = ({ latitude, longitude, data, handleRouteToRestaurant, customMapStyle ,resLat,resLong,isRestaurant}) => {
     const theme = useTheme()
     const center = {
         lat: parseFloat(latitude),
         lng: parseFloat(longitude),
     }
-
     const options = useMemo(
         () => ({
             zoomControl: false,
@@ -37,9 +40,11 @@ const MapComponent = ({ latitude, longitude, data,handleRouteToRestaurant }) => 
     })
 
     const [map, setMap] = useState(null)
+    const [zoom, setZoom] = useState(15)
     const [hoveredMarkerId, setHoveredMarkerId] = useState(null)
 
     const onLoad = useCallback(function callback(map) {
+        setZoom(15)
         setMap(map)
     }, [])
 
@@ -53,15 +58,38 @@ const MapComponent = ({ latitude, longitude, data,handleRouteToRestaurant }) => 
         }
     }, [map])
 
+    const handleZoomIn = () => {
+        if (map && zoom <= 21) {
+            setZoom((prevZoom) => Math.min(prevZoom + 1));
+        }
+    };
+
+    const handleZoomOut = () => {
+        if (map && zoom >= 1) {
+            setZoom((prevZoom) => Math.max(prevZoom - 1));
+        }
+    };
+
     return isLoaded ? (
-        <Stack className="map">
+        <CustomStackFullWidth position="relative" className="map">
+            <Stack position="absolute" zIndex={1} bottom="20px" left="20px" direction="column" spacing={1}>
+                <Stack sx={{ backgroundColor: theme.palette.neutral[1800], borderRadius: "8px" }}>
+                    <IconButton onClick={handleZoomIn}>
+                        <AddIcon sx={{ color: theme.palette.neutral[1000] }} />
+                    </IconButton>
+                    <Divider variant="middle" sx={{ backgroundColor: "red", marginInline: "8px" }} />
+                    <IconButton onClick={handleZoomOut}>
+                        <RemoveIcon sx={{ color: theme.palette.neutral[1000] }} />
+                    </IconButton>
+                </Stack>
+            </Stack>
             <GoogleMap
-                mapContainerStyle={containerStyle}
+                mapContainerStyle={customMapStyle ? customMapStyle : containerStyle}
                 center={center}
                 onLoad={onLoad}
-                zoom={12}
+                zoom={zoom}
                 onUnmount={onUnmount}
-                options={options}
+                options={{ ...options, styles: grayscaleMapStyles }}
             >
                 {data?.length > 0 ? <>
                     {data?.map((restaurant) => (
@@ -75,15 +103,13 @@ const MapComponent = ({ latitude, longitude, data,handleRouteToRestaurant }) => 
                                 lng: parseFloat(restaurant?.longitude),
                             }}
                             icon={{
-                                url: 'static/map2.svg',
+                                url: 'static/location-pins/restaurant_location_icon.svg',
                                 scale: 7,
                             }}
                             onClick={() => setHoveredMarkerId(restaurant?.id)}
-
                         >
                             {hoveredMarkerId === restaurant?.id && (
                                 <InfoWindowF
-
                                     position={{
                                         lat: parseFloat(restaurant?.latitude),
                                         lng: parseFloat(restaurant?.longitude),
@@ -95,14 +121,14 @@ const MapComponent = ({ latitude, longitude, data,handleRouteToRestaurant }) => 
                                             svg: { color: theme.palette.primary.main },
 
                                         }}
-                                        onClick={()=>handleRouteToRestaurant(restaurant)}
+                                        onClick={() => handleRouteToRestaurant(restaurant)}
 
                                     >
                                         <Stack direction="row" gap={1} mb={1} >
-                                            <Box width="0" flexGrow="1" sx={{cursor:"pointer"}}>
+                                            <Box width="0" flexGrow="1" sx={{ cursor: "pointer" }}>
                                                 {restaurant?.name}{" "}
                                                 <Box component="small" color="primary.main">
-                                                    ({(restaurant?.distance/1000).toFixed(2)}km {t("away")})
+                                                    ({(restaurant?.distance / 1000).toFixed(2)}km {t("away")})
                                                 </Box>
                                             </Box>
                                         </Stack>
@@ -116,14 +142,38 @@ const MapComponent = ({ latitude, longitude, data,handleRouteToRestaurant }) => 
                             )}
                         </MarkerF>
                     ))}
-                </>  :<> {isMounted ? (
-                    <Marker
-                        position={center}
-                        icon={{
-                            url: require('../../../../public/static/markerIcon.png'),
-                            scale: 7,
+                </> : <> {isMounted ? (
+                    <Stack
+                        style={{
+                            zIndex: 3,
+                            position: 'absolute',
+                            marginTop: -63,
+                            marginLeft: -32,
+                            left: '50%',
+                            top: '50%',
                         }}
-                    ></Marker>
+                    >
+                        <>
+                        {
+                          isRestaurant ?(
+                              <Marker position={{ lat: latitude, lng: longitude }}>
+                                  <RestaurantMarker width="60px" height="70px"  />
+                              </Marker>
+                          ):(
+                              <Marker position={{ lat: latitude, lng: longitude }}>
+                                  <MapMarker width="60px" height="70px"  />
+                              </Marker>
+                          )
+                        }
+
+                            {resLat && resLong && (
+                                    <Marker position={{ lat: resLat, lng:resLong}}>
+                                        <DeliveryManMarker width="60px" height="70px" />
+                                    </Marker>
+                                )}
+
+                        </>
+                    </Stack>
                 ) : (
                     <Stack
                         alignItems="center"
@@ -138,11 +188,10 @@ const MapComponent = ({ latitude, longitude, data,handleRouteToRestaurant }) => 
                     >
                         <CircularProgress />
                     </Stack>
-                )}</>  }
-
+                )}</>}
 
             </GoogleMap>
-        </Stack>
+        </CustomStackFullWidth>
     ) : (
         <CircularProgress />
     )

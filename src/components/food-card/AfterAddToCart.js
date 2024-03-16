@@ -11,7 +11,8 @@ const AfterAddToCart = ({
     setIncrOpen,
     handleClickQuantityButton,
     position,
-    addToCartLoading
+    addToCartLoading,
+                            horizontal
 }) => {
     const handleHover = () => { }
 
@@ -25,6 +26,7 @@ const AfterAddToCart = ({
                     incrOpen={incrOpen}
                     isInCart={isInCart}
                     position={position}
+                    horizontal={horizontal}
                 />
             )}
             {isInCart && !incrOpen && (

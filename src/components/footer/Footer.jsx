@@ -7,7 +7,7 @@ import { Container } from '@mui/material'
 import FooterTop from './FooterTop'
 import FooterMiddle from './FooterMiddle'
 import FooterBottom from './FooterBottom'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import { useRouter } from 'next/router'
 import FooterTopSection from './FooterTopSection'
 import { landingPageApi } from '../landingpage/Api'
@@ -15,8 +15,8 @@ import { useQuery } from 'react-query'
 import { onErrorResponse } from '../ErrorResponse'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useGetLandingPageData } from '../../hooks/react-query/landing-page/useGetLandingPageData'
-import { setLandingPageData } from '../../redux/slices/storedData'
+import { useGetLandingPageData } from "@/hooks/react-query/landing-page/useGetLandingPageData"
+import { setLandingPageData } from "@/redux/slices/storedData"
 const Footer = ({ languageDirection }) => {
     const dispatch = useDispatch()
     const { landingPageData } = useSelector((state) => state.storedData)
@@ -40,7 +40,7 @@ const Footer = ({ languageDirection }) => {
                     height="100%"
                     alignItems="center"
                     justifyContent="space-between"
-                    paddingTop="50px"
+                    paddingTop={{ xs: "20px", md: "50px" }}
                 >
                     <FooterTopSection />
                     <FooterMiddle

@@ -43,17 +43,18 @@ const RegularOrders = (props) => {
                     <CustomStackFullWidth
                         key={index}
                         direction="row"
-                        alignItems="flex-start"
+                        alignItems="center"
                         spacing={2}
                         mt={index !== 0 && '1rem'}
                     >
                         <Stack position="relative">
                             <CustomImageContainer
                                 height="90px"
-                                width="95px"
+                                width="90px"
                                 src={ImageSource(productBaseUrl, item.image)}
                                 loading="lazy"
                                 borderRadius="10px"
+                                objectFit="cover"
                             />
                             <Stack
                                 sx={{
@@ -93,6 +94,7 @@ const RegularOrders = (props) => {
                         {/*/>*/}
                         <Stack
                             paddingRight={languageDirection === 'rtl' && '10px'}
+
                         >
                             <OrderFoodName>{item.name}</OrderFoodName>
                             {item?.variations?.length > 0 && (
@@ -165,7 +167,7 @@ const RegularOrders = (props) => {
                 <Stack
                     width="100%"
                     sx={{
-                        mt: '20px',
+                        mt: '10px',
                         borderBottom: `2px solid ${theme.palette.neutral[300]}`,
                     }}
                 ></Stack>

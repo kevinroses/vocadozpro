@@ -2,7 +2,7 @@ import { styled, TextField } from '@mui/material'
 import { CustomPaperBigCard } from '../../styled-components/CustomStyles.style'
 
 export const CustomTextFieldStyle = styled(TextField)(
-    ({ theme, borderColor, languageDirection }) => ({
+    ({ theme, borderColor, languageDirection,height }) => ({
         border: borderColor && `1px solid ${borderColor}`,
         borderRadius: borderColor && '10px',
         backgroundColor: theme.palette.neutral[100],
@@ -11,7 +11,7 @@ export const CustomTextFieldStyle = styled(TextField)(
             borderRadius: "4px",
         },
         "& .MuiInputBase-root": {
-            height: 45,
+            height:height?? 45,
             fontSize: "12px",
             fontWeight: 400
         },

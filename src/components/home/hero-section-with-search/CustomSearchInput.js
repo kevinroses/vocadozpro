@@ -9,6 +9,7 @@ import {
 import { CustomStackFullWidth } from '../../../styled-components/CustomStyles.style'
 import CloseIcon from '@mui/icons-material/Close'
 import SearchIcon from '@mui/icons-material/Search';
+import { useDebounce } from 'use-debounce'
 const CustomSearch = ({
     handleSearchResult,
     selectedValue,
@@ -20,6 +21,7 @@ const CustomSearch = ({
     const { t } = useTranslation()
     const theme = useTheme()
     const [value, setValue] = useState('')
+    const [debouncedValue] = useDebounce(value, 400);
     let languageDirection = undefined
     if (typeof window !== 'undefined') {
         languageDirection = localStorage.getItem('direction')
@@ -31,6 +33,10 @@ const CustomSearch = ({
             setValue('')
         }
     }, [query])
+
+    useEffect(() => {
+        setInputValue(debouncedValue)
+    }, [debouncedValue])
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
@@ -45,7 +51,6 @@ const CustomSearch = ({
             handleSearchResult('')
             //setFocused(false)
         }
-        setInputValue(value)
         setValue(value)
         handleFocus()
     }
@@ -59,7 +64,7 @@ const CustomSearch = ({
             <form onSubmit={handleKeyPress}>
                 <Search >
                     <SearchIconWrapper languageDirection={languageDirection}>
-                        <SearchIcon fontSize="medium"  />
+                        <SearchIcon fontSize="medium" />
                     </SearchIconWrapper>
                     <NoSsr>
                         <StyledInputBase
@@ -73,16 +78,16 @@ const CustomSearch = ({
                             languageDirection={languageDirection}
                             startAdornment={  // Add startAdornment here
                                 <InputAdornment
-                                  position="start"
-                                  sx={{
-                                      marginInlineStart: '10px',
-                                      cursor: 'pointer',
-                                      marginInlineEnd:"0px"
-                                  }}
-                                  // Add your content for the startAdornment here
+                                    position="start"
+                                    sx={{
+                                        marginInlineStart: '10px',
+                                        cursor: 'pointer',
+                                        marginInlineEnd: "0px"
+                                    }}
+                                // Add your content for the startAdornment here
                                 >
                                     <SearchIcon
-                                      fontSize="medium"
+                                        fontSize="medium"
                                     />
                                 </InputAdornment>
                             }
@@ -102,7 +107,7 @@ const CustomSearch = ({
                                                 borderRadius: '50%',
                                                 p: '3px',
                                                 backgroundColor: (theme) =>
-                                                    theme.palette.neutral[300],
+                                                    theme.palette.neutral[400],
                                                 color: (theme) =>
                                                     theme.palette.whiteContainer
                                                         .main,

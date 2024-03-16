@@ -119,12 +119,16 @@ const GuestCheckoutModal = ({ open, setOpen,setModalFor, setSideDrawerOpen,handl
             {t("Login")}
           </Button>
         </Box>
-        <ButtonWrapper>
+        <ButtonWrapper  onClick={handleSignUp}>
           <Typography
-            onClick={handleSignUp}
-           color={theme.palette.primary.main}
+             color={theme.palette.primary.main}
             textTransform="capitalize"
             textAlign="center"
+            sx={{
+              '&:hover': {
+                color: theme.palette.neutral[400],
+              }
+            }}
           >
             {t("Sign Up")}
           </Typography>

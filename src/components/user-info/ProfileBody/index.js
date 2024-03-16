@@ -16,7 +16,6 @@ const ProfileBody = ({ page, orderId }) => {
     if (typeof window !== 'undefined') {
         languageDirection = localStorage.getItem('direction')
     }
-
     const activeComponent = () => {
         if (page === 'profile') {
             return <ProfilePage />

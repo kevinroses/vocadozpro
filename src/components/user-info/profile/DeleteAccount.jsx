@@ -16,13 +16,13 @@ const DeleteAccount = ({ deleteUserHandler, handleClose, isLoading }) => {
                 <Button
                     sx={{
                         background: (theme) =>
-                            theme.palette.neutral[300],
+                            theme.palette.neutral[400],
                         color: `${theme.palette.neutral[100]} !important`,
                         width: '120px',
                         fontWeight: 400,
                         '&:hover': {
                             background: (theme) =>
-                                theme.palette.neutral[300],
+                                theme.palette.neutral[400],
                         },
                     }}
                     onClick={handleClose}

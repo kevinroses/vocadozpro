@@ -9,15 +9,19 @@ import moment from "moment/moment";
 import CancelSubscriptionForm from "./CancelSubscriptionForm";
 import CustomMobileDateRangePickers from "../../custom-date-range-picker/CustomMobileDateRangePicker";
 import Calendar from "../../custom-date-range-picker/CustomMobileDateRangePicker";
+import { RTL } from '@/components/RTL/RTL';
 
 const ModalView = props => {
     const { title, t, minDate, maxDate, handleCancel, handleSuccess } = props
+    let languageDirection = undefined
+    if (typeof window !== 'undefined') {
+        languageDirection = localStorage.getItem('direction')
+    }
     const [textField, setTextField] = useState('')
     const [dateRange, setDateRange] = useState([])
 
     const isPauseSubscription = title.includes(t('pause'))
     const handleDateRange = (value) => {
-        console.log({value});
         let val = [moment(value[0]?.startDate).format('yyyy/MM/DD HH:mm'), moment(value[0]?.endDate).format('yyyy/MM/DD HH:mm')]
         setDateRange(val)
     }
@@ -31,8 +35,7 @@ const ModalView = props => {
         return <CancelSubscriptionForm handleCancel={handleCancel} handleSuccess={handleSuccess} />
     }
     return (
-
-        <Paper sx={{ padding:{xs:"1rem", md: '2rem' }}}>
+        <Paper sx={{ padding: { xs: "1rem", md: '2rem' } }}>
             <Grid container spacing={3}>
                 <Grid item align='center' xs={12}>
                     <ErrorOutlinedIcon sx={{ fontSize: '58px', color: 'primary.main' }} />
@@ -49,7 +52,7 @@ const ModalView = props => {
                     isPauseSubscription && <Grid item align='center' xs={12} container spacing={2}>
                         <Grid item xs={6}>
                             <Button fullWidth variant='outlined' sx={{ color: 'primary.main' }}
-                                    onClick={() => handleCancel?.()}>
+                                onClick={() => handleCancel?.()}>
                                 {t("No")}
                             </Button>
                         </Grid>

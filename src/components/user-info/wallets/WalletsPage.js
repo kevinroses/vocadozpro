@@ -1,11 +1,11 @@
 import React from 'react'
 import { Grid, Typography, Divider, Stack, alpha } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { getAmount } from '../../../utils/customFunctions'
+import { getAmount } from "@/utils/customFunctions"
 import CustomePagination from '../../pagination/Pagination'
 import { useTheme } from '@mui/material/styles'
 import { CustomTypographyGray } from '../../error/Errors.style'
-import { CustomStackFullWidth } from '../../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import { t } from 'i18next'
 
 const WalletsPage = (props) => {
@@ -41,7 +41,7 @@ const WalletsPage = (props) => {
             >
                 <Grid item md={7} xs={4.5}>
                     <CustomStackFullWidth>
-                        <Stack flexDirection="row" gap="8px">
+                        <Stack flexDirection="row" gap="8px" alignItems="center">
                             <Typography 
                             fontSize="20px"
                             fontWeight={600}
@@ -56,7 +56,7 @@ const WalletsPage = (props) => {
                                 }
 
                             </Typography>
-                            <Typography fontWeight="700" fontSize="20px">
+                            <Typography fontWeight="700" fontSize={{xs:"16px",sm:"20px"}}>
                                 {data?.transaction_type === 'order_place'
                                     ? getAmount(
                                         debit,
@@ -87,7 +87,7 @@ const WalletsPage = (props) => {
                         {data?.transaction_type === 'add_fund' ? (
                             <CustomTypographyGray
                                 textTransform="capitalize"
-                                sx={{ fontSize: '13px', fontWeight: '400' }}
+                                sx={{ fontSize: {xs:"12px",sm:"13px"}, fontWeight: '400' }}
                             >
                                 {t('added via')}{' '}
                                 {t(data?.reference).replaceAll('_', ' ')} (

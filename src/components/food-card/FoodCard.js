@@ -1,12 +1,7 @@
 import React, { memo, useEffect, useState } from 'react'
-
 import { useTranslation } from 'react-i18next'
-
 import FoodDetailModal from '../foodDetail-modal/FoodDetailModal'
-import ProductCardMedia from './ProductCardMedia'
 import {
-    calculateItemBasePrice,
-    getAmount,
     getConvertDiscount,
     handleBadge,
     isAvailable,
@@ -14,11 +9,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import moment from 'moment/moment'
 import { useTheme } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { CustomOverlayBox } from '../../styled-components/CustomStyles.style'
-import IconButton from '@mui/material/IconButton'
 import { toast } from 'react-hot-toast'
-import StartPriceView from '../foodDetail-modal/StartPriceView'
 import { useMutation } from 'react-query'
 import { ProductsApi } from "@/hooks/react-query/config/productsApi"
 import { addWishList, removeWishListFood } from "@/redux/slices/wishList"
@@ -43,6 +34,8 @@ const FoodCard = ({
     isShop,
     isRestaurantDetails,
     inWishListPage,
+    inWishListModal,
+    setOpenWishlistModal
 }) => {
     const theme = useTheme()
     const dispatch = useDispatch()
@@ -313,6 +306,7 @@ const FoodCard = ({
                     isShop={isShop}
                     isRestaurantDetails={isRestaurantDetails}
                     inWishListPage={inWishListPage}
+                    horizontal={horizontal}
                 />
             ) : (
                 <FoodVerticalCard
@@ -337,6 +331,7 @@ const FoodCard = ({
                     hasBackGroundSection={hasBackGroundSection}
                     addToCartLoading={addToCartLoading}
                     isRestaurantDetails={isRestaurantDetails}
+                    horizontal={horizontal}
                 />
             )}
             {openModal && (
@@ -359,7 +354,7 @@ const FoodCard = ({
                     openModal={openAddressModalAlert}
                     setModalOpen={setOpenAddressModalAlert}
                 >
-                    <LocationModalAlert setOpenAddressModalAlert={setOpenAddressModalAlert}/>
+                    <LocationModalAlert setOpenAddressModalAlert={setOpenAddressModalAlert} />
                 </CustomModal>
             }
             <CartClearModal

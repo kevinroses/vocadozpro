@@ -29,7 +29,10 @@ const FooterBottom = (props) => {
                     spacing={2}
                 >
                     <CustomColouredTypography
-                        variant="h5"
+                        fontSize="14px"
+                        sx={{
+                            fontWeight: 400
+                        }}
                         color="whiteContainer.main"
                     >
                         {t("Copyright")} &#9400;{'  '}

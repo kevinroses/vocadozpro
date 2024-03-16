@@ -12,6 +12,12 @@ import youtube from '../../../public/static/footer/socialicons/youtubeColor.png'
 import errorImage from '../../../public/static/no-image-found.png'
 import CustomImageContainer from '../CustomImageContainer'
 import { RTL } from '../RTL/RTL'
+import InstagramIcon from '@/assets/images/icons/socials/InstagramIcon'
+import FacebookIcon from '@/assets/images/icons/socials/FacebookIcon'
+import TwitterIcon from '@/assets/images/icons/socials/TwitterIcon'
+import LinkedinIcon from '@/assets/images/icons/socials/LinkedinIcon'
+import YoutubeIcon from '@/assets/images/icons/socials/YoutubeIcon'
+import PinterestIcon from '@/assets/images/icons/socials/PinterestIcon'
 
 const SocialLinks = (props) => {
     const { global } = props
@@ -22,19 +28,27 @@ const SocialLinks = (props) => {
     const iconHandler = (name) => {
         switch (name) {
             case 'facebook':
-                return facebookIcon.src
+                return <FacebookIcon />
             case 'instagram':
-                return instraIcon.src
+                return <InstagramIcon />
             case 'twitter':
-                return twitterIcon.src
+                return <TwitterIcon />
             case 'linkedin':
-                return linkedin.src
+                return <LinkedinIcon />
             case 'pinterest':
-                return pinterestIcon.src
-            case 'youtube':
-                return youtube.src
+                return <PinterestIcon />
+            // case 'youtube':
+            //     return <YoutubeIcon />
             default:
-                return errorImage.src
+                return (
+                    <CustomImageContainer
+                        src={errorImage.src}
+                        alt="default"
+                        height="25px"
+                        width="25px"
+                        objectFit="contain"
+                    />
+                )
         }
     }
     let languageDirection = undefined
@@ -57,18 +71,18 @@ const SocialLinks = (props) => {
                         const { name, link } = item
                         return (
                             <IconButton
-                                sx={{ padding: '0px' }}
+                                sx={{
+                                    padding: '0px',
+                                    transition: `all ease 0.5s`,
+                                    '&:hover': {
+                                        transform: 'scale(1.1)',
+                                    },
+                                }}
                                 key={index}
                                 color="primary"
                                 onClick={() => clickHandler(link)}
                             >
-                                <CustomImageContainer
-                                    src={iconHandler(name)}
-                                    alt={name}
-                                    height="25px"
-                                    width="25px"
-                                    objectFit="contain"
-                                />
+                                {iconHandler(name)}
                             </IconButton>
                         )
                     })}

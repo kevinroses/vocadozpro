@@ -3,7 +3,7 @@ import { Grid } from '@mui/material'
 import CustomEmptyResult from '../empty-view/CustomEmptyResult'
 import RestaurantBoxCard from '../restaurant-details/RestaurantBoxCard'
 import noData from '../../../public/static/no-data-images/no restaurants.png'
-import { noRestaurantsImage } from '../../utils/LocalImages'
+import { noRestaurantsImage } from "@/utils/LocalImages"
 
 const ItemSection = ({
     campaignsDetails,
@@ -41,6 +41,7 @@ const ItemSection = ({
                                     rating_count={restaurant?.rating_count}
                                     cuisines={restaurant?.cuisine}
                                     coupons={restaurant?.coupons}
+                                    opening_time={restaurant?.current_opening_time}
                                 />
                             </Grid>
                         )

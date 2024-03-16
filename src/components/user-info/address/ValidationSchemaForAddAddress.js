@@ -10,7 +10,7 @@ const ValidationSchemaForAddAddress = () => {
         contact_person_name: Yup.string().required(t('Name is required')),
         contact_person_number: Yup.string().required(
             t('Phone Number is required')
-        ),
+        ).min(8, 'number must be 8 digits'),
     })
 }
 export default ValidationSchemaForAddAddress

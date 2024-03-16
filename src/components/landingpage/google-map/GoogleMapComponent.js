@@ -1,11 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
-import { CircularProgress, Stack, useMediaQuery } from '@mui/material'
+import { CircularProgress, IconButton, Stack, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import markerIcon from '../../../../public/static/markerIcon.png'
 import { CustomStackFullWidth } from '../../../styled-components/CustomStyles.style'
 import Skeleton from '@mui/material/Skeleton'
 import MapMarker from './MapMarker'
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { IconWrapper, grayscaleMapStyles } from './Map.style'
 
 const GoogleMapComponent = ({
     setDisablePickButton,
@@ -19,15 +22,17 @@ const GoogleMapComponent = ({
     locationEnabled,
     setPlaceDescription,
     height,
+    isGps
 }) => {
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
     const containerStyle = {
         width: '100%',
-        height: height ? height : isSmall ? '200px' : '400px',
+        height: height ? height : isSmall ? '350px' : '400px',
         borderRadius: "10px",
         border: `1px solid ${theme.palette.neutral[300]}`
     }
+
     const mapRef = useRef(GoogleMap)
     const center = useMemo(
         () => ({
@@ -56,11 +61,11 @@ const GoogleMapComponent = ({
     useEffect(() => setIsMounted(true), [])
 
     const [map, setMap] = useState(null)
-    const [zoom, setZoom] = useState(10)
+    const [zoom, setZoom] = useState(19)
     const [centerPosition, setCenterPosition] = useState(center)
 
     const onLoad = useCallback(function callback(map) {
-        setZoom(12)
+        setZoom(19)
         setMap(map)
     }, [])
     useEffect(() => {
@@ -82,22 +87,37 @@ const GoogleMapComponent = ({
         // setMapSetup(false)
     }, [])
 
+    const handleZoomIn = () => {
+        if (map && zoom <= 21) {
+            setZoom((prevZoom) => Math.min(prevZoom + 1));
+        }
+    };
+
+    const handleZoomOut = () => {
+        if (map && zoom >= 1) {
+            setZoom((prevZoom) => Math.max(prevZoom - 1));
+        }
+    };
+
     return isLoaded ? (
-        <CustomStackFullWidth className="map">
+        <CustomStackFullWidth position="relative" className="map">
+            <Stack position="absolute" zIndex={1} right="15px" bottom={isGps ? "18%" : "6%"} direction="column" spacing={1}>
+                <IconWrapper padding={{ xs: "3px", sm: "5px" }} onClick={handleZoomIn} disabled={zoom > 21}>
+                    <AddIcon color="primary" />
+                </IconWrapper>
+                <IconWrapper padding={{ xs: "3px", sm: "5px" }} onClick={handleZoomOut} disabled={zoom < 1}>
+                    <RemoveIcon color="primary" />
+                </IconWrapper>
+            </Stack>
             <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={centerPosition}
                 onLoad={onLoad}
-                // onZoomChanged={(e) =>
-
-                // }
                 zoom={zoom}
                 onUnmount={onUnmount}
                 onMouseDown={(e) => {
                     setMapSetup(true)
                     setDisablePickButton(true)
-
-                    // setPlaceDetailsEnabled(false)
                 }}
                 onMouseUp={(e) => {
                     setMapSetup(false)
@@ -114,9 +134,7 @@ const GoogleMapComponent = ({
                     setPlaceDetailsEnabled(false)
                     setPlaceDescription(undefined)
                 }}
-                //  yesIWantToUseGoogleMapApiInternals
                 onZoomChanged={() => {
-                    // setMapSetup(true)
                     if (map) {
                         setLocationEnabled(true)
                         setLocation({
@@ -127,10 +145,9 @@ const GoogleMapComponent = ({
                             lat: map.center.lat(),
                             lng: map.center.lng(),
                         })
-                        // setPlaceDetailsEnabled(false)
                     }
                 }}
-                options={options}
+                options={{ ...options, styles: grayscaleMapStyles }}
             >
                 {!locationLoading ? (
                     <Stack

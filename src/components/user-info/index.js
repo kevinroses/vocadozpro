@@ -1,5 +1,5 @@
 import React from 'react'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import { Grid, useMediaQuery, useTheme } from '@mui/material'
 import ProfileSideMenu from './ProfileSideMenu'
 import ProfileBody from './ProfileBody'

@@ -18,8 +18,8 @@ import {
     Tabs,
     ListItem,
     Select,
-    alpha,
-} from '@mui/material'
+    alpha, Accordion
+} from "@mui/material";
 import Link from '@mui/material/Link'
 import imgB from '../../public/static/Privacy/RectangleP.png'
 //import { Link } from 'react-router-dom'
@@ -99,7 +99,7 @@ export const CustomPaperBigCard = styled(Paper)(
         boxShadow:
             noboxshadow === 'true'
                 ? 'none'
-                :`0px 0px 2px rgba(145, 158, 171, 0.2), 0px 5px 20px ${theme.palette.paperBoxShadow}`
+                : `0px 0px 2px rgba(145, 158, 171, 0.2), 0px 5px 20px ${theme.palette.paperBoxShadow}`
         // : `0px 0px 2px rgba(145, 158, 171, 0.2), 0px 5px 20px ${theme.palette.paperBoxShadow}`,
         // marginBottom: '30px',
     })
@@ -225,11 +225,11 @@ export const CustomBadge = styled(Badge)(({ theme }) => ({
     },
 }))
 export const CustomTypographyBold = styled(Typography)(
-    ({ theme, marginTop, textAlign }) => ({
-        fontWeight: 'bold',
+    ({ theme, marginTop, textAlign, fontSize, fontWeight }) => ({
+        fontWeight: fontWeight ?? 'bold',
         color: theme.palette.neutral[1000],
         textAlign: textAlign ?? "inherit",
-        fontSize: "20px"
+        fontSize: fontSize ?? "20px"
     })
 )
 export const CustomTypographyAlign = styled(Typography)(({ theme, align }) => ({
@@ -379,6 +379,7 @@ export const CustomOverLay = styled(Stack)(
         transition: "all 0.3s ease-in-out",
         "&:hover": {
             opacity: 1,
+            transform: 'scale(1.1)'
         },
     })
 );
@@ -510,12 +511,13 @@ export const BackImage = styled(Stack)(({ theme }) => ({
 }))
 export const List = styled(MuiList)(({ theme }) => ({}))
 export const SliderCustom = styled(Stack)(
-    ({ theme, languageDirection, gap, paddingBottom }) => ({
+    ({ theme, languageDirection, gap, paddingBottom, isCenter }) => ({
+        alignItems: "center",
         paddingY: '1rem',
         '& .slick-slider': {
             '& .slick-list': {
                 '& .slick-track': {
-                    float: languageDirection === 'rtl' ? 'right' : 'left',
+                    float: isCenter ? 'center' : languageDirection === 'rtl' ? 'right' : 'left',
                     gap: gap ? gap : '5px',
                     paddingBottom: paddingBottom || 0,
                 },
@@ -602,4 +604,18 @@ export const NoDataFoundWrapper = styled(CustomStackFullWidth)(({ theme }) => ({
     left: '50%',
     transform: 'translate(-50%, -50%)',
 
+}))
+export const CustomAccordion = styled(Accordion)(({ theme, background }) => ({
+    boxShadow: "none !important",
+    backgroundColor: background ?? theme.palette.neutral[100],
+    ".MuiAccordionSummary-root": {
+        padding: "0px 0px"
+    },
+    ".MuiAccordionSummary-content": {
+        width: "100%",
+        display: "inline"
+    },
+    ".MuiAccordionDetails-root": {
+        padding: "2px 5px 10px"
+    }
 }))

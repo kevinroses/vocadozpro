@@ -5,7 +5,7 @@ import { CustomTypography } from '../custom-tables/Tables.style'
 import CircularLoader from "../loader/CircularLoader";
 
 const AddOrderToCart = (props) => {
-    const { product, t, addToCard, orderNow,addToCartLoading } = props
+    const { product, t, addToCard, orderNow,addToCartLoading,getFullFillRequirements } = props
     return (
         <>
             {!product?.available_date_starts ? (
@@ -30,7 +30,7 @@ const AddOrderToCart = (props) => {
                 </Button>
             ) : (
                 <Button
-                    // disabled={quantity <= 0}
+                     disabled={!getFullFillRequirements()}
                     onClick={() => orderNow?.()}
                     variant="contained"
                     fullWidth

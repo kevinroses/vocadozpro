@@ -16,22 +16,22 @@ const TimeChooser = props => {
     }
     return (
 
-            <CustomStackFullWidth alignItems='center' justifyContent='center' spacing={2} padding="1rem">
-                <AddCircleOutlineOutlinedIcon sx={{color: theme => theme.palette.primary.main, fontSize: '60px'}}/>
-                <DeliveryCaption id="demo-row-radio-buttons-group-label" no_margin_top='true'>
-                    {t('Add a delivery time')}
-                </DeliveryCaption>
-                <CustomTimePicker handleTimeSelect={handleTimeSelect}/>
-                <CustomStackFullWidth direction='row' alignItems='center' spacing={2} justifyContent="center">
-                    <CustomButtonCancel onClick={() => handleModalClose()}>
-                        {t('Cancel')}
-                    </CustomButtonCancel>
-                    <Button sx={{minWidth:"150px"}} variant="contained" onClick={() => handleSuccess(selectedTime)}>
-                        {t('Add')}
-                    </Button>
-                </CustomStackFullWidth>
-
+        <CustomStackFullWidth alignItems='center' justifyContent='center' spacing={2} padding="1rem">
+            <AddCircleOutlineOutlinedIcon sx={{color: theme => theme.palette.primary.main, fontSize: '60px'}}/>
+            <DeliveryCaption id="demo-row-radio-buttons-group-label" no_margin_top='true'>
+                {t('Add a delivery time')}
+            </DeliveryCaption>
+            <CustomTimePicker handleTimeSelect={handleTimeSelect}/>
+            <CustomStackFullWidth direction='row' alignItems='center' spacing={2} justifyContent="center">
+                <CustomButtonCancel onClick={() => handleModalClose()}>
+                    {t('Cancel')}
+                </CustomButtonCancel>
+                <Button sx={{minWidth:"150px"}} variant="contained" onClick={() => handleSuccess(selectedTime)}>
+                    {t('Add')}
+                </Button>
             </CustomStackFullWidth>
+
+        </CustomStackFullWidth>
 
     );
 };

@@ -18,8 +18,8 @@ const AllCuisines = () => {
         <>
             <CssBaseline />
             <CustomContainer>
-                <CustomPaperBigCard sx={{ marginTop:{xs:"4rem",sm:"4rem",md:"8rem"}}}>
-                    <Box minHeight="70vh">
+                <CustomPaperBigCard sx={{ marginTop:{xs:"4rem",sm:"4rem",md:"8rem"},marginBottom:{xs:".5rem",md:"1rem"}}} >
+                    <Box >
                         <Grid
                             container
                             spacing={{ xs: 1, md: 2, lg: 2 }}

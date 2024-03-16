@@ -28,28 +28,28 @@ const HowToUse = () => {
                     },
                 }}
             >
-                <ListItem>
+                <ListItem key="item1">
                     <Typography fontSize="13px" fontWeight="400">
                         {t(
-                            'Earn money to your wallet by completing the offer & challenged'
+                            'Earn money for your wallet by completing offers and challenges.'
                         )}
                     </Typography>
                 </ListItem>
-                <ListItem>
+                <ListItem key="item2">
                     <Typography fontSize="13px" fontWeight="400">
-                        {t('Convert your loyalty points into wallet money')}
+                        {t('Convert your loyalty points into wallet funds.')}
                     </Typography>
                 </ListItem>
-                <ListItem>
+                <ListItem key="item3">
                     <Typography fontSize="13px" fontWeight="400">
                         {t(
-                            'Amin also reward their top customers with wallet money'
+                            'Admin also rewards top customers with wallet funds.'
                         )}
                     </Typography>
                 </ListItem>
-                <ListItem>
+                <ListItem key="item4">
                     <Typography fontSize="13px" fontWeight="400">
-                        {t('Send your wallet money while order')}
+                        {t('Use your wallet funds when placing an order.')}
                     </Typography>
                 </ListItem>
             </List>

@@ -31,15 +31,6 @@ const CustomCopyWithTooltip = (props) => {
     const handleCopy = (coupon_code) => {
         setCopy(true)
         navigator.clipboard.writeText(coupon_code)
-        toast(() => (
-            <span>
-                {t('Code')}
-                <b style={{ marginLeft: '4px', marginRight: '4px' }}>
-                    {coupon_code}
-                </b>
-                {t('has been copied')}
-            </span>
-        ))
     }
 
     return (

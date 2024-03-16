@@ -15,25 +15,21 @@ import {
     getDiscountForTag,
     getReviewCount,
     restaurantDiscountTag,
-} from '../../utils/customFunctions'
+} from "@/utils/customFunctions"
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
-import placeholder from '../../../public/static/no-image-found.png'
-import Card from '@mui/material/Card'
 import CustomImageContainer from '../CustomImageContainer'
 import FoodRating from '../food-card/FoodRating'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
-import { CustomTypographyEllipsis } from '../../styled-components/CustomTypographies.style'
-import { useQuery } from 'react-query'
-import { CouponApi } from '../../hooks/react-query/config/couponApi'
-import { onErrorResponse } from '../ErrorResponse'
+} from "@/styled-components/CustomStyles.style"
+import { CustomTypographyEllipsis } from "@/styled-components/CustomTypographies.style"
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+import moment from "moment/moment";
 // import 'react-multi-carousel/lib/styles.css'
 
 export const SliderStack = styled(Stack)(
@@ -72,7 +68,8 @@ const RestaurantBoxCard = (props) => {
         zone_id,
         rating_count,
         visitAgain,
-        foods
+        foods,
+        opening_time
     } = props
     const { t } = useTranslation()
     const router = useRouter()
@@ -199,7 +196,7 @@ const RestaurantBoxCard = (props) => {
                                 zIndex: 1,
                             }}
                         >
-                            {t('Closed Now')}
+                            {opening_time === "closed" ? t('Closed Now') : ` Open at ${moment(opening_time, "HH:mm:ss").format("hh:mm A")}`}
                         </Typography>
                     </Stack>
                 )
@@ -228,7 +225,7 @@ const RestaurantBoxCard = (props) => {
                         color={theme.palette.whiteContainer.main}
                         sx={{ textTransform: 'uppercase', fontWeight: '700' }}
                     >
-                        {t('Closed Now')}
+                        {t("Closed Now")}
                     </Typography>
                 </Stack>
             )
@@ -247,9 +244,9 @@ const RestaurantBoxCard = (props) => {
         <Stack onClick={handleClick} className={className} height={visitAgain ? "250px" : "100%"}>
             <CustomPaperBigCard
                 nopadding="true"
-
+                noboxshadow="true"
                 sx={{
-
+                    boxShadow: theme.palette.mode === 'dark' ? "0px 8.092px 24.275px 0px rgba(0, 0, 0, 0.20)" : "0px 10px 30px 0px rgba(0, 0, 0, 0.10)",
                     padding: '10px 10px 25px 10px',
                     cursor: 'pointer',
                     width: visitAgain ? '110%' : '100%',
@@ -286,7 +283,7 @@ const RestaurantBoxCard = (props) => {
                                 src={`${restaurantImageUrl}/${image}`}
                                 width="100%"
                                 height="100%"
-                                objectFit="contained"
+                                objectFit="cover"
                                 borderRadius="8px"
                             />
                         </Box>
@@ -350,16 +347,17 @@ const RestaurantBoxCard = (props) => {
 
                                     )
                                 })}
-                                {foods.length > 3 && <Stack
-                                    height="30px"
-                                    width="30px"
-                                    borderRadius="8px"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    backgroundColor={theme.palette.neutral[300]}
-                                >
-                                    <Typography fontSize="10px" fontWeight={700} color={theme.palette.whiteText.main}>{`${foods.length - 3}+`}</Typography>
-                                </Stack>}
+                                {foods.length > 3 &&
+                                    <Stack
+                                        height="30px"
+                                        width="30px"
+                                        borderRadius="8px"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        backgroundColor={theme.palette.neutral[400]}
+                                    >
+                                        <Typography fontSize="12px" fontWeight={700} color={theme.palette.whiteText.main}>{`${foods.length - 3}+`}</Typography>
+                                    </Stack>}
                             </Stack>
 
 

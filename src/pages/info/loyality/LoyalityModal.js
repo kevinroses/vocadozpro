@@ -47,7 +47,7 @@ const LoyalityModal = ({
             ) {
                 if (values.point < global?.minimum_point_to_transfer) {
                     toast.error(
-                        `Please exchange more than ${global?.minimum_point_to_transfer} points`
+                        `${t('Please exchange more than ')} ${t(global?.minimum_point_to_transfer)} ${t(' points')}`
                     )
                 } else {
                     try {
@@ -55,7 +55,7 @@ const LoyalityModal = ({
                     } catch (err) {}
                 }
             } else {
-                toast.error('insufficient amount')
+                toast.error(t('insufficient amount'))
             }
         },
     })

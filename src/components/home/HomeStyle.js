@@ -18,7 +18,7 @@ export const LeftArrowStyle = styled(Box)(
 );
 export const RightArrowStyle = styled(Box)(
     ({ theme, languageDirection, right, isdisabled }) => ({
-        zIndex: "1",
+        zIndex: 999,
         position: "absolute",
         top: "42%",
         right: `${languageDirection === "rtl" ? "2%" : right}`,
@@ -132,7 +132,7 @@ export const MapSetionWrapper = styled(Stack)(({ theme }) => ({
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
     borderRadius: "16px",
-    height: "440px",
+
     [theme.breakpoints.down('sm')]: {
         height: "340px",
     },
@@ -148,7 +148,7 @@ export const MapSetionWrapper = styled(Stack)(({ theme }) => ({
     }
 }));
 export const VisitAgainWrapper = styled(Stack)(({ theme }) => ({
-    height: "440px",
+
     borderRadius: "16px",
     alignItems: "center",
     paddingBlock: "30px",

@@ -142,7 +142,8 @@ const AddressForm = ({
     return (
         <Stack width={{ xs: "100%", md: "58%" }}>
             <form noValidate onSubmit={addAddressFormik.handleSubmit}>
-                <SimpleBar style={{ height: isXs ? '280px' : '475px' }}>
+                <SimpleBar style={{ height: isXs ? '250px' : '475px' }}>
+                    {/* <Stack sx={{overflowY : "auto"}}> */}
                     <Grid
                         container
                         spacing={0}
@@ -306,15 +307,16 @@ const AddressForm = ({
                             </Grid>
                         </Grid>
                     </Grid>
+                    {/* </Stack> */}
                 </SimpleBar>
-                <LoadingButton
+                <Button
                     type="submit"
                     fullWidth
                     loading={isLoading}
                     variant="contained"
                 >
                     {editAddress ? t('Update Address') : t('Save Address')}
-                </LoadingButton>
+                </Button>
             </form>
         </Stack>
     )

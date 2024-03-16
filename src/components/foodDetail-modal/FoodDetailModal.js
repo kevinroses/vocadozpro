@@ -9,21 +9,21 @@ import {
     setCart,
     setClearCart,
     setUpdateVariationToCart
-} from "../../redux/slices/cart";
+} from "@/redux/slices/cart";
 import {
     calculateItemBasePrice,
     getConvertDiscount,
     getIndexFromArrayByComparision, handleProductValueWithOutDiscount,
     isAvailable
-} from "../../utils/customFunctions";
+} from "@/utils/customFunctions";
 import { useTranslation } from 'react-i18next'
 import { FoodDetailModalStyle } from '../home/HomeStyle'
 import toast from 'react-hot-toast'
-import { ProductsApi } from '../../hooks/react-query/config/productsApi'
+import { ProductsApi } from "@/hooks/react-query/config/productsApi"
 import { useMutation } from 'react-query'
 import { useTheme } from '@mui/material/styles'
-import { useWishListDelete } from '../../hooks/react-query/config/wish-list/useWishListDelete'
-import { addWishList, removeWishListFood } from '../../redux/slices/wishList'
+import { useWishListDelete } from "@/hooks/react-query/config/wish-list/useWishListDelete"
+import { addWishList, removeWishListFood } from "@/redux/slices/wishList"
 import { useRouter } from 'next/router'
 import 'simplebar-react/dist/simplebar.min.css'
 import SimpleBar from 'simplebar-react'
@@ -42,7 +42,7 @@ import VariationsManager from './VariationsManager'
 import IncrementDecrementManager from './IncrementDecrementManager'
 import { handleDiscountChip } from './helper-functions/handleDiscountChip'
 import { handleInitialTotalPriceVarPriceQuantitySet } from './helper-functions/handleDataOnFirstMount'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import CustomImageContainer from '../CustomImageContainer'
 import FoodModalTopSection from './FoodModalTopSection'
 import { Stack } from '@mui/system'
@@ -58,6 +58,9 @@ import useCartItemUpdate from "../../hooks/react-query/add-cart/useCartItemUpdat
 import useDeleteAllCartItem from "../../hooks/react-query/add-cart/useDeleteAllCartItem";
 import { getSelectedAddons, getSelectedVariations } from "../navbar/second-navbar/SecondNavbar";
 import LocationModalAlert from '../food-card/LocationModalAlert';
+import CustomToasters from "@/gurbage/admin/components/CustomToasters";
+import { CustomToaster } from "@/components/custom-toaster/CustomToaster";
+import customToasters from "@/gurbage/admin/components/CustomToasters";
 
 const FoodDetailModal = ({
     product,
@@ -173,7 +176,7 @@ const FoodDetailModal = ({
                 };
             });
             dispatch(setCart(product));
-            toast.success(t('Item added to cart'))
+            CustomToaster("success", "Item added to cart")
             handleClose();
             //dispatch()
         }
@@ -208,7 +211,8 @@ const FoodDetailModal = ({
                 }));
             };
             dispatch(cart(setItemIntoCart()));
-            toast.success(t('Item updated successfully'))
+            CustomToaster("success", "Item updated successfully")
+            //toast.success(t('Item updated successfully'))
             handleModalClose?.();
         }
     }
@@ -797,7 +801,8 @@ const FoodDetailModal = ({
     const incrementPrice = () => {
         if (modalData[0]?.maximum_cart_quantity) {
             if (modalData[0]?.maximum_cart_quantity <= quantity) {
-                toast.error('Out Of Limits')
+                //toast.error('Out Of Limits')
+                CustomToaster("error", "Out Of Limits")
             } else {
                 setQuantity((prevQty) => prevQty + 1)
             }
@@ -818,11 +823,13 @@ const FoodDetailModal = ({
             onSuccess: (response) => {
                 if (response?.data) {
                     dispatch(addWishList(product))
-                    toast.success(response.data.message)
+                    // toast.success(response.data.message)
+                    CustomToaster("success", response.data.message)
                 }
             },
             onError: (error) => {
-                toast.error(error.response.data.message)
+                //toast.error(error.response.data.message)
+                CustomToaster("error", error.response.data.message)
             },
         }
     )
@@ -831,21 +838,20 @@ const FoodDetailModal = ({
         if (token) {
             addFavoriteMutation()
             // notify(data.message)
-        } else toast.error(t('You are not logged in'))
+        } else CustomToaster("error", "You are not logged in")
+
     }
 
     const onSuccessHandlerForDelete = (res) => {
         dispatch(removeWishListFood(product.id))
-        toast.success(res.message, {
-            id: 'wishlist',
-        })
+        CustomToaster("success", res.message)
     }
     const { mutate } = useWishListDelete()
     const deleteWishlistItem = (id) => {
         mutate(id, {
             onSuccess: onSuccessHandlerForDelete,
             onError: (error) => {
-                toast.error(error.response.data.message)
+                CustomToaster("error", error.response.data.message)
             },
         })
     }
@@ -886,6 +892,30 @@ const FoodDetailModal = ({
             })
         )
         router.push(`/checkout?page=campaign`)
+    }
+    const getFullFillRequirements = () => {
+        let isdisabled = false;
+        if(modalData[0]?.variations?.length>0){
+            modalData[0]?.variations?.forEach((variation, index) => {
+                if(variation?.type==='multi'){
+                    const selectedIndex = selectedOptions?.filter((item) => item.choiceIndex === index);
+                    if (selectedIndex && selectedIndex.length > 0) {
+                        isdisabled = selectedIndex.length >= variation.min && selectedIndex.length <= variation.max;
+                    }
+                }else{
+                    const singleVariation =modalData[0]?.variations?.filter((item)=>item?.type==='single' && item?.required==="on")
+                    const requiredSelected=selectedOptions?.filter((item)=>item?.type==="required")
+                    if(singleVariation?.length===requiredSelected?.length ){
+                        isdisabled=true
+                    }else{
+                        isdisabled=false
+                    }
+                }
+            });
+        }else {
+            isdisabled=true
+        }
+        return isdisabled;
     }
     return (
         <>
@@ -1049,7 +1079,10 @@ const FoodDetailModal = ({
                                             quantity={quantity}
                                         />
                                     </Grid>
-                                    <Grid item md={5} sm={12} xs={12}>
+                                    <Grid item md={!isAvailable(
+                                        modalData[0]?.available_time_starts,
+                                        modalData[0]?.available_time_ends
+                                    )?12:5} sm={12} xs={12}>
                                         {modalData.length > 0 &&
                                             isAvailable(
                                                 modalData[0].available_time_starts,
@@ -1069,6 +1102,7 @@ const FoodDetailModal = ({
                                                         t={t}
                                                         addToCard={addToCard}
                                                         orderNow={orderNow}
+                                                        getFullFillRequirements={getFullFillRequirements}
                                                     />
                                                 )}
                                             </>
@@ -1081,6 +1115,7 @@ const FoodDetailModal = ({
                                                 t={t}
                                                 product={product}
                                                 orderNow={orderNow}
+                                                getFullFillRequirements={getFullFillRequirements}
                                             />
                                         )}
                                     </Grid>

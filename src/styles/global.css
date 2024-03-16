@@ -863,8 +863,9 @@ img {
     top: 5px;
     border: none;
     border-radius: 50%;
+    /*max-width: 1rem;*/
     /*width: 2rem;*/
-    /*height: 2rem;*/
+    height: 1rem;
     background: rgba(255, 255, 255, 0.7);
     z-index: 9999;
 }
@@ -1717,5 +1718,14 @@ h5 {
     100% {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+
+@keyframes bgPosition {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
     }
 }

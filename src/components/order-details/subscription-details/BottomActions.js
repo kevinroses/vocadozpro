@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { CustomPaperBigCard } from "../../../styled-components/CustomStyles.style";
+import { CustomPaperBigCard } from "@/styled-components/CustomStyles.style";
 import { Button, Grid } from "@mui/material";
 import { PrimaryButton } from "../../products-page/FoodOrRestaurant";
 import CustomModal from "../../custom-modal/CustomModal";
 import Logs from "./Logs";
 import ModalView from "./ModalView";
-import { useCancelSubscription } from "../../../hooks/react-query/subscription/useCancelSubscription";
+import { useCancelSubscription } from "@/hooks/react-query/subscription/useCancelSubscription";
 import { toast } from "react-hot-toast";
 import { onErrorResponse } from "../../ErrorResponse";
 import moment from "moment";
@@ -65,17 +65,17 @@ const BottomActions = props => {
     }
     return (
         <>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+            <Grid container spacing={2} mt=".5rem">
+                <Grid item xs={12} sm={12}>
                     <PrimaryButton
                         variant="contained"
-                        sx={{ width: '100%' }}
+                        sx={{ width: '100%',borderRadius: '5px' }}
                         onClick={() => setOpenPause(true)}
                     >
                         {t('Pause Subscription')}
                     </PrimaryButton>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={12}>
                     <Button
                         onClick={() => setOpenCancel(true)}
                         variant="outlined"
@@ -83,6 +83,7 @@ const BottomActions = props => {
                             width: '100%',
                             color: (theme) =>
                                 theme.palette.primary.main,
+                            borderRadius: '5px'
                         }}
                     >
                         {t('Cancel Subscription')}

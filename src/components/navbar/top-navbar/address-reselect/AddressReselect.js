@@ -9,10 +9,11 @@ import Router, { useRouter } from 'next/router'
 import AddressReselectPopover from './AddressReselectPopover'
 import { toast } from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
-import { setClearCart } from '../../../../redux/slices/cart'
+import { setClearCart } from "@/redux/slices/cart"
 import { styled, useTheme } from "@mui/material/styles";
 import { useGeolocated } from "react-geolocated";
-import { setOpenMapDrawer, setUserLocationUpdate } from '../../../../redux/slices/global'
+import { setOpenMapDrawer, setUserLocationUpdate } from "@/redux/slices/global"
+import MapModal from "@/components/landingpage/google-map/MapModal";
 export const AddressTypographyGray = styled(Typography)(({ theme }) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -27,11 +28,12 @@ export const AddressTypographyGray = styled(Typography)(({ theme }) => ({
 }))
 const AddressReselect = ({ location }) => {
     const [mapOpen, setMapOpen] = useState(false)
+    const router = useRouter()
+    const [open, setOpen] = useState(false)
     const { openMapDrawer, userLocationUpdate } = useSelector((state) => state.globalSettings)
     const [address, setAddress] = useState(null)
     const { t } = useTranslation()
     const dispatch = useDispatch()
-    const router = useRouter()
     const anchorRef = useRef(null)
 
     useEffect(() => {
@@ -50,9 +52,6 @@ const AddressReselect = ({ location }) => {
             }
         }
     }, [address])
-    const handleClickToLandingPage = () => {
-        dispatch(setOpenMapDrawer(true))
-    }
 
     const { coords, isGeolocationAvailable, isGeolocationEnabled } =
         useGeolocated({
@@ -65,11 +64,26 @@ const AddressReselect = ({ location }) => {
     const handleClosePopover = () => {
         dispatch(setOpenMapDrawer(false))
         setMapOpen(false)
+    }
+    const handleClickToLandingPage = () => {
+        if(router.pathname === '/'){
+            setOpen(true)
+        }else{
+            dispatch(setOpenMapDrawer(true))
+        }
 
+    }
+    // const handleOpen = () => setOpen(true)
+    const handleModalClose=() => setOpen(false)
+    const handleClose = () => {
+        setOpen(false)
+        if (router.pathname !== '/') {
+            handleModalClose()
+        }
     }
 
     return (
-        <>{location &&
+        <>{location ?
             <Stack
                 sx={{
                     color: (theme) => theme.palette.neutral[1000],
@@ -92,6 +106,28 @@ const AddressReselect = ({ location }) => {
                     {location}
                 </AddressTypographyGray>
                 <KeyboardArrowDownIcon />
+            </Stack> :
+            <Stack
+                direction="row"
+                onClick={handleClickToLandingPage}
+                alignItems="center"
+                gap="5px"
+                sx={{
+                    cursor: 'pointer',
+                    color: (theme) => theme.palette.neutral[1000],
+                }}
+            >
+                <RoomIcon
+                    fontSize="small"
+                    color="primary"
+                    style={{ width: '16px', height: '16px' }}
+                />
+                <AddressTypographyGray
+                    align="left"
+                >
+                    {t("Select your location")}
+                </AddressTypographyGray>
+                <KeyboardArrowDownIcon />
             </Stack>
         }
             <AddressReselectPopover
@@ -107,6 +143,7 @@ const AddressReselect = ({ location }) => {
                 coords={coords}
 
             />
+            {open && <MapModal open={open} handleClose={handleClose} />}
         </>
     )
 }

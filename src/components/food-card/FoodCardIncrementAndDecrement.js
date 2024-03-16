@@ -11,11 +11,11 @@ import {
     decrementProductQty,
     incrementProductQty,
     removeProduct,
-} from '../../redux/slices/cart'
+} from "@/redux/slices/cart"
 import useMediaQuery from '@mui/material/useMediaQuery'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
-import { calculateItemBasePrice, getConvertDiscount, handleIncrementedTotal } from "../../utils/customFunctions";
+import { calculateItemBasePrice, getConvertDiscount, handleIncrementedTotal } from "@/utils/customFunctions";
 import { getItemDataForAddToCart } from "../floating-cart/helperFunction";
 import { onErrorResponse } from "../ErrorResponse";
 import useCartItemUpdate from "../../hooks/react-query/add-cart/useCartItemUpdate";
@@ -30,6 +30,7 @@ const FoodCardIncrementAndDecrement = ({
     setIncrOpen,
     incrOpen,
     isInCart,
+                                           horizontal
 }) => {
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
@@ -152,17 +153,19 @@ const FoodCardIncrementAndDecrement = ({
     //     e.stopPropagation()
     //     dispatch(removeProduct(isInCart))
     // }
-
     return (
         <Stack
             sx={{
-                borderRadius: '5px',
+                padding:"2px",
+                borderRadius: '15px',
+                border:"1px solid",
+                borderColor: theme=> alpha(theme.palette.primary.main,.5),
                 background: (theme) => theme.palette.neutral[200],
                 position: 'absolute',
-                right: '0',
+                right:horizontal==="true"? "0px": '10px',
                 left: 'unset',
-                bottom: "0",
-                width: { xs: '100%', md: '50%' },
+                bottom: horizontal==="true" ? "0px": '8px',
+                width: { xs: '60%', md: '40%' },
                 transformOrigin: 'right',
                 '@keyframes scaleXCustom': {
                     '0%': {
@@ -185,7 +188,7 @@ const FoodCardIncrementAndDecrement = ({
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
-                gap="12px"
+                gap="8px"
                 onMouseEnter={handleHover}
 
                 // height={{ xs: '15px', sm: '20px', md: '25px' }}
@@ -197,13 +200,13 @@ const FoodCardIncrementAndDecrement = ({
                         size="small"
                         color="error"
                         sx={{
-                            padding: '4px',
+                            padding: '5px',
                         }}
                         onClick={(e) => handleRemove(e)}
                     >
                         <DeleteIcon
                             fontSize="inherit"
-                            sx={{ width: '25px', height: '25px' }}
+                            sx={{ width: '15px', height: '15px' }}
                         />
                     </IconButton>
                 ) : (
@@ -219,8 +222,8 @@ const FoodCardIncrementAndDecrement = ({
                             sx={{
                                 background: (theme) =>
                                     alpha(theme.palette.primary.main, 0.5),
-                                borderRadius: '3px',
-                                padding: '3px',
+                                borderRadius: '50%',
+                                padding: '5px',
                                 '&:hover': {
                                     background: (theme) =>
                                         theme.palette.primary.dark,
@@ -233,8 +236,8 @@ const FoodCardIncrementAndDecrement = ({
                                 sx={{
                                     color: (theme) =>
                                         theme.palette.neutral[100],
-                                    width: '25px',
-                                    height: '25px',
+                                    width: '15px',
+                                    height: '15px',
                                 }}
                             />
                         </IconButton>
@@ -257,8 +260,8 @@ const FoodCardIncrementAndDecrement = ({
                     size="small"
                     sx={{
                         background: (theme) => theme.palette.primary.main,
-                        borderRadius: '3px',
-                        padding: '3px',
+                        borderRadius: '50%',
+                        padding: '5px',
                         '&:hover': {
                             background: (theme) => theme.palette.primary.dark,
                         },
@@ -268,8 +271,8 @@ const FoodCardIncrementAndDecrement = ({
                         size="small"
                         sx={{
                             color: (theme) => theme.palette.neutral[100],
-                            width: '25px',
-                            height: '25px',
+                            width: '15px',
+                            height: '15px',
                         }}
                     />
                 </IconButton>

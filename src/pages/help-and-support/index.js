@@ -4,10 +4,10 @@ import Meta from '../../components/Meta'
 import { useSelector } from 'react-redux'
 import { Container, CssBaseline } from '@mui/material'
 import HelpPage from '../../components/help-page/HelpPage'
-import { ConfigApi } from '../../hooks/react-query/config/useConfig'
-import { CustomHeader } from '../../api/Headers'
+
 import { getServerSideProps } from '../index'
 const index = ({ configData }) => {
+    const { global } = useSelector((state) => state.globalSettings)
     return (
         <>
             <Meta title={`Help and support - ${configData?.business_name}`} />

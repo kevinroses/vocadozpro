@@ -4,16 +4,14 @@ const initialState = {
     global: undefined,
     couponInfo: null,
     couponType: '',
-
     zoneData: null,
     handleHomePage: false,
-
     openMapDrawer: false,
     userLocationUpdate: false
 }
 
 export const globalSettingSlice = createSlice({
-    name: 'global',
+    name: 'globalData',
     initialState,
     reducers: {
         setGlobalSettings: (state, action) => {

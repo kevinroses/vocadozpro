@@ -6,37 +6,38 @@ import { ButtonGroup, Grid, NoSsr, Popover, Typography } from "@mui/material";
 import FoodNavigation from '../restaurant-details/foodSection/FoodNavigation'
 import { useSelector } from 'react-redux'
 import { useQuery } from 'react-query'
-import { CategoryApi } from '../../hooks/react-query/config/categoryApi'
+import { CategoryApi } from "@/hooks/react-query/config/categoryApi"
 import CustomShimmerForBestFood from '../CustomShimmer/CustomShimmerForBestFood'
 import CustomShimmerRestaurant from '../CustomShimmer/CustomShimmerRestaurant'
 import {
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import RestaurantsData from './RestaurantsData'
 import CustomEmptyResult from '../empty-view/CustomEmptyResult'
-import { noFoodFoundImage, noRestaurantsImage } from '../../utils/LocalImages'
+import { noFoodFoundImage, noRestaurantsImage } from "@/utils/LocalImages"
 import CustomPageTitle from "../CustomPageTitle";
 import CustomDivider from "../CustomDivider";
 import FilterButton from "../Button/FilterButton";
 import RestaurantFilterCard from "../home/restaurant/RestaurantFilterCard";
 import { mockData } from "./categoryFilterData";
 import { handleFilterData } from "./helper";
-import { setFoodOrRestaurant } from "../../redux/slices/searchFilter";
+import { setFoodOrRestaurant } from "@/redux/slices/searchFilter";
+import { isAction } from "@reduxjs/toolkit";
 
 const CategoryDetailsPage = ({
-    data,
-    id,
-    category_id,
-    setCategoryId,
-    resData,
-    offset,
-    page_limit,
-    type,
-    setOffset,
-    setType,
-    filterByData,
-    setFilterByData, name, priceAndRating, setPriceAndRating, isLoading
-}) => {
+                                 data,
+                                 id,
+                                 category_id,
+                                 setCategoryId,
+                                 resData,
+                                 offset,
+                                 page_limit,
+                                 type,
+                                 setOffset,
+                                 setType,
+                                 filterByData,
+                                 setFilterByData, name, priceAndRating, setPriceAndRating, isLoading
+                             }) => {
     const [anchorEl, setAnchorEl] = useState(null)
     const [highestPrice, setHighestPrice] = useState(0)
     const open = Boolean(anchorEl)
@@ -115,10 +116,24 @@ const CategoryDetailsPage = ({
             setHighestPrice(data?.data?.max_price);
             setIsFirstRender(false); // Set isFirstRender to false after the first render
         }
-    }, [data, isFirstRender]);
+        return ()=>{
+            setIsFirstRender(true)
+        }
+    }, [data,id]);
 
-
-
+    const handleReset = () => {
+        const data = checkedFilterKey?.map((item) => ({
+            ...item,
+            isActive: false
+        }));
+        setCheckedFilterKey(data)
+        setPriceAndRating(
+            {
+                price:[],
+                rating:0
+            }
+        )
+    };
 
     return (
         <NoSsr>
@@ -131,22 +146,24 @@ const CategoryDetailsPage = ({
                         <FoodOrRestaurant
                             foodOrRestaurant={foodOrRestaurant}
                             setFoodOrRestaurant={setFoodOrRestaurant}
-                        />
+                            isRestaurant                        />
                         <CustomDivider marginTop="0px" />
                     </NoSsr>
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} align="left" mt="0rem">
-                    <CustomStackFullWidth direction="row" justifyContent="space-between" alignItems="center">
-                        <FoodNavigation
-                            catetoryMenus={catetoryMenus}
-                            setCategoryId={setCategoryId}
-                            category_id={category_id}
-                            id={id}
-                        />
+                    <CustomStackFullWidth direction="row" justifyContent={catetoryMenus?.length>0?"space-between":"flex-end"} alignItems="center">
+                        {catetoryMenus?.length>0 &&
+                            <FoodNavigation
+                                catetoryMenus={catetoryMenus}
+                                setCategoryId={setCategoryId}
+                                category_id={category_id}
+                                id={id}
+                            />}
+
                         <FilterButton
                             id="fade-button"
                             handleClick={handleDropClick}
-                        //activeFilters={activeFilters}
+                            //activeFilters={activeFilters}
 
                         />
                     </CustomStackFullWidth>
@@ -241,6 +258,7 @@ const CategoryDetailsPage = ({
                     handlePrice={handlePrice}
                     handleChangeRatings={handleChangeRatings}
                     priceAndRating={priceAndRating}
+                    handleReset={handleReset}
                 />
             </Popover>
         </NoSsr>

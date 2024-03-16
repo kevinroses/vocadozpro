@@ -2,10 +2,11 @@ import React from 'react'
 import DialogContent from '@mui/material/DialogContent'
 import { CustomTypography } from '../custom-tables/Tables.style'
 import DialogContentText from '@mui/material/DialogContentText'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import DialogActions from '@mui/material/DialogActions'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import Dialog from '@mui/material/Dialog'
+import LocationPermissionIcon from '@/assets/images/icons/LocationPermissionIcon'
 
 const LocationEnableCheck = (props) => {
     const {
@@ -25,23 +26,28 @@ const LocationEnableCheck = (props) => {
         >
             <DialogContent>
                 {!isGeolocationEnabled && (
-                    <CustomTypography>
-                        {t(
-                            'You denied location permission. Please allow browsers location permission from your device, refresh the site and receive more accurate delivery.'
-                        )}
-                    </CustomTypography>
+                    <CustomStackFullWidth
+                        gap="10px"
+                        alignItems="center"
+                        maxWidth="500px"
+                        textAlign="center"
+                        padding={{ xs: "0 10px", sm: "0 40px", md: "0 60px" }}
+                    >
+                        <LocationPermissionIcon />
+                        <Typography fontSize={{ xs: "12px", sm: "14px", md: "16px" }} fontWeight={500}>{t("Please allow browser location permission")}</Typography>
+
+                        <CustomTypography fontSize="12px">
+                            {t("Your browser location track permission is off. Please turn on the location permission to detect current location")}
+                        </CustomTypography>
+                    </CustomStackFullWidth>
                 )}
             </DialogContent>
             <DialogActions>
                 <CustomStackFullWidth
-                    direction="row"
                     alignItems="center"
-                    justifyContent="flex-end"
-                    gap="12px"
+                    justifyContent="center"
+                    paddingBottom="35px"
                 >
-                    <Button variant="outlined" onClick={handleCloseLocation}>
-                        <CustomTypography>{t('Close')}</CustomTypography>
-                    </Button>
                     {coords ? (
                         <Button
                             variant="contained"

@@ -1,12 +1,10 @@
 import React from 'react'
 import Restaurant from '../../components/restaurant-page/Restaurant'
-import MainApi from '../../api/MainApi'
 import Meta from '../../components/Meta'
 import PushNotificationLayout from '../../components/PushNotificationLayout'
-import { ConfigApi } from '../../hooks/react-query/config/useConfig'
-import { landingPageApi } from '../../components/landingpage/Api'
+import { landingPageApi } from "@/components/landingpage/Api"
 import { useTranslation } from 'react-i18next'
-import { CustomHeader } from '../../api/Headers'
+
 import HomeGuard from "../../components/home-guard/HomeGuard";
 
 const index = ({ configData, landingPageData, pathName }) => {

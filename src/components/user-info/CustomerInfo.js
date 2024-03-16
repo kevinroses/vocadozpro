@@ -22,6 +22,7 @@ const CustomerInfo = () => {
                 sx={{
                     height: 68,
                     width: 70,
+                    backgroundColor: userData?.image ? (theme) => theme.palette.neutral[100] : (theme) => theme.palette.neutral[400]
                 }}
                 src={`${customerbaseUrl}/${userData?.image}`}
             />

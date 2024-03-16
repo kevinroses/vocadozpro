@@ -75,10 +75,11 @@ const ChatMessageAdd = ({ onSend }) => {
     }
     const MAX_LENGTH = 3
     const handleFileOnChange = (e) => {
-        if (body?.file?.length <= 4) {
+        const totalImages = body.file.length + e.target.files.length;
+        if (totalImages <= 2) {
             setBody({ ...body, file: [...body.file, ...e.target.files] })
         } else {
-            toast.error(t('maximum image upload limit 5'))
+            toast.error(t('maximum image upload limit 3'))
         }
     }
 

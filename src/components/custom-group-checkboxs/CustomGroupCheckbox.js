@@ -68,10 +68,22 @@ const CustomGroupCheckbox = (props) => {
     return (
         <div>
             {forcuisine === 'true' ? (
-                <FormGroup>
+                <FormGroup
+                    sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    maxWidth: isSmall ? '170px' : '350px',
+                    width: '100%',
+                    justifyContent: 'space-between',
+                }}>
                     {checkboxData?.map((item) => {
                         return (
                             <FormControlLabel
+                                sx={{
+                                    maxWidth: isSmall ? '150px' : '170px',
+                                    width: '100%',
+                                    textAlign: 'left',
+                                }}
                                 key={item?.id}
                                 value={item?.name}
                                 control={

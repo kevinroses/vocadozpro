@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { useDispatch, useSelector } from 'react-redux'
-import { AuthApi } from '../../../hooks/react-query/config/authApi'
+import { AuthApi } from "@/hooks/react-query/config/authApi"
 import { useMutation } from 'react-query'
 import { useFormik } from 'formik'
 import CustomPhoneInput from '../../CustomPhoneInput'
@@ -31,13 +31,11 @@ import { CustomTypography } from '../../custom-tables/Tables.style'
 import { CustomBoxForModal } from '../auth.style'
 import { toast } from 'react-hot-toast'
 import LockIcon from '@mui/icons-material/Lock';
-import { InfoSetByApi } from '../../InfoSetByApi'
 import { onErrorResponse, onSingleErrorResponse } from '../../ErrorResponse'
 import { RTL } from '../../RTL/RTL'
 import CustomModal from '../../custom-modal/CustomModal'
 import OtpForm from '../forgot-password/OtpForm'
 import { useVerifyPhone } from '../../../hooks/react-query/otp/useVerifyPhone'
-import { CustomTypographyGray } from '../../error/Errors.style'
 import SocialLogins from '../sign-in/social-login/SocialLogins'
 import { setToken } from '../../../redux/slices/userToken'
 import { alpha, Grid, styled } from "@mui/material";
@@ -46,6 +44,8 @@ import { CustomSigninOutLine } from "../sign-in";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import GroupIcon from '@mui/icons-material/Group';
+import { CustomToaster } from "@/components/custom-toaster/CustomToaster";
+import { LoadingButton } from '@mui/lab'
 
 // const CustomSignUpTextField =Styled()
 export const CustomSignUpTextField = styled(TextField)(({ theme }) => ({
@@ -70,7 +70,7 @@ export const CustomSignUpTextField = styled(TextField)(({ theme }) => ({
     // },
 }))
 
-const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUserInfo,handleSuccess }) => {
+const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setUserInfo, handleSuccess }) => {
     const { t } = useTranslation()
     const dispatch = useDispatch()
     const router = useRouter()
@@ -100,7 +100,7 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
         onSubmit: async (values, helpers) => {
             try {
                 formSubmitHandler(values)
-            } catch (err) {}
+            } catch (err) { }
         },
     })
 
@@ -116,7 +116,8 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
             if (typeof window !== 'undefined') {
                 localStorage.setItem('token', response?.data?.token)
             }
-            toast.success(t('Signup successfully.'))
+            //toast.success(t('Signup successfully.'))
+            CustomToaster("success",'Signup successfully.')
             dispatch(setToken(response?.data?.token))
             handleClose?.()
             router.push('/interest')
@@ -155,7 +156,8 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
         useVerifyPhone()
     const otpFormSubmitHandler = (values) => {
         const onSuccessHandler = (res) => {
-            toast.success(res?.message)
+            //toast.success(res?.message)
+            CustomToaster("success",res?.message)
             setOpenOtpModal(false)
             handleTokenAfterSignUp(mainToken)
             handleClose()
@@ -177,7 +179,7 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
     }
     const languageDirection = localStorage.getItem('direction')
     return (
-        <CustomBoxForModal>
+        <Stack>
             <RTL direction={languageDirection}>
                 <CustomStackFullWidth
                     alignItems="center"
@@ -194,14 +196,14 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                             alt="Logo"
                         />
                         <CustomTypography
-                            sx={{ fontWeight: 'bold',fontSize:"22px" }}
+                            sx={{ fontWeight: 'bold', fontSize: "22px" }}
                         >
                             {t('Sign Up')}
                         </CustomTypography>
                     </CustomStackFullWidth>
                     <form onSubmit={signUpFormik.handleSubmit} noValidate>
                         <Stack>
-                            <Grid container  spacing={3} >
+                            <Grid container spacing={3} >
                                 <Grid item xs={12} md={6}>
                                     <CustomSignUpTextField
                                         required
@@ -209,6 +211,7 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                         id="first_name"
                                         label={t('First Name')}
                                         placeholder={t('First Name')}
+                                        inputLabelProps={{ shrink: true }}
                                         name="f_name"
                                         autoComplete="first_name"
                                         value={signUpFormik.values.f_name}
@@ -225,7 +228,7 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <AccountCircleIcon sx={{fontSize:"1.2rem",color:theme=>theme.palette.neutral[400]}}/>
+                                                    <AccountCircleIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                 </InputAdornment>
                                             ),
                                         }}
@@ -256,11 +259,11 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <AccountCircleIcon sx={{fontSize:"1.2rem",color:theme=>alpha(theme.palette.neutral[400],.6)}}/>
+                                                    <AccountCircleIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                 </InputAdornment>
                                             ),
                                         }}
-                                        //  autoFocus
+                                    //  autoFocus
 
                                     />
                                 </Grid>
@@ -281,7 +284,7 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <MailIcon sx={{fontSize:"1.2rem",color:theme=>alpha(theme.palette.neutral[400],.6)}}/>
+                                                    <MailIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                 </InputAdornment>
                                             ),
                                         }}
@@ -306,7 +309,7 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                                 color: (theme) =>
                                                     theme.palette.neutral[1000],
                                             }}
-                                            htmlFor="outlined-adornment-password"
+                                            htmlFor="password"
                                         >
                                             {t('Password')}
                                         </InputLabel>
@@ -342,19 +345,19 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                                         edge="end"
                                                     >
                                                         {showPassword ? (
-                                                            <Visibility sx={{color:theme=>alpha(theme.palette.neutral[400],.6)}}/>
+                                                            <Visibility sx={{ color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                         ) : (
-                                                            <VisibilityOff sx={{color:theme=>alpha(theme.palette.neutral[400],.6)}}/>
+                                                            <VisibilityOff sx={{ color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                         )}
                                                     </IconButton>
                                                 </InputAdornment>
                                             }
-                                            startAdornment={ <InputAdornment position="start"  sx={{marginInlineEnd:"0px !important"}}>
+                                            startAdornment={<InputAdornment position="start" sx={{ marginInlineEnd: "0px !important" }}>
                                                 <IconButton
                                                     aria-label="toggle password visibility"
                                                     edge="start"
                                                 >
-                                                    <LockIcon sx={{fontSize:"1.2rem",color:theme=>theme.palette.neutral[400]}}/>
+                                                    <LockIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                 </IconButton>
                                             </InputAdornment>}
                                             label="Password"
@@ -422,20 +425,20 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                                         edge="end"
                                                     >
                                                         {showConfirmPassword ? (
-                                                            <Visibility sx={{color:theme=>alpha(theme.palette.neutral[400],.6)}} />
+                                                            <Visibility sx={{ color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                         ) : (
-                                                            <VisibilityOff sx={{color:theme=>alpha(theme.palette.neutral[400],.6)}} />
+                                                            <VisibilityOff sx={{ color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                         )}
                                                     </IconButton>
                                                 </InputAdornment>
                                             }
-                                            startAdornment={ <InputAdornment position="start" sx={{marginInlineEnd:"0px !important"}}>
+                                            startAdornment={<InputAdornment position="start" sx={{ marginInlineEnd: "0px !important" }}>
                                                 <IconButton
                                                     aria-label="toggle password visibility"
 
                                                     edge="start"
                                                 >
-                                                    <LockIcon sx={{fontSize:"1.2rem",color:theme=>alpha(theme.palette.neutral[400],.6)}}/>
+                                                    <LockIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                 </IconButton>
                                             </InputAdornment>}
                                             label="confirm_password"
@@ -452,35 +455,35 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                         )}
                                     </FormControl>
                                 </Grid>
-                               <Grid item xs={12} md={12}>
-                                   <CustomSignUpTextField
-                                       fullWidth
-                                       id="ref_code"
-                                       label={t('Refer Code (Optional)')}
-                                       placeholder={t('Refer Code (Optional)')}
-                                       name="ref_code"
-                                       autoComplete="ref_code"
-                                       value={signUpFormik.values.ref_code}
-                                       onChange={signUpFormik.handleChange}
-                                       error={
-                                           signUpFormik.touched.ref_code &&
-                                           Boolean(signUpFormik.errors.ref_code)
-                                       }
-                                       helperText={
-                                           signUpFormik.touched.ref_code &&
-                                           signUpFormik.errors.ref_code
-                                       }
-                                       touched={signUpFormik.touched.ref_code}
-                                       //   autoFocus
-                                       InputProps={{
-                                           startAdornment: (
-                                               <InputAdornment position="start">
-                                                   <GroupIcon sx={{fontSize:"1.2rem",color:theme=>alpha(theme.palette.neutral[400],.6)}}/>
-                                               </InputAdornment>
-                                           ),
-                                       }}
-                                   />
-                               </Grid>
+                                <Grid item xs={12} md={12}>
+                                    <CustomSignUpTextField
+                                        fullWidth
+                                        id="ref_code"
+                                        label={t('Refer Code (Optional)')}
+                                        placeholder={t('Refer Code (Optional)')}
+                                        name="ref_code"
+                                        autoComplete="ref_code"
+                                        value={signUpFormik.values.ref_code}
+                                        onChange={signUpFormik.handleChange}
+                                        error={
+                                            signUpFormik.touched.ref_code &&
+                                            Boolean(signUpFormik.errors.ref_code)
+                                        }
+                                        helperText={
+                                            signUpFormik.touched.ref_code &&
+                                            signUpFormik.errors.ref_code
+                                        }
+                                        touched={signUpFormik.touched.ref_code}
+                                        //   autoFocus
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <GroupIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </Grid>
                             </Grid>
 
                             <CustomStackFullWidth>
@@ -488,7 +491,7 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                     direction="row"
                                     alignItems="center"
                                     spacing={{ xs: '0', md: '.5' }}
-                                    sx={{ mt: '7px', marginInlineStart:"-8px", }}
+                                    sx={{ mt: '7px', marginInlineStart: "-8px", }}
                                 >
                                     <FormControlLabel
                                         sx={{
@@ -501,16 +504,16 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                                             },
                                             [theme.breakpoints.down('sm')]: {
                                                 '& .MuiFormControlLabel-label':
-                                                    {
-                                                        fontSize: '10px',
-                                                    },
+                                                {
+                                                    fontSize: '10px',
+                                                },
                                             },
                                         }}
                                         control={
                                             <Checkbox
                                                 value="ff"
                                                 color="primary"
-                                                onChange={(e)=>handleCheckbox(e)}
+                                                onChange={(e) => handleCheckbox(e)}
                                                 required="true"
                                             />
                                         }
@@ -550,28 +553,26 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                             </CustomStackFullWidth>
                             <Stack witdh="100%" justifyContent="center" alignItems="center">
                                 {!signUpFormik?.values?.tandc ? (
-                                    <Button
+                                    <LoadingButton
                                         type="submit"
                                         fullWidth
-                                        sx={{ mt: 1, mb: 3.5, maxWidth: "400px",height: "45px" }}
-                                        loading={true}
-                                        loadingPosition="start"
+                                        sx={{ mt: 1, mb: 3.5, maxWidth: "400px", height: "45px" }}
+                                        loading={isLoading}
                                         variant="contained"
                                         disabled
                                     >
                                         {t('Sign Up')}
-                                    </Button>
+                                    </LoadingButton>
                                 ) : (
-                                    <Button
+                                    <LoadingButton
                                         type="submit"
                                         fullWidth
-                                        sx={{ mt: 1, mb: 3.5, maxWidth: "400px",height: "45px" }}
-                                        loading={true}
-                                        loadingPosition="start"
+                                        sx={{ mt: 1, mb: 3.5, maxWidth: "400px", height: "45px" }}
+                                        loading={isLoading}
                                         variant="contained"
                                     >
                                         {t('Sign Up')}
-                                    </Button>
+                                    </LoadingButton>
                                 )}
                             </Stack>
 
@@ -622,7 +623,7 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken,setUs
                     />
                 </CustomModal>
             </RTL>
-        </CustomBoxForModal>
+        </Stack>
     )
 }
 

@@ -15,7 +15,7 @@ import {
     CustomColouredTypography,
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { CustomTypography } from '../custom-tables/Tables.style'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
@@ -102,6 +102,7 @@ const PopularResturant = ({ data, latestRestaurantData }) => {
                                                     }
                                                     active={restaurant.active}
                                                     open={restaurant.open}
+                                                    opening_time={restaurant?.current_opening_time}
                                                 />
                                             ))}
                                     </>

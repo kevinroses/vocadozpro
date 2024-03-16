@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from "react";
 import PropTypes from 'prop-types'
 import { useFormik } from 'formik'
 import SignUpValidation from '../auth/SignUpValidation'
@@ -7,8 +7,8 @@ import {
     CustomFullDivider,
     CustomStackFullWidth,
     CustomTypographyBold,
-} from '../../styled-components/CustomStyles.style'
-import { Grid, Stack } from '@mui/material'
+} from "@/styled-components/CustomStyles.style"
+import { Button, Grid, Stack } from "@mui/material";
 import { PrimaryButton } from '../products-page/FoodOrRestaurant'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { useTranslation } from 'react-i18next'
@@ -18,17 +18,15 @@ import CustomRatings from '../custom-ratings/CustomRatings'
 import Divider from '@mui/material/Divider'
 import CustomImageContainer from '../CustomImageContainer'
 import { useSelector } from 'react-redux'
-import { getAmount } from '../../utils/customFunctions'
+import { getAmount } from "@/utils/customFunctions"
 import { useMutation } from 'react-query'
-import { AuthApi } from '../../hooks/react-query/config/authApi'
-
 import toast from 'react-hot-toast'
-import { setWishList } from '../../redux/slices/wishList'
 import { ReviewApi } from './ReviewApi'
 import { onErrorResponse } from '../ErrorResponse'
 
-const ItemForm = ({ data }) => {
+const ItemForm = ({ data,notNow,id,refetchOrderReview,refetchTrackData ,setReviewedItem}) => {
     const { t } = useTranslation()
+
     const { global } = useSelector((state) => state.globalSettings)
     const productImage = global?.base_urls?.product_image_url
     let currencySymbol
@@ -50,6 +48,7 @@ const ItemForm = ({ data }) => {
         },
         onSubmit: async (values, helpers) => {
             try {
+
                 handleFormsubmit(values)
             } catch (err) {}
         },
@@ -57,17 +56,25 @@ const ItemForm = ({ data }) => {
     const handleChangeRatings = (value) => {
         formik.setFieldValue('rating', value)
     }
+    const handleSuccess=(response)=>{
+        setReviewedItem(data)
+        // refetchOrderReview()
+        refetchTrackData()
+        formik.setFieldValue('rating', 0)
+        formik.setFieldValue('comment', '')
+        toast.success(response?.data?.message)
+        // CustomerToaster()
+        // const restReviewItem
+    }
     const handleFormsubmit = (values) => {
         const formData = {
             ...values,
             delivery_man_id: null,
             food_id: data?.food_id,
-            order_id: data?.order_id,
+            order_id: id,
         }
         mutate(formData, {
-            onSuccess: (response) => {
-                toast.success(response?.data?.message)
-            },
+            onSuccess:handleSuccess,
             onError: onErrorResponse,
         })
     }
@@ -75,7 +82,7 @@ const ItemForm = ({ data }) => {
     return (
         <CustomStackFullWidth>
             <form onSubmit={formik.handleSubmit}>
-                <Grid container spacing={2}>
+                <Grid container spacing={1}>
                     <Grid item xs={12} md={12}>
                         <CustomStackFullWidth
                             direction="row"
@@ -95,20 +102,17 @@ const ItemForm = ({ data }) => {
                             >
                                 <CustomImageContainer
                                     src={`${productImage}/${data?.food_details?.image}`}
-                                    width="100px"
-                                    height="90px"
+                                    width="60px"
+                                    height="60px"
+                                    borderRadius="5px"
+                                    objectFit="cover"
                                 />
                                 <Stack>
-                                    <CustomTypographyBold>
+                                    <CustomTypographyBold fontSize="13px" fontWeight="600">
                                         {data?.food_details?.name}
                                     </CustomTypographyBold>
-                                    <CustomTypographyBold>
-                                        {getAmount(
-                                            data?.food_details?.price,
-                                            currencySymbolDirection,
-                                            currencySymbol,
-                                            digitAfterDecimalPoint
-                                        )}
+                                    <CustomTypographyBold fontSize="12px" fontWeight="400">
+                                        {data?.food_details?.restaurant_name}
                                     </CustomTypographyBold>
                                 </Stack>
                             </Stack>
@@ -117,18 +121,14 @@ const ItemForm = ({ data }) => {
                                 spacing={0.5}
                                 alignItems="center"
                             >
-                                <CustomTypographyGray sx={{ fontSize: '18px' }}>
-                                    {t('Quantity')}
-                                </CustomTypographyGray>
-                                <CustomTypographyGray sx={{ fontSize: '18px' }}>
-                                    :
-                                </CustomTypographyGray>
-                                <CustomColouredTypography
-                                    color="primary.main"
-                                    sx={{ fontSize: '18px' }}
-                                >
-                                    {data?.quantity}
-                                </CustomColouredTypography>
+                                <CustomTypographyBold fontSize="12px" fontWeight="600">
+                                    {getAmount(
+                                        data?.food_details?.price,
+                                        currencySymbolDirection,
+                                        currencySymbol,
+                                        digitAfterDecimalPoint
+                                    )}
+                                </CustomTypographyBold>
                             </Stack>
                         </CustomStackFullWidth>
                     </Grid>
@@ -137,9 +137,9 @@ const ItemForm = ({ data }) => {
                     </Grid>
                     <Grid item xs={12} md={12} align="center">
                         <Stack alignItems="center">
-                            <CustomTypographyGray sx={{ fontSize: '18px' }}>
+                            <CustomTypographyBold fontSize="14px" fontWeight="700">
                                 {t('Rate the food')}
-                            </CustomTypographyGray>
+                            </CustomTypographyBold>
                             <CustomRatings
                                 handleChangeRatings={handleChangeRatings}
                                 ratingValue={formik.values.rating}
@@ -148,12 +148,12 @@ const ItemForm = ({ data }) => {
                     </Grid>
                     <Grid item xs={12} md={12} align="center">
                         <Stack alignItems="center" spacing={1}>
-                            <CustomTypographyGray sx={{ fontSize: '18px' }}>
-                                {t('Share your opinion')}
+                            <CustomTypographyGray sx={{ fontSize: '14px' }} fontweight="400">
+                                {t('Share your valuable feedback')}
                             </CustomTypographyGray>
                             <CustomTextFieldWithFormik
                                 type="text"
-                                label={t('Comment')}
+                                label={t('Type here')}
                                 touched={formik.touched.comment}
                                 errors={formik.errors.comment}
                                 fieldProps={formik.getFieldProps('comment')}
@@ -164,16 +164,21 @@ const ItemForm = ({ data }) => {
                             />
                         </Stack>
                     </Grid>
-                    <Grid item xs={12} md={12} mt="1rem">
-                        <LoadingButton
-                            fullWidth
-                            variant="contained"
-                            type="submit"
-                            loading={isLoading}
-                            // sx={{ width: '100%' }}
-                        >
-                            {t('Submit')}
-                        </LoadingButton>
+                    <Grid item xs={12} md={12}>
+                        <Stack spacing={1}>
+                            <LoadingButton
+                                fullWidth
+                                variant="contained"
+                                type="submit"
+                                loading={isLoading}
+                                // sx={{ width: '100%' }}
+                            >
+                                {t('Submit')}
+                            </LoadingButton>
+                            <Button onClick={()=>notNow(data?.id)}>
+                                {t("Not Now")}
+                            </Button>
+                        </Stack>
                     </Grid>
                 </Grid>
             </form>

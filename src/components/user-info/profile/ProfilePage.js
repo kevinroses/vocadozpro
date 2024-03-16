@@ -207,6 +207,7 @@ const ProfilePage = () => {
             <Meta title={data?.data?.f_name} description="" keywords="" />
             <AuthModal
                 open={authModalOpen}
+                setOpen={setOpen}
                 handleClose={handleCloseAuthModal}
                 modalFor={modalFor}
                 setModalFor={setModalFor}

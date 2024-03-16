@@ -36,7 +36,7 @@ export const SearchIconWrapper = styled('div')(
 export const StyledInputBase = styled(InputBase)(
     ({ theme, languageDirection, backgroundColor, forMobile }) => ({
         color: 'inherit',
-         borderRadius:"8px",
+        borderRadius:"8px",
         width: '100%',
         backgroundColor: backgroundColor ? backgroundColor : '',
         '& .MuiInputBase-input': {

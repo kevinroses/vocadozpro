@@ -1,4 +1,4 @@
-import { Popover } from '@mui/material';
+import { Popover, useTheme } from '@mui/material';
 import React from 'react'
 import { CustomPopoverWrapper } from './CustomPopover.style';
 
@@ -13,6 +13,7 @@ const CustomPopover = ({
     bgColor
 }) => {
     const open = Boolean(anchorEl);
+    const theme = useTheme()
     const handleClosePopover = () => {
         setAnchorEl(null);
     };
@@ -23,7 +24,7 @@ const CustomPopover = ({
             onClose={handleClose || handleClosePopover}
             disableScrollLock={true}
             disableRestoreFocus
-            sx={{zIndex: "100"}}
+            sx={{zIndex: theme.zIndex.appBar + 100}}
             // anchorOrigin={{
             //     vertical: 'bottom',
             //     horizontal: 'left',

@@ -3,18 +3,18 @@ import {
     CustomBoxFullWidth,
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import ChatSideBar from './ChatSideBar'
 import ChatView from './ChatView'
 import { Stack } from '@mui/material'
 import EmptyView from './EmptyView'
-import { useGetChannelList } from '../../hooks/react-query/config/chat/useGetChannelLists'
+import { useGetChannelList } from "@/hooks/react-query/config/chat/useGetChannelLists"
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { useGetConversation } from '../../hooks/react-query/config/chat/useGetConversation'
-import { useStoreMessage } from '../../hooks/react-query/config/chat/useStoreMessage'
+import { useGetConversation } from "@/hooks/react-query/config/chat/useGetConversation"
+import { useStoreMessage } from "@/hooks/react-query/config/chat/useStoreMessage"
 import { onErrorResponse } from '../ErrorResponse'
 import { useRouter } from 'next/router'
-import { useSearchList } from '../../hooks/react-query/config/chat/useSearch'
+import { useSearchList } from "@/hooks/react-query/config/chat/useSearch"
 import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles'
 import ConversationInfoTop from './ConversationInfoTop'
@@ -57,7 +57,6 @@ const Chat = ({ page }) => {
     } = router.query
     const { global } = useSelector((state) => state.globalSettings)
     const [scrollBottom, setScrollBottom] = useState(true)
-
     const handleCloseSidebar = () => {
         setIsSidebarOpen(false)
     }
@@ -138,7 +137,7 @@ const Chat = ({ page }) => {
                     ...receiver,
                     id: id,
                     sender_type: 'customer',
-                    receiver_type: 'vendor',
+                    receiver_type:type==="vendor"? 'vendor':"delivery_man",
                     receiver: {
                         f_name: restaurantName,
                         l_name: '',
@@ -256,7 +255,6 @@ const Chat = ({ page }) => {
         } else global?.base_urls?.business_logo_url
     }
     const userImage = receiverImage
-
     return (
         <PushNotificationLayout refetch={refetch} pathName="info">
             <Meta

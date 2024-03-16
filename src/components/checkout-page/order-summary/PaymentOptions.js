@@ -159,7 +159,7 @@ const PaymentOptions = (props) => {
                                 color={theme.palette.primary.main}
                                 textTransform="capitalize"
                             >
-                                {paymentMethodDetails?.method ? `${paymentMethodDetails?.method?.replaceAll('_', ' ')} (${paymentMethodDetails?.name})` : paymentMethodDetails?.name?.replaceAll('_', ' ')}
+                                {paymentMethodDetails?.method ? `${t(paymentMethodDetails?.method?.replaceAll('_', ' '))} (${t(paymentMethodDetails?.name)})` : `${t(paymentMethodDetails?.name?.replaceAll('_', ' '))}`}
                             </Typography>
                         </Stack>
                     ) : (

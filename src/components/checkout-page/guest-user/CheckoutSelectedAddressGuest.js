@@ -20,8 +20,8 @@ import MapsHomeWorkSharpIcon from "@mui/icons-material/MapsHomeWorkSharp";
 import { CustomStackFullWidth } from "../../../styled-components/CustomStyles.style";
 import { DeliveryCaption } from "../CheckOut.style";
 import AddNewAddress from "../../user-info/address/AddNewAddress";
-// import CustomModal from "../../modal";
-// import GuestUserInforForm from "../../address/GuestUserInforForm";
+import CustomModal from "@/components/custom-modal/CustomModal";
+import GuestUserInforForm from "./GuestUserInforForm";
 
 const CheckoutSelectedAddressGuest = ({
 	address,
@@ -32,13 +32,14 @@ const CheckoutSelectedAddressGuest = ({
 	orderType,
 }) => {
 	const theme = useTheme();
+	const { global } = useSelector((state) => state.globalSettings)
 	const dispatch = useDispatch();
-	//const [openGuestUserModal, setOpenGuestUserModal] = useState(false);
+	const [openGuestUserModal, setOpenGuestUserModal] = useState(false);
 	//  const { openAddressModal } = useSelector((state) => state.addressModel);
 	const { guestUserInfo } = useSelector((state) => state.guestUserInfo);
 	const handleClick = () => {
 		if (orderType === "take_away") {
-			//setOpenGuestUserModal(true);
+			setOpenGuestUserModal(true);
 		} else {
 			setEditAddress(address);
 			//  dispatch(setOpenAddressModal(true));
@@ -69,7 +70,7 @@ const CheckoutSelectedAddressGuest = ({
 									gap="5px"
 									padding="8px"
 								>
-									<PersonIcon sx={{ color: (theme) => theme.palette.neutral[300] }} />
+									<PersonIcon sx={{ color: (theme) => theme.palette.neutral[400] }} />
 									<Typography fontSize="13px">{guestUserInfo?.contact_person_name}</Typography>
 								</CustomStackFullWidth>
 								<CustomStackFullWidth
@@ -78,12 +79,12 @@ const CheckoutSelectedAddressGuest = ({
 									gap="5px"
 									padding="8px"
 								>
-									<CallIcon sx={{ color: (theme) => theme.palette.neutral[300] }} />
+									<CallIcon sx={{ color: (theme) => theme.palette.neutral[400] }} />
 									<Typography fontSize="13px">
 										{guestUserInfo?.contact_person_number}
 									</Typography>
 								</CustomStackFullWidth>
-								{orderType !== "take_away" && (
+								{orderType !== "take_away" && (guestUserInfo?.house || guestUserInfo?.floor) && (
 									<CustomStackFullWidth
 										direction="row"
 										alignItems="center"
@@ -91,7 +92,7 @@ const CheckoutSelectedAddressGuest = ({
 										padding="8px"
 									>
 										<MapsHomeWorkSharpIcon
-											sx={{ color: (theme) => theme.palette.neutral[300] }}
+											sx={{ color: (theme) => theme.palette.neutral[400] }}
 										/>
 										<Typography fontSize="12px">{`House - ${guestUserInfo?.house} , Floor - ${guestUserInfo?.floor}`}</Typography>
 									</CustomStackFullWidth>
@@ -113,7 +114,7 @@ const CheckoutSelectedAddressGuest = ({
 							</CustomStackFullWidth>
 						)}
 					</CustomStackFullWidth>
-					<AddNewAddress refetch={refetch} buttonbg="true" guestUser='true' orderType={orderType} />
+					<AddNewAddress refetch={refetch} buttonbg="true" guestUser='true' orderType={orderType} setOpenGuestUserModal={setOpenGuestUserModal} />
 
 				</CustomStackFullWidth>
 				<CustomStackFullWidth
@@ -125,32 +126,25 @@ const CheckoutSelectedAddressGuest = ({
 					{orderType !== "take_away" && (
 						<>
 							<PlaceIcon sx={{ color: theme.palette.primary.main }} />
-							<Typography sx={{ color: (theme) => theme.palette.neutral[400] }} >{guestUserInfo ? guestUserInfo?.address : address?.address}</Typography>
+							<Typography sx={{ color: (theme) => theme.palette.neutral[400] }} >{guestUserInfo?.address ? guestUserInfo?.address : address?.address}</Typography>
 						</>
 					)}
 				</CustomStackFullWidth>
 			</CustomStackFullWidth>
-			{/* <AddNewAddress
-                openAddressModal={openAddressModal}
-                refetch={refetch}
-                t={t}
-                configData={configData}
-                editAddress={editAddress}
-                setEditAddress={setEditAddress}
-            /> */}
-			{/*{openGuestUserModal && (*/}
-			{/*  <CustomModal*/}
-			{/*    openModal={openGuestUserModal}*/}
-			{/*    handleClose={() => setOpenGuestUserModal(false)}*/}
-			{/*  >*/}
-			{/*    <GuestUserInforForm*/}
-			{/*      configData={configData}*/}
-			{/*      editAddress={editAddress}*/}
-			{/*      setEditAddress={setEditAddress}*/}
-			{/*      handleClose={() => setOpenGuestUserModal(false)}*/}
-			{/*    />*/}
-			{/*  </CustomModal>*/}
-			{/*)}*/}
+			{openGuestUserModal && (
+				<CustomModal
+					openModal={openGuestUserModal}
+					setModalOpen={setOpenGuestUserModal}
+					handleClose={() => setOpenGuestUserModal(false)}
+				>
+					<GuestUserInforForm
+						configData={global}
+						editAddress={editAddress}
+						setEditAddress={setEditAddress}
+						handleClose={() => setOpenGuestUserModal(false)}
+					/>
+				</CustomModal>
+			)}
 		</div>
 	);
 };

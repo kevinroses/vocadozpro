@@ -61,45 +61,6 @@ const StartPriceView = (props) => {
             )
         }
     }
-    // const handleBadge = () => {
-    //     if (Number.parseInt(data?.restaurant_discount) === 0) {
-    //         if (Number.parseInt(data?.discount) > 0) {
-    //             if (data?.discount_type === 'percent') {
-    //                 return <CustomChip label={`- ${data?.discount} %`} />
-    //             } else {
-    //                 return (
-    //                     <CustomChip
-    //                         label={`- ${getAmount(
-    //                             data?.discount,
-    //                             currencySymbolDirection,
-    //                             currencySymbol,
-    //                             digitAfterDecimalPoint
-    //                         )}`}
-    //                     />
-    //                 )
-    //             }
-    //         }
-    //     } else {
-    //         if (Number.parseInt(data?.restaurant_discount) > 0) {
-    //             if (data?.discount_type === 'percent') {
-    //                 return (
-    //                     <CustomChip label={`${data?.restaurant_discount}  %`} />
-    //                 )
-    //             } else {
-    //                 return (
-    //                     <CustomChip
-    //                         label={`- ${getAmount(
-    //                             data?.restaurant_discount,
-    //                             currencySymbolDirection,
-    //                             currencySymbol,
-    //                             digitAfterDecimalPoint
-    //                         )}`}
-    //                     />
-    //                 )
-    //             }
-    //         }
-    //     }
-    // }
 
     const handleDiscountedPriceView = () => {
         if (data.discount > 0) {
@@ -135,6 +96,7 @@ const StartPriceView = (props) => {
                     fontSize: { xs: '13px', sm: '16px' },
                 }}
             >
+                {data?.price > 0 && handleConvertedPrice()}
                 {data.price === handleConvertedPrice() ? (
                     getAmount(
                         data?.price,
@@ -145,7 +107,7 @@ const StartPriceView = (props) => {
                 ) : (
                     <Typography
                         component="span"
-                        marginRight="5px"
+                        marginLeft="5px"
                         fontWeight="500"
                         color={theme.palette.neutral[400]}
                         sx={{ fontSize: { xs: '13px', sm: '13px' } }}
@@ -164,15 +126,8 @@ const StartPriceView = (props) => {
                         )}
                     </Typography>
                 )}
-                {data?.price > 0 && handleConvertedPrice()}
+
             </Typography>
-            {/* {!available_date_ends &&
-                handleBadge(
-                    data,
-                    currencySymbol,
-                    currencySymbolDirection,
-                    digitAfterDecimalPoint
-                )} */}
         </Stack>
     )
 }

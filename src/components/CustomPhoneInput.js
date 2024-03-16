@@ -6,7 +6,7 @@ import { CustomTypography } from './custom-tables/Tables.style'
 import { useTheme } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 import { useTranslation } from 'react-i18next'
-import { CustomStackFullWidth } from '../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import { RTL } from './RTL/RTL'
 
 const useStyles = makeStyles((theme) => ({
@@ -70,14 +70,14 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CustomPhoneInput = ({
-    value,
-    onHandleChange,
-    initCountry,
-    touched,
-    errors,
-    rtlChange,
-    width,
-}) => {
+                              value,
+                              onHandleChange,
+                              initCountry,
+                              touched,
+                              errors,
+                              rtlChange,
+                              width,
+                          }) => {
     const changeHandler = (e) => {
         onHandleChange(e)
     }
@@ -120,7 +120,7 @@ const CustomPhoneInput = ({
                 containerClass={classes.borderClass}
                 dropdownStyle={{ height: '300px', width: '267px' }}
                 onlyCountries={[]}
-            //  disableDropdown="false"
+                //  disableDropdown="false"
             />
             {touched && errors && (
                 <CustomTypography

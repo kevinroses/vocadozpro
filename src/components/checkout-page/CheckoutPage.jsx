@@ -20,15 +20,15 @@ import {
     handleDistance,
     isFoodAvailableBySchedule,
     maxCodAmount,
-} from '../../utils/customFunctions'
-import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
+} from "@/utils/customFunctions"
+import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
 import { useMutation, useQuery } from 'react-query'
 import moment from 'moment'
 import { getDayNumber } from './const'
-import { GoogleApi } from '../../hooks/react-query/config/googleApi'
-import { OrderApi } from '../../hooks/react-query/config/orderApi'
+import { GoogleApi } from "@/hooks/react-query/config/googleApi"
+import { OrderApi } from "@/hooks/react-query/config/orderApi"
 import Router, { useRouter } from 'next/router'
-import { ProfileApi } from '../../hooks/react-query/config/profileApi'
+import { ProfileApi } from "@/hooks/react-query/config/profileApi"
 import DeliveryDetails from './DeliveryDetails'
 import RestaurantScheduleTime from './RestaurantScheduleTime'
 import OrderSummaryDetails from './order-summary/OrderSummaryDetails'
@@ -36,19 +36,19 @@ import OrderCalculation from './order-summary/OrderCalculation'
 import PaymentOptions from './order-summary/PaymentOptions'
 import PlaceOrder from './order-summary/PlaceOrder'
 import { onErrorResponse, onSingleErrorResponse } from '../ErrorResponse'
-import { baseUrl } from '../../api/MainApi'
+import { baseUrl } from "@/api/MainApi"
 
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import Skeleton from '@mui/material/Skeleton'
 import DeliveryManTips from './DeliveryManTips'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
-import { setZoneData } from '../../redux/slices/global'
-import { setUser } from '../../redux/slices/customer'
-import { setWalletAmount } from '../../redux/slices/cart'
+import { setZoneData } from "@/redux/slices/global"
+import { setUser } from "@/redux/slices/customer"
+import { setWalletAmount } from "@/redux/slices/cart"
 import useGetVehicleCharge from '../../hooks/react-query/config/useGetVehicleCharge'
 import { subscriptionReducer, subscriptionsInitialState } from './states'
 import { getSubscriptionOrderCount } from './functions/getSubscriptionOrderCount'
@@ -58,7 +58,7 @@ import {
 } from './states/additionalInformationStates'
 import CustomImageContainer from '../CustomImageContainer'
 import thunderstorm from './assets/thunderstorm.svg'
-import { useGetOrderPlaceNotification } from '../../hooks/react-query/order-place/useGetOrderPlaceNotification'
+import { useGetOrderPlaceNotification } from "@/hooks/react-query/order-place/useGetOrderPlaceNotification"
 import ItemSelectWithChip from '../ItemSelectWithChip'
 import { deliveryInstructions, productUnavailableData } from './demo'
 import Cutlery from './Cutlery'
@@ -75,8 +75,8 @@ import { useTheme } from '@emotion/react'
 import OfflinePaymentForm from './OfflinePaymentForm'
 import { getGuestId, getToken } from "./functions/getGuestUserId";
 import useGetOfflinePaymentOptions from '../../hooks/react-query/offline-payment/useGetOfflinePaymentOptions'
-import { useOfflinePayment } from '../../hooks/react-query/offline-payment/useOfflinePayment'
-import { setOfflineInfoStep, setOfflineWithPartials, setOrderDetailsModal } from "../../redux/slices/OfflinePayment";
+import { useOfflinePayment } from "@/hooks/react-query/offline-payment/useOfflinePayment"
+import { setOfflineInfoStep, setOfflineWithPartials, setOrderDetailsModal } from "@/redux/slices/OfflinePayment";
 
 let currentDate = moment().format('YYYY/MM/DD HH:mm')
 let nextday = moment(currentDate).add(1, 'days').format('YYYY/MM/DD')
@@ -595,9 +595,7 @@ const CheckoutPage = () => {
             )
         }
     }
-    console.log({subscriptionStates});
     const placeOrder = () => {
-
         localStorage.setItem('access', totalAmount)
         if (page !== 'campaign') {
             if (subscriptionStates.order === '1') {
@@ -619,23 +617,31 @@ const CheckoutPage = () => {
                     })
                 } else {
                     if (subscriptionStates.type !== 'daily') {
+
+
                         let startDate = moment(
                             subscriptionStates.startDate
                         ).format('D')
                         let endDate = moment(subscriptionStates.endDate).format(
                             'D'
                         )
+                        let dateEnd = moment(subscriptionStates.endDate, "YYYY/MM/DD HH:mm");
+                        const dayNumberOfWeekEnd = dateEnd.day()
+                        let dateStart = moment(subscriptionStates.startDate, "YYYY/MM/DD HH:mm");
+                        const dayNumberOfWeekStart = dateStart.day()
+                        let totalNumbers = endDate - startDate + 1;
+                        let finalEndDay=dayNumberOfWeekEnd+totalNumbers
+
                         if (subscriptionStates.days.length > 0) {
                             const isInsideChoseDate =
                                 subscriptionStates.days.every(
                                     (item) =>
-                                        item.day >= startDate &&
-                                        item.day <= endDate
+                                        item.day >= dayNumberOfWeekStart &&
+                                        item.day <= finalEndDay
                                 )
-
                             if (isInsideChoseDate) {
                                 if (subscriptionOrderCount > 0) {
-                                    handlePlaceOrder()
+                                   handlePlaceOrder()
                                 } else {
                                     toast(
                                         t(
@@ -658,6 +664,27 @@ const CheckoutPage = () => {
                                         }
                                     )
                                 }
+                            }else{
+                                toast(
+                                    t(
+                                        `Your chosen delivery ${subscriptionStates?.days
+                                            ?.length > 1
+                                            ? 'days'
+                                            : 'day'
+                                        } and ${subscriptionStates?.days
+                                            ?.length > 1
+                                            ? 'times'
+                                            : 'time'
+                                        } must be in between start date and end date`
+                                    ),
+                                    {
+                                        duration: 5000,
+                                        icon: '⚠️',
+                                        style: {
+                                            textTransform: 'none',
+                                        },
+                                    }
+                                )
                             }
                         }
                         if (subscriptionStates.days.length === 0) {
@@ -728,7 +755,7 @@ const CheckoutPage = () => {
                     })
                 }
                 if (
-                    subscriptionStates.type !== 'monthly' &&
+                    subscriptionStates.type !== 'monthly' && subscriptionStates.type !== 'weekly' &&
                     subscriptionOrderCount > 0
                 ) {
                     handlePlaceOrder()
@@ -937,7 +964,7 @@ const CheckoutPage = () => {
                             setSwitchToWallet={setSwitchToWallet}
                         />
                         {page !== 'campaign' &&
-                            subscriptionStates.order === '0' && (
+                            subscriptionStates.order === '0' && token && (
                                 <RestaurantScheduleTime
                                     restaurantData={restaurantData}
                                     handleChange={handleChange}

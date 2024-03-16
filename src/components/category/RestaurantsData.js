@@ -39,6 +39,7 @@ const RestaurantsData = ({
                         //cuisines={restaurant?.cuisine}
                         cuisines={res?.cuisine}
                         restaurantDiscount={res?.discount}
+                        opening_time={res?.current_opening_time}
                     />
                 </Grid>
             ))}

@@ -225,7 +225,7 @@ const FloatingCart = (props) => {
                         height: '90px',
                         left: languageDirection === 'rtl' ? 10 : 'auto',
                         right: languageDirection === 'rtl' ? 'auto' : 10,
-                        top: '40%',
+                        top: '38%',
                         /* margin-left: -300px; */
                         zIndex: 1000000,
                         flexGrow: 1,
@@ -236,8 +236,8 @@ const FloatingCart = (props) => {
                             md: isFilterDrawerOpen
                                 ? 'none'
                                 : cartList?.length === 0
-                                ? 'none'
-                                : 'inherit',
+                                    ? 'none'
+                                    : 'inherit',
                         },
                     }}
                     onClick={() => setSideDrawerOpen(true)}
@@ -308,12 +308,20 @@ const FloatingCart = (props) => {
                     open={sideDrawerOpen}
                     onClose={() => setSideDrawerOpen(false)}
                     variant="temporary"
-                    sx={{ zIndex: '1400' }}
+                    sx={{ zIndex: '1400' ,
+                        '& .MuiDrawer-paper': {
+                            width:{
+                                xs:"90%",
+                                sm:"50%",
+                                md:"390px"
+
+                            }
+                        },
+                    }}
                 >
                     {cartList?.length === 0 ? (
                         <Stack
                             sx={{
-                                width: '330px',
                                 height: '100%',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -332,7 +340,6 @@ const FloatingCart = (props) => {
                     ) : (
                         <>
                             <Stack
-                                width="330px"
                                 height="100%"
                                 p="1rem"
                                 justifyContent="start"
@@ -416,21 +423,22 @@ const FloatingCart = (props) => {
                                 <Stack alignItems="center" spacing={2} position="sticky" marginTop="auto">
                                     <Stack
                                         borderRadius="5px"
+                                        flexDirection="row"
                                         sx={{
 
                                             width: '100%',
                                             paddingTop: '10px',
                                             paddingBottom: '10px',
                                         }}
-                                        backgroundColor={alpha(
-                                            theme.palette.primary.main,
-                                            0.3
-                                        )}
-                                        justifyContent="center"
+                                        // backgroundColor={alpha(
+                                        //     theme.palette.primary.main,
+                                        //     0.3
+                                        // )}
+                                        justifyContent="space-between"
                                         alignItems="center"
 
                                     >
-                                        <CustomColouredTypography
+                                        {/* <CustomColouredTypography
                                             sx={{
                                                 color: (theme) =>
                                                     theme.palette.neutral[1000],
@@ -443,14 +451,23 @@ const FloatingCart = (props) => {
                                                 currencySymbol,
                                                 digitAfterDecimalPoint
                                             )}
-                                        </CustomColouredTypography>
+                                        </CustomColouredTypography> */}
+                                        <Typography fontSize="14px" fontWeight={500}>{t('Total Price')}</Typography>
+                                        <Typography fontSize="15px" fontWeight={700}>{
+                                            getAmount(
+                                                cartItemsTotalAmount(cartList),
+                                                currencySymbolDirection,
+                                                currencySymbol,
+                                                digitAfterDecimalPoint
+                                            )}
+                                        </Typography>
                                     </Stack>
                                     <Stack
                                         direction="row"
                                         width="100%"
                                         spacing={1}
                                     >
-                                        <PrimaryButton
+                                        {/* <PrimaryButton
                                             backgroundColor={
                                                 theme.palette.neutral[200]
                                             }
@@ -466,7 +483,7 @@ const FloatingCart = (props) => {
                                             }}
                                         >
                                             {t('Clear All')}
-                                        </PrimaryButton>
+                                        </PrimaryButton> */}
                                         <PrimaryButton
                                             onClick={handleCheckout}
                                             variant="contained"
@@ -474,7 +491,7 @@ const FloatingCart = (props) => {
                                             fullWidth
                                             borderRadius="7px"
                                         >
-                                            {t('Checkout')}
+                                            {t('Proceed To Checkout')}
                                         </PrimaryButton>
                                     </Stack>
                                 </Stack>

@@ -19,7 +19,6 @@ import CustomPhoneInput from '../../CustomPhoneInput'
 import 'react-phone-input-2/lib/material.css'
 import { useTranslation } from 'react-i18next'
 import {
-    CustomColouredTypography,
     CustomLink,
     CustomStackFullWidth,
 } from "@/styled-components/CustomStyles.style"
@@ -34,7 +33,6 @@ import { CustomBoxForModal } from '../auth.style'
 import { ProfileApi } from "@/hooks/react-query/config/profileApi"
 import { setUser } from "@/redux/slices/customer"
 import SocialLogins from './social-login/SocialLogins'
-import { CustomTypographyGray } from '../../error/Errors.style'
 import { RTL } from '../../RTL/RTL'
 import { loginSuccessFull } from "@/utils/ToasterMessages"
 import { onErrorResponse, onSingleErrorResponse } from '../../ErrorResponse'
@@ -42,27 +40,23 @@ import CustomModal from '../../custom-modal/CustomModal'
 import OtpForm from '../forgot-password/OtpForm'
 import { useVerifyPhone } from "@/hooks/react-query/otp/useVerifyPhone"
 import { setToken } from "@/redux/slices/userToken"
-import useGetAllCartList from "../../../hooks/react-query/add-cart/useGetAllCartList";
-import {
-    calculateItemBasePrice,
-    getConvertDiscount,
-    handleProductValueWithOutDiscount
-} from "../../../utils/customFunctions";
-import { getSelectedAddons, getSelectedVariations } from "../../navbar/second-navbar/SecondNavbar";
-import { cart } from "../../../redux/slices/cart";
 import { getGuestId } from "../../checkout-page/functions/getGuestUserId";
 import LockIcon from '@mui/icons-material/Lock';
-import { alpha, styled } from "@mui/material";
-import TextField from "@mui/material/TextField";
-export const CustomSigninOutLine = styled(OutlinedInput)(({ theme ,width}) => ({
+import { Stack, alpha, styled } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { CustomToaster } from '@/components/custom-toaster/CustomToaster'
+
+
+
+export const CustomSigninOutLine = styled(OutlinedInput)(({ theme, width }) => ({
     //maxWidth: '355px',
-    width:width ? width:"355px",
-    borderRadius:"4px",
+    width: width ? width : "355px",
+    borderRadius: "4px",
     "&.MuiOutlinedInput-root": {
-        "& .MuiOutlinedInput-input":{
+        "& .MuiOutlinedInput-input": {
             padding: "12.5px 0px !important",
-            fontSize:"14px",
-            fontWeight:"400",
+            fontSize: "14px",
+            fontWeight: "400",
             alignItems: "center"
 
         } // Adjust the padding values as needed
@@ -76,8 +70,8 @@ const SignInPage = ({
     setSignInPage,
     handleClose,
     signInSuccess,
-    setModalFor,cartListRefetch,
-                        setJwtToken,setUserInfo, handleSuccess,setMedium
+    setModalFor, cartListRefetch,
+    setJwtToken, setUserInfo, handleSuccess, setMedium, zoneid
 }) => {
     const [showPassword, setShowPassword] = useState(false)
     // const [profileData,setProfileData]=useState({})
@@ -88,7 +82,7 @@ const SignInPage = ({
     const { global } = useSelector((state) => state.globalSettings)
     const businessLogo = global?.base_urls?.business_logo_url
     const router = useRouter()
-    const guestId =getGuestId()
+    const guestId = getGuestId()
     const [isRemember, setIsRemember] = useState(false)
     const [openModal, setModalOpen] = useState(false)
     const [openOtpModal, setOpenOtpModal] = useState(false)
@@ -99,7 +93,6 @@ const SignInPage = ({
     if (typeof window !== 'undefined') {
         userDatafor = JSON.parse(localStorage.getItem('userDatafor'))
     }
-
     const loginFormik = useFormik({
         initialValues: {
             phone: userDatafor ? userDatafor.phone : '',
@@ -123,7 +116,7 @@ const SignInPage = ({
                     localStorage.setItem('userDatafor', JSON.stringify(values))
                 }
                 formSubmitHandler(values)
-            } catch (err) {}
+            } catch (err) { }
         },
     })
 
@@ -155,13 +148,13 @@ const SignInPage = ({
     const handleTokenAfterSignIn = async (response) => {
         if (response?.data) {
             localStorage.setItem('token', response?.data?.token)
-            await wishlistRefetch()
+            zoneid && await wishlistRefetch()
             await profileRefatch()
-            await  cartListRefetch();
-            toast.success(t(loginSuccessFull))
+            await cartListRefetch();
+            CustomToaster('success', loginSuccessFull);
             //always set this dispatch at end line. otherwise wishlist and profile will not refetch. This dispatch closes the modal.
             dispatch(setToken(response?.data?.token))
-            if(router.pathname==="/order" || router.pathname==="/forgot-password"){
+            if (router.pathname === "/order" || router.pathname === "/forgot-password") {
                 router.push("/home")
             }
             //dispatch(cart(setItemIntoCart()));
@@ -175,7 +168,7 @@ const SignInPage = ({
     } = useMutation('sign-in', AuthApi.signIn)
 
     const formSubmitHandler = (values) => {
-        const newValues={...values,guest_id:guestId}
+        const newValues = { ...values, guest_id: guestId }
         loginMutation(newValues, {
             onSuccess: async (response) => {
                 if (global?.customer_verification) {
@@ -238,7 +231,7 @@ const SignInPage = ({
 
     const languageDirection = localStorage.getItem('direction')
     return (
-        <CustomBoxForModal>
+        <Stack>
             <RTL direction={languageDirection}>
                 <CustomStackFullWidth
                     alignItems="center"
@@ -255,7 +248,7 @@ const SignInPage = ({
                             alt="Logo"
                         />
                         <CustomTypography
-                            sx={{ fontWeight: 'bold',fontSize:"22px" }}
+                            sx={{ fontWeight: 'bold', fontSize: "22px" }}
                         >
                             {t('Sign In')}
                         </CustomTypography>
@@ -287,7 +280,7 @@ const SignInPage = ({
                                         sx={{
                                             color: (theme) =>
                                                 theme.palette.neutral[600],
-                                            fontSize:"14px"
+                                            fontSize: "14px"
 
                                         }}
                                         htmlFor="outlined-adornment-password"
@@ -295,7 +288,6 @@ const SignInPage = ({
                                         {t('Password')}
                                     </InputLabel>
                                     <CustomSigninOutLine
-
                                         required
                                         type={
                                             showPassword ? 'text' : 'password'
@@ -328,20 +320,19 @@ const SignInPage = ({
                                                     edge="end"
                                                 >
                                                     {showPassword ? (
-                                                        <Visibility sx={{width:"20px",height:"20px",color:theme=>alpha(theme.palette.neutral[400],.6)}} />
+                                                        <Visibility sx={{ width: "20px", height: "20px", color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                     ) : (
-                                                        <VisibilityOff sx={{width:"20px",height:"20px",color:theme=>alpha(theme.palette.neutral[400],.6)}} />
+                                                        <VisibilityOff sx={{ width: "20px", height: "20px", color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                                     )}
                                                 </IconButton>
                                             </InputAdornment>
                                         }
-                                        startAdornment={ <InputAdornment position="start" sx={{marginInlineEnd:"0px !important"}}>
+                                        startAdornment={<InputAdornment position="start" sx={{ marginInlineEnd: "0px !important" }}>
                                             <IconButton
                                                 aria-label="toggle password visibility"
-
                                                 edge="start"
                                             >
-                                             <LockIcon sx={{fontSize:"1.2rem"}}/>
+                                                <LockIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
                                             </IconButton>
                                         </InputAdornment>}
                                         label="Password"
@@ -381,13 +372,15 @@ const SignInPage = ({
                                         }
                                     />
                                     <Typography
-
-                                        onClick={gotoForgotPassword}
+                                        // onClick={gotoForgotPassword}
+                                        onClick={() => {
+                                            setModalFor('forgot_password')
+                                        }}
                                         sx={{
-                                            fontSize:"12px",
+                                            fontSize: "12px",
                                             textTransform: 'none',
                                             cursor: 'pointer',
-                                            color: 'primary.main',
+                                            color: alpha(theme.palette.error.main, 0.8),
                                         }}
                                     >
                                         {t('Forgot password?')}
@@ -398,7 +391,7 @@ const SignInPage = ({
                                 type="submit"
                                 fullWidth
                                 variant="contained"
-                                sx={{ mt: 2,fontSize:"14px",fontWeight:"500",marginBottom:".6rem",height:"45px" }}
+                                sx={{ mt: 2, fontSize: "14px", fontWeight: "500", marginBottom: ".6rem", height: "45px" }}
                                 loading={isLoading}
                             >
                                 {t('Sign In')}
@@ -409,6 +402,7 @@ const SignInPage = ({
                         global?.social_login?.some(
                             (item) => item.status === true
                         ) && (
+
                             <CustomStackFullWidth
                                 alignItems="center"
                                 justifyContent="center"
@@ -481,7 +475,7 @@ const SignInPage = ({
                     isLoading={isLoadingOtpVerifiyAPi}
                 />
             </CustomModal>
-        </CustomBoxForModal>
+        </Stack>
     )
 }
 

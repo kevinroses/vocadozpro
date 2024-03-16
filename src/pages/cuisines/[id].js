@@ -3,16 +3,17 @@ import { Container } from '@mui/material'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import CuisinesDetailsPage from '../../components/cuisines-page/CuisinesDetailsPage'
 import { useRouter } from 'next/router'
-import { useGetCuisinesDetails } from '../../hooks/react-query/cuisines/useGetCuisinesDetails'
-import { CustomHeader } from '../../api/Headers'
-import { landingPageApi } from '../../components/landingpage/Api'
+import { useGetCuisinesDetails } from "@/hooks/react-query/cuisines/useGetCuisinesDetails"
+import { CustomHeader } from "@/api/Headers"
+import { landingPageApi } from "@/components/landingpage/Api"
 import Meta from '../../components/Meta'
 import { t } from 'i18next'
 import CustomContainer from '../../components/container'
 import HomeGuard from "../../components/home-guard/HomeGuard";
+import { Stack } from "@mui/system";
 
 const Index = ({ configData, landingPageData, pathName }) => {
     const [offset, setOffset] = useState(1)
@@ -37,16 +38,13 @@ const Index = ({ configData, landingPageData, pathName }) => {
             />
         <HomeGuard>
             <CustomContainer>
-                <CustomStackFullWidth>
-                    <CustomPaperBigCard
-                        sx={{ marginTop:{xs: '1.5rem',sm:"2rem",md:"5rem"}, marginBottom: '1rem' }}
-                        padding="1rem"
-                    >
+                <CustomStackFullWidth  >
+                    <Stack sx={{ marginTop:{xs: '1.5rem',sm:"2rem",md:"5rem"}, marginBottom: '1rem' }}>
                         <CuisinesDetailsPage
                             data={data}
                             isLoading={isLoading}
                         />
-                    </CustomPaperBigCard>
+                    </Stack>
                 </CustomStackFullWidth>
             </CustomContainer>
         </HomeGuard>

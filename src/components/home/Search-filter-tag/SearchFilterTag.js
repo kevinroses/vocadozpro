@@ -1,26 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Typography } from "@mui/material";
-import { t } from "i18next";
-import { CustomStackFullWidth } from "../../../styled-components/CustomStyles.style";
+
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style";
 import FilterTag from "./FilterTag";
 import { useRouter } from "next/router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSticky } from "../../../redux/slices/scrollPosition";
 import useScrollSticky from "./useScrollSticky";
 import Card from "@mui/material/Card";
 import CustomContainer from "../../container";
-import { Stack } from "@mui/system";
 import { searchMockData } from "../../products-page/SearchMockData";
 import {
   setFilterbyByCuisineDispatch,
   setFilterbyByDispatch,
   setPriceByDispatch,
   setRatingByDispatch, setSortbyByDispatch
-} from "../../../redux/slices/searchFilter";
-import { setSearchTagData } from "../../../redux/slices/searchTagSlice";
+} from "@/redux/slices/searchFilter";
+import { setSearchTagData } from "@/redux/slices/searchTagSlice";
+import { useScrollTrigger } from "@mui/material";
 
-const SearchFilterTag = ({ tags ,query,page}) => {
+const SearchFilterTag = ({ tags ,query,page,sort_by,setSort_by}) => {
   const dispatch=useDispatch()
   const { offsetElementRef } = useScrollSticky();
   const {isSticky}=useSelector((state) => state.scrollPosition)
@@ -28,17 +26,14 @@ const SearchFilterTag = ({ tags ,query,page}) => {
   const {categoryIsSticky}=useSelector((state) => state.scrollPosition)
   const { filterData } = useSelector((state) => state.searchFilterStore)
   const [storeData, setStoreData] = useState(searchMockData)
-  const [activeTag,setActiveTag] = useState(null)
   const [isMount,setIsMount]=useState(false)
-
-  const [sort_by,setSort_by]=useState('')
   const router = useRouter()
   const theme=useTheme()
+  const scrolling = useScrollTrigger();
   useEffect(() => {
    dispatch(setSearchTagData(storeData))
   }, [searchMockData]);
   const handleClick = (value) => {
-
     if(value!=="sort_by"){
       let newArr;
       if (value === 'veg' || value === 'nonVeg') {
@@ -107,7 +102,7 @@ const SearchFilterTag = ({ tags ,query,page}) => {
 
   useEffect(() => {
     dispatch(setSearchTagData(storeData));
-  }, [ storeData,sort_by,isMount]);
+  }, [ storeData,isMount]);
 
   useEffect(() => {
     if(query){
@@ -117,8 +112,8 @@ const SearchFilterTag = ({ tags ,query,page}) => {
   }, [query]);
 
   return (
-    <CustomStackFullWidth ref={offsetElementRef}  spacing={2} sx={{position:"sticky",top:{xs:"45px",md:"50px"},
-      zIndex:{xs:99,md:isSticky?1200:99}}}
+    <CustomStackFullWidth ref={offsetElementRef}  spacing={2} sx={{position:"sticky",top:{xs:"45px",md:router.pathname !== "/home" ?"0px":"50px"},
+      zIndex:{xs:1101,md:isSticky?1200:99}}}
     >
       <Card sx={{
         boxShadow: isSticky

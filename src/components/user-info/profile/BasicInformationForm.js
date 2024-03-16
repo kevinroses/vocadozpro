@@ -187,7 +187,7 @@ const BasicInformationForm = ({ data, formSubmit, deleteUserHandler }) => {
                                 variant="outlined"
                                 name="email"
                                 value={profileFormik.values.email}
-                                onChange={profileFormik.handleChange}
+                                onChange={data?.social_id===null && profileFormik.handleChange}
                                 label={t('Email')}
                                 required
                                 error={

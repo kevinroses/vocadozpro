@@ -7,7 +7,7 @@ import {
     Typography,
 } from '@mui/material'
 import { Box } from '@mui/system'
-import { CustomButtonPrimary } from '../../styled-components/CustomButtons.style'
+import { CustomButtonPrimary } from "@/styled-components/CustomButtons.style"
 
 export const CustomBox = styled(Box)(({ theme }) => ({
     width: '100%',
@@ -32,12 +32,12 @@ export const StyledButton = styled(CustomButtonPrimary)(
         marginLeft: languageDirection === 'rtl' && '15px',
         borderTopLeftRadius:
             (languageDirection === 'ltr' || !languageDirection) &&
-            radiuschange === 'true'
+                radiuschange === 'true'
                 ? '0px'
                 : '6px',
         borderBottomLeftRadius:
             (languageDirection === 'ltr' || !languageDirection) &&
-            radiuschange === 'true'
+                radiuschange === 'true'
                 ? '0px'
                 : '6px',
         borderTopRightRadius:
@@ -74,12 +74,12 @@ export const CssTextField = styled(TextField)(
                 mobileview === 'true'
                     ? '5px'
                     : (languageDirection === 'ltr' || !languageDirection) &&
-                      '0px',
+                    '0px',
             borderBottomRightRadius:
                 mobileview === 'true'
                     ? '5px'
                     : (languageDirection === 'ltr' || !languageDirection) &&
-                      '0px',
+                    '0px',
             borderTopLeftRadius:
                 mobileview === 'true'
                     ? '5px'
@@ -107,15 +107,16 @@ export const CustomCardLinkSection = styled(Paper)(({ theme }) => ({
     width: '100%',
     border: 'none',
 }))
-export const CustomButton = styled(Paper)(({ theme }) => ({
+export const CustomButton = styled(Paper)(({ theme, backgroundColor }) => ({
     width: '153px',
     height: '50px',
     borderRadius: '5px',
     overflow: 'hidden',
     cursor: 'pointer',
+    backgroundColor: backgroundColor,
     [theme.breakpoints.down('md')]: {
-        width: '120px',
-        height: '40px',
+        width: '125px',
+        height: '45px',
     },
 }))
 export const HeroCardTypography = styled(Typography)(({ theme, fontsize }) => ({

@@ -45,6 +45,7 @@ const PaymentMethodCard = (props) => {
     const radioLabel = () => {
         return (
             <Stack
+
                 width="100%"
                 direction="row"
                 gap="16px"
@@ -52,7 +53,7 @@ const PaymentMethodCard = (props) => {
                 paddingLeft={{ xs: '5px', sm: '5px', md: '10px' }}
             >
                 <CustomImageContainer
-                    maxWidth="100%"
+                    maxWidth="70px"
                     width="unset"
                     height="32px"
                     objectfit="contain"
@@ -61,7 +62,7 @@ const PaymentMethodCard = (props) => {
 
                 <Typography
                     fontWeight="500"
-                    fontSize={{ xs: '12px', sm: '12px', md: '16px' }}
+                    fontSize={{ xs: '12px', sm: '12px', md: '14px' }}
                     color={theme.palette.neutral[1000]}
                 >
                     {paymentType}

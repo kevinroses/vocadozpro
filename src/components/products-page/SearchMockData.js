@@ -7,6 +7,12 @@ export const searchMockData = [
         value: 'sort_by',
         isActive: false,
     },
+    // {
+    //     id: 10,
+    //     name: t('Cuisine'),
+    //     value: 'cuisine',
+    //     isActive: false,
+    // },
     {
         id: 0,
         name: t('Veg'),
@@ -21,24 +27,35 @@ export const searchMockData = [
     },
     {
         id: 3,
-        name: t('Ratings 4 +'),
-        value: 'rating',
+        name: t('Ratings 3 +'),
+        value: 'ratings',
         isActive: false,
     },
     {
         id: 4,
+        name: t('Ratings 4 +'),
+        value: 'rating',
+        isActive: false,
+    },  {
+        id: 5,
+        name: t('Ratings 5'),
+        value: 'rating5',
+        isActive: false,
+    },
+    {
+        id: 6,
         name: 'New Arrivals',
         value: 'new_arrivals',
         isActive: false,
     },
     {
-        id: 5,
+        id: 7,
         name: 'Discounted',
         value: 'discounted',
         isActive: false,
     },
     {
-        id: 6,
+        id: 8,
         name: 'Popular',
         value: 'popular',
         isActive: false,

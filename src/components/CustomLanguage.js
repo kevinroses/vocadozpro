@@ -13,16 +13,22 @@ import { useSettings } from '../contexts/use-settings'
 import i18n, { t } from 'i18next'
 import { useTheme } from '@mui/material/styles'
 import { languageLists } from './navbar/second-navbar/custom-language/languageLists'
-import { setCountryCode, setLanguage } from '../redux/slices/languageChange'
+import { setCountryCode, setCountryFlag, setLanguage } from '../redux/slices/languageChange'
 import { rtlLanguageList } from './navbar/second-navbar/custom-language/rtlLanguageList'
 import { isRTLLanguage, languageValue } from '../utils/customFunctions'
-const CustomLanguage = ({ formMobileMenu, language, countryCode }) => {
+import { CustomToaster } from './custom-toaster/CustomToaster';
+const CustomLanguage = ({ formMobileMenu, language, countryCode, isMobile }) => {
     const theme = useTheme()
     const dispatch = useDispatch()
     //const [language, setLanguage] = useState('')
     const [anchorEl, setAnchorEl] = useState(null)
     const anchorRef = useRef(null)
     const { global } = useSelector((state) => state.globalSettings)
+    const { countryFlag } = useSelector((state) => state.languageChange)
+    let location = undefined;
+    if (typeof window !== "undefined") {
+        location = localStorage.getItem("location");
+    }
 
     useEffect(() => {
         // Perform localStorage action
@@ -57,6 +63,7 @@ const CustomLanguage = ({ formMobileMenu, language, countryCode }) => {
     const handleLanguage = (ln) => {
         dispatch(setLanguage(ln?.languageCode))
         dispatch(setCountryCode(ln?.countryCode))
+        dispatch(setCountryFlag(ln?.countryFlag))
         // setLanguage(ln)
         localStorage.setItem('language', ln?.languageCode)
         cookie.set('languageSetting', ln?.languageCode)
@@ -70,7 +77,8 @@ const CustomLanguage = ({ formMobileMenu, language, countryCode }) => {
             direction: isRTLLanguage(ln?.languageCode) ? 'rtl' : 'ltr',
         })
         //setLanguage(ln)
-        toast.success(t('Language Changed Successfully.'))
+        CustomToaster('success', 'Language Changed Successfully');
+
 
         window.location.reload()
     }
@@ -78,7 +86,7 @@ const CustomLanguage = ({ formMobileMenu, language, countryCode }) => {
 
     return (
         <>
-            <LefRightBorderBox
+            <LefRightBorderBox location={location} isMobile={isMobile}
             >
                 <TopBarButton
                     formMobileMenu={formMobileMenu}
@@ -94,12 +102,16 @@ const CustomLanguage = ({ formMobileMenu, language, countryCode }) => {
                         <KeyboardArrowDownIcon style={{ color: arrowColor }} />
                     }
                 >
-                    <CustomColouredTypography
-                        color={theme.palette.neutral[600]}
-                        sx={{ textTransform: 'capitalize' }}
-                    >
-                        {languageValue(language)?.languageCode}
-                    </CustomColouredTypography>
+                    <Stack flexDirection="row" gap="5px">
+                        {(!location || isMobile) && <img width="20px" src={countryFlag} />}
+                        <CustomColouredTypography
+                            color={theme.palette.neutral[600]}
+                            sx={{ textTransform: 'capitalize' }}
+                            fontSize={{ xs: "14px", sm: "16px" }}
+                        >
+                            {languageValue(language)?.languageCode}
+                        </CustomColouredTypography>
+                    </Stack>
                 </TopBarButton>
             </LefRightBorderBox>
             <StyledMenu
@@ -117,6 +129,7 @@ const CustomLanguage = ({ formMobileMenu, language, countryCode }) => {
                         disableRipple
                         key={index}
                         sx={{
+                            backgroundColor: language === lan.languageCode ? alpha(theme.palette.primary.main, 0.8) : 'inherit',
                             '&:hover': {
                                 backgroundColor: 'primary.main',
                             },
@@ -126,6 +139,7 @@ const CustomLanguage = ({ formMobileMenu, language, countryCode }) => {
                             <img width="20px" src={lan?.countryFlag} />
                         </ListItemIcon>
                         <Typography
+                            fontSize={{ xs: "14px", sm: "16px" }}
                             marginRight={
                                 languageDirection === 'rtl' ? '1rem' : '0px'
                             }

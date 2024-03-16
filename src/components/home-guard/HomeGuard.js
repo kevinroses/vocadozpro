@@ -1,18 +1,24 @@
 import React, {useEffect, useState} from 'react'
 import {useRouter} from 'next/router'
 import CssBaseline from "@mui/material/CssBaseline";
+import { useSelector } from "react-redux";
 
 const HomeGuard = (props) => {
-    const {children} = props
+    const {children,from,page} = props
     const router = useRouter()
+    const { cartList } = useSelector((state) => state.cart)
     const [checked, setChecked] = useState(false)
     useEffect(
         () => {
             if (!router.isReady) {
                 return
             }
+            if(from==="checkout" && cartList?.length===0 && page !== 'campaign'){
+                router.push('/home')
+            }
             const zoneId = JSON.parse(localStorage.getItem('zoneid'))
-            if (zoneId?.length > 0) {
+            const location = localStorage.getItem('location')
+            if (zoneId?.length > 0 && location) {
                 setChecked(true)
             } else {
                 router.push('/')

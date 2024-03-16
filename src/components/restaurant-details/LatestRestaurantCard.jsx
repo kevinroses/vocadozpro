@@ -86,6 +86,7 @@ const LatestRestaurantCard = (props) => {
         discount,
         foods_count,
         delivery_fee,
+        hoveredMarkerId
     } = props
     const { t } = useTranslation()
     const theme = useTheme()
@@ -218,7 +219,11 @@ const LatestRestaurantCard = (props) => {
     }
     return (
         <>
-            <Stack maxWidth={{ xs: "290px", sm: "310px", md: "320px" }} height={{ xs: "195px", md: "210px" }} onClick={handleClick}>
+            <Stack
+                // minWidth={{ xs: "290px", sm: "310px", md: "320px" }}
+                maxWidth={{ xs: "290px", sm: "310px", md: "320px" }}
+                height={{ xs: "195px", md: "210px" }}
+                onClick={handleClick} id={`restaurent-${id}`}>
 
                 <CustomPaperBigCard
                     nopadding="true"
@@ -228,8 +233,9 @@ const LatestRestaurantCard = (props) => {
                         padding: '10px',
                         cursor: 'pointer',
                         width: '100%',
+                        minWidth:{ xs: "290px", sm: "310px", md: "320px" },
                         height: '100%',
-                        border:`1px solid rgba(255, 138, 0, 0.10)`,
+                        border: hoveredMarkerId === id ? `1px solid ${theme.palette.primary.main}` : `1px solid rgba(255, 138, 0, 0.10)`,
                         '&:hover': {
                             boxShadow: `0px 0px 2px rgba(145, 158, 171, 0.2), 0px 5px 20px ${theme.palette.paperBoxShadow}`,
                         },

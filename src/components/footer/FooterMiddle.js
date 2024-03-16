@@ -1,6 +1,7 @@
 import React from 'react'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import {
+    Box,
     Container,
     Grid,
     Stack,
@@ -20,6 +21,7 @@ import { OtherData } from './OtherData'
 import { QuickLinkData1 } from './QuickLinkData1'
 import ContactInfo from './ContactInfo'
 import CustomContainer from '../container'
+import { alpha } from '@material-ui/core'
 
 const FooterMiddle = ({ landingPageLink, landingPageData }) => {
     const { global } = useSelector((state) => state.globalSettings)
@@ -30,26 +32,26 @@ const FooterMiddle = ({ landingPageLink, landingPageData }) => {
         zoneid = localStorage.getItem('zoneid')
     }
     const theme = useTheme()
-    const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+    const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
     const isXSmall = useMediaQuery(theme.breakpoints.down('md'))
     const businessLogo = global?.logo
     return (
-        <CustomStackFullWidth alignItems="center" pt="3rem">
+        <CustomStackFullWidth alignItems="center" pt={{ xs: "1rem", sm: "2rem" }}>
             <CustomContainer>
                 <Grid
                     container
-                    spacing={{ xs: 2, md: 4 }}
+                    spacing={{ xs: 3, md: 4 }}
                     justifyContent="space-between"
                 >
                     <Grid
                         item
                         xs={12}
-                        sm={6}
+                        sm={12}
                         md={4}
                         align={isSmall && 'center'}
                     >
                         <CustomStackFullWidth
-                            spacing={4}
+                            spacing={{ xs: 1, sm: 2, md: 4 }}
                             alignItems={{
                                 xs: 'center',
                                 sm: 'center',
@@ -65,12 +67,13 @@ const FooterMiddle = ({ landingPageLink, landingPageData }) => {
                             </Link>
                             <Typography
                                 fontSize="14px"
-                                color={theme.palette.whiteContainer.main}
+                                color={alpha(theme.palette.whiteContainer.main, 0.8)}
                             >
                                 {landingPageData?.footer_data}
                             </Typography>
                             <ContactInfo global={global} />
                             <AppLinks
+                                isFooter={true}
                                 global={global}
                                 download_app_data={
                                     landingPageData?.download_app_section
@@ -81,45 +84,61 @@ const FooterMiddle = ({ landingPageLink, landingPageData }) => {
                     </Grid>
                     <Grid
                         item
-                        xs={12}
-                        sm={6}
-                        md={2}
-                        align={isSmall && 'center'}
+                        xs={6}
+                        sm={4}
+                        md={2.6}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center"
+                        }}
                     >
-                        <RouteLinks
-                            token={token}
-                            global={global}
-                            title="Quick Links"
-                            RouteLinksData={QuickLinkData}
-                        />
+                        <Box>
+                            <RouteLinks
+                                token={token}
+                                global={global}
+                                title="Quick Links"
+                                RouteLinksData={QuickLinkData}
+                            />
+                        </Box>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={6}
+                        sm={4}
+                        md={2.6}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center"
+                        }}
+                    >
+                        <Box>
+                            <RouteLinks
+                                token={token}
+                                global={global}
+                                title='Quick Links'
+                                RouteLinksData={QuickLinkData1}
+                            />
+                        </Box>
                     </Grid>
                     <Grid
                         item
                         xs={12}
-                        sm={6}
-                        md={3}
-                        align={isSmall && 'center'}
+                        sm={4}
+                        md={2.6}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center"
+                        }}
                     >
-                        <RouteLinks
-                            token={token}
-                            global={global}
-                            title={isXSmall ? '' : 'Quick Links'}
-                            RouteLinksData={QuickLinkData1}
-                        />
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}
-                        sm={6}
-                        md={3}
-                        align={isSmall && 'center'}
-                    >
-                        <RouteLinks
-                            token={token}
-                            global={global}
-                            title="Other"
-                            RouteLinksData={OtherData}
-                        />
+                        <Box alignItems="center" justifyContent="center">
+                            <RouteLinks
+                                token={token}
+                                global={global}
+                                title="Other"
+                                RouteLinksData={OtherData}
+                                isCenter={isSmall && true}
+                            />
+                        </Box>
                     </Grid>
                 </Grid>
             </CustomContainer>

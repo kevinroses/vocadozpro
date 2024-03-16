@@ -6,7 +6,6 @@ const initialState = {
     deliveryManInfo: null,
     filterData: {
         sortBy: '',
-
         filterBy: {},
         filterByCuisine: [],
         price: '',
@@ -20,10 +19,11 @@ export const searchFilterSlice = createSlice({
     initialState,
     reducers: {
         setSortbyByDispatch: (state, action) => {
+
             state.filterData.sortBy = action.payload
         },
         setFilterbyByDispatch: (state, action) => {
-            const filteredData = {
+            let filteredData = {
                 veg:
                     action.payload.find((item) => item.value === 'veg') !==
                     undefined,
@@ -37,6 +37,14 @@ export const searchFilterSlice = createSlice({
                 rating:
                     action.payload.find(
                         (item) => item.value === 'rating'
+                    ) !== undefined,
+                ratings:
+                    action.payload.find(
+                        (item) => item.value === 'ratings'
+                    ) !== undefined,
+                rating5:
+                    action.payload.find(
+                        (item) => item.value === 'rating5'
                     ) !== undefined,
                 new:
                     action.payload.find((item) => item.value === 'new_arrivals') !==

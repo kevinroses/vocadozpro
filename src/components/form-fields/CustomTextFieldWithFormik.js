@@ -20,7 +20,8 @@ const CustomTextFieldWithFormik = (props) => {
         onChangeHandler,
         rows,
         disabled,
-        languageDirection
+        languageDirection,
+        height
     } = props
     const [inputValue, setInputValue] = useState(value)
     const [showPassword, setShowPassword] = useState(false)
@@ -38,6 +39,7 @@ const CustomTextFieldWithFormik = (props) => {
             return (
                 <CustomTextFieldContainer>
                     <CustomTextFieldStyle
+                        height={height}
                         languageDirection={languageDirection}
                         disabled={disabled}
                         fullWidth
@@ -80,8 +82,8 @@ const CustomTextFieldWithFormik = (props) => {
         } else {
             return (
                 <CustomTextFieldContainer>
-
                     <CustomTextFieldStyle
+                        height={height}
                         disabled={disabled}
                         fullWidth
                         multiline={multiline}

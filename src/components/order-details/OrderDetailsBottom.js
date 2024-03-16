@@ -6,14 +6,14 @@ import Typography from '@mui/material/Typography'
 import { useTranslation } from 'react-i18next'
 import Router from 'next/router'
 import { useMutation } from 'react-query'
-import { OrderApi } from '../../hooks/react-query/config/orderApi'
+import { OrderApi } from "@/hooks/react-query/config/orderApi"
 import CustomDialogConfirm from '../custom-dialog/confirm/CustomDialogConfirm'
 import { onErrorResponse } from '../ErrorResponse'
 import { toast } from 'react-hot-toast'
 import { useTheme } from '@mui/material/styles'
 import CustomModal from '../custom-modal/CustomModal'
 import CancelOrder from './CancelOrder'
-import { useGetOrderCancelReason } from '../../hooks/react-query/config/order-cancel/useGetCanelReasons'
+import { useGetOrderCancelReason } from "@/hooks/react-query/config/order-cancel/useGetCanelReasons"
 import DigitalPaymentManage from './DigitalPaymentManage'
 import { getGuestId } from "../checkout-page/functions/getGuestUserId";
 

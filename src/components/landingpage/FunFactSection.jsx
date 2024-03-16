@@ -56,12 +56,13 @@ const FunFactSection = ({ react_feature, global, isLoading, fun_base_url }) => {
                 {!isLoading ? (
                     <SliderCustom
                         languageDirection={languageDirection}
+                        isCenter={true}
                         gap="0px"
                     >
                         <Slider {...landingFeatureSettings} ref={discountRef}>
                             {react_feature?.map((item, index) => {
                                 return (
-                                    <Stack key={index} position="relative">
+                                    <Stack key={index} position="relative" paddingRight={{ xs: "15px", sm: "20px" }}>
                                         <Stack
                                             direction="column"
                                             alignItems="center"
@@ -95,6 +96,7 @@ const FunFactSection = ({ react_feature, global, isLoading, fun_base_url }) => {
                                                         sm: '14px',
                                                         md: '14px',
                                                     }}
+                                                    textAlign="center"
                                                     fontWeight="400"
                                                     color={
                                                         theme.palette
@@ -108,45 +110,45 @@ const FunFactSection = ({ react_feature, global, isLoading, fun_base_url }) => {
 
                                         {index % 2 === 0
                                             ? react_feature.length - 1 !==
-                                                  index && (
-                                                  <Stack
-                                                      position="absolute"
-                                                      left="54%"
-                                                      top={
-                                                          isSmall
-                                                              ? '-14px'
-                                                              : '37px'
-                                                      }
-                                                      maxWidth={{
-                                                          xs: '177px',
-                                                          sm: '344px',
-                                                          md: '344px',
-                                                      }}
-                                                      width="100%"
-                                                  >
-                                                      <LandingFeatureSvg width="100%" />
-                                                  </Stack>
-                                              )
+                                            index && (
+                                                <Stack
+                                                    position="absolute"
+                                                    left="54%"
+                                                    top={
+                                                        isSmall
+                                                            ? '-14px'
+                                                            : '37px'
+                                                    }
+                                                    maxWidth={{
+                                                        xs: '177px',
+                                                        sm: '344px',
+                                                        md: '344px',
+                                                    }}
+                                                    width="100%"
+                                                >
+                                                    <LandingFeatureSvg width="100%" />
+                                                </Stack>
+                                            )
                                             : react_feature.length - 1 !==
-                                                  index && (
-                                                  <Stack
-                                                      position="absolute"
-                                                      left="59%"
-                                                      top={
-                                                          isSmall
-                                                              ? '-11px'
-                                                              : '35px'
-                                                      }
-                                                      maxWidth={{
-                                                          xs: '162px',
-                                                          sm: '309px',
-                                                          md: '309px',
-                                                      }}
-                                                      width="100%"
-                                                  >
-                                                      <LandingFeatureSvg1 width="100%" />
-                                                  </Stack>
-                                              )}
+                                            index && (
+                                                <Stack
+                                                    position="absolute"
+                                                    left="59%"
+                                                    top={
+                                                        isSmall
+                                                            ? '-11px'
+                                                            : '35px'
+                                                    }
+                                                    maxWidth={{
+                                                        xs: '162px',
+                                                        sm: '309px',
+                                                        md: '309px',
+                                                    }}
+                                                    width="100%"
+                                                >
+                                                    <LandingFeatureSvg1 width="100%" />
+                                                </Stack>
+                                            )}
                                     </Stack>
                                 )
                             })}

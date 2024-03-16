@@ -15,7 +15,7 @@ import {
     CustomStackFullWidth,
     CustomViewAll,
     SliderCustom,
-} from '../../../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import best_foods from '../../../../../public/static/best_foods.svg'
@@ -32,7 +32,7 @@ import toast from "react-hot-toast";
 const ReferWrapper = styled(Stack)(({ theme, src }) => ({
     height: "90%",
     width: "100%",
-    padding: "14px 54px 34px",
+    padding: "14px 54px 26px",
     backgroundImage: ` url(${ReferSvgBG.src})`,
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
@@ -40,8 +40,8 @@ const ReferWrapper = styled(Stack)(({ theme, src }) => ({
     display: "flex",
     alignItems: "center",
     textAlign: "center",
-    gap: "20px",
-    borderRadius:"10px"
+    gap: "10px",
+    borderRadius: "10px"
 }))
 
 export const ReferButton = styled(Button)(({ theme }) => ({
@@ -68,7 +68,7 @@ const BestReviewedFood = ({ data, isLoading }) => {
     const router = useRouter()
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
-    const isXSmall = useMediaQuery(theme.breakpoints.up('sm'))
+    const isXSmall = useMediaQuery(theme.breakpoints.down('sm'))
 
     const { global } = useSelector((state) => state.globalSettings)
     const [fullWidth, setFullWidth] = useState(true);
@@ -198,8 +198,8 @@ const BestReviewedFood = ({ data, isLoading }) => {
     return (
         <Grid
             container
-            paddingTop={bestReviewedFoods?.length > 0 && '1.9rem'}
-            gap="1.4rem"
+            paddingTop={bestReviewedFoods?.length > 0 && { xs: '0', sm: '1.9rem' }}
+            gap={{ xs: "1rem", sm: "1.4rem" }}
         >
             {(bestReviewedFoods?.length > 0 && !isLoading) && (
                 <Grid item xs={12} md={12}>
@@ -230,7 +230,7 @@ const BestReviewedFood = ({ data, isLoading }) => {
                             alignItems="center"
                         >
 
-                                <Typography fontSize="14px" fontWeight="500" >{t('View all')}</Typography>
+                            <Typography fontSize="14px" fontWeight="500" >{t('View all')}</Typography>
 
                         </CustomViewAll>
                     </CustomStackFullWidth>
@@ -303,7 +303,7 @@ const BestReviewedFood = ({ data, isLoading }) => {
                         >
                             <CustomStackFullWidth justifyContent="right">
                                 <SliderCustom
-                                    paddingBottom="20px"
+                                    paddingBottom={isXSmall ? "14px" : "20px"}
                                     languageDirection={languageDirection}
                                 >
                                     <Slider

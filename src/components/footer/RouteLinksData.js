@@ -30,7 +30,7 @@ export const RouteLinksData = [
     //     link: '/customer/wallets',
     // },
     {
-        name: 'Become a restaurant owner',
+        name: 'Open Restaurant',
         value: 'restaurant_owner',
         link: `${process.env.NEXT_PUBLIC_BASE_URL}/restaurant/apply`,
     },

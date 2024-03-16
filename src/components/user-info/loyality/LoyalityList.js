@@ -6,8 +6,8 @@ import Tropy from '../../../../public/static/profile/loyalty.svg'
 import { useTranslation } from 'react-i18next'
 import LoyalityPage from './LoyalityPage'
 import { useQuery } from 'react-query'
-import { LoyalityApi } from '../../../hooks/react-query/config/LoyalityApi'
-import { ProfileApi } from '../../../hooks/react-query/config/profileApi'
+import { LoyalityApi } from "@/hooks/react-query/config/LoyalityApi"
+import { ProfileApi } from "@/hooks/react-query/config/profileApi"
 import WalletShimmer from '../wallets/WalletShimmer'
 import LoyalityModal from '../../../pages/info/loyality/LoyalityModal'
 import 'simplebar/dist/simplebar.min.css'
@@ -17,7 +17,7 @@ import CustomEmptyResult from '../../empty-view/CustomEmptyResult'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { PrimaryButton } from '../../products-page/FoodOrRestaurant'
 import { onSingleErrorResponse } from '../../ErrorResponse'
 import { useSelector } from 'react-redux'
@@ -25,7 +25,7 @@ import CustomImageContainer from '../../CustomImageContainer'
 import PaidIcon from '@mui/icons-material/Paid'
 import Skeleton from '@mui/material/Skeleton'
 import Meta from '../../Meta'
-import { noTransactionFound } from '../../../utils/LocalImages'
+import { noTransactionFound } from "@/utils/LocalImages"
 const LoyalityList = () => {
     const theme = useTheme()
     const { t } = useTranslation()
@@ -154,15 +154,18 @@ const LoyalityList = () => {
                                     </Typography>
                                 </ListItem>
                             </List>
-                            <PrimaryButton
-                                startIcon={<PaidIcon />}
-                                style={{ color: textColor }}
-                                backgroundColor={theme.palette.primary.main}
-                                sx={{ borderRadius: '10px' }}
-                                onClick={() => convertLoyalty()}
-                            >
-                                {t('Convert to Currency')}
-                            </PrimaryButton>
+                            {profileData?.data?.loyalty_point > 0 &&
+                                <PrimaryButton
+                                    startIcon={<PaidIcon />}
+                                    style={{ color: textColor }}
+                                    backgroundColor={theme.palette.primary.main}
+                                    sx={{ borderRadius: '10px' }}
+                                    onClick={() => convertLoyalty()}
+                                >
+                                    {t('Convert to Currency')}
+                                </PrimaryButton>
+                            }
+
                         </CustomStackFullWidth>
                     </Grid>
 
@@ -192,8 +195,8 @@ const LoyalityList = () => {
                                 <CustomEmptyResult
                                     label="No Data Found"
                                     image={noTransactionFound}
-                                    height={80}
-                                    width={80}
+                                    height={50}
+                                    width={50}
                                 />
                             </div>
                         )}

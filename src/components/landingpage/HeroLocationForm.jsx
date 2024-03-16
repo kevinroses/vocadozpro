@@ -11,20 +11,16 @@ import {
     Typography,
 } from '@mui/material'
 
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
 import GpsFixedIcon from '@mui/icons-material/GpsFixed'
 import MapModal from './google-map/MapModal'
 import { useQuery } from 'react-query'
-import { GoogleApi } from '../../hooks/react-query/config/googleApi'
+import { GoogleApi } from "@/hooks/react-query/config/googleApi"
 import { useGeolocated } from 'react-geolocated'
 import CloseIcon from '@mui/icons-material/Close'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { CustomTypography } from '../custom-tables/Tables.style'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import {
     CssTextField,
     CustomBox,
@@ -41,6 +37,7 @@ import { Box } from '@mui/system'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { retry } from '@reduxjs/toolkit/query'
 import { AnimationDots } from "../products-page/AnimationDots";
+import { CustomToaster } from '../custom-toaster/CustomToaster'
 export function FacebookCircularProgress(props) {
     return (
         <Box sx={{ position: 'relative' }}>
@@ -49,7 +46,7 @@ export function FacebookCircularProgress(props) {
                 sx={{
                     color: (theme) =>
                         theme.palette.grey[
-                            theme.palette.mode === 'light' ? 200 : 800
+                        theme.palette.mode === 'light' ? 200 : 800
                         ],
                 }}
                 size={25}
@@ -79,6 +76,7 @@ export function FacebookCircularProgress(props) {
 
 const HeroLocationForm = ({ mobileview, handleModalClose }) => {
     const { t } = useTranslation()
+    const [open, setOpen] = useState(false)
     const router = useRouter()
     const theme = useTheme()
     //getting current location
@@ -95,7 +93,7 @@ const HeroLocationForm = ({ mobileview, handleModalClose }) => {
         isGeolocationEnabled: true,
     })
 
-    const [open, setOpen] = useState(false)
+
     const handleOpen = () => setOpen(true)
     const handleClose = () => {
         setOpen(false)
@@ -175,7 +173,7 @@ const HeroLocationForm = ({ mobileview, handleModalClose }) => {
     const onZoneSuccessHandler = (res) => {
         if (res?.data?.zone_data?.length > 0) {
             handleModalClose()
-            toast.success(t('New location has been set.'))
+            CustomToaster('success', 'New location has been set.');
             dispatch(setUserLocationUpdate(!userLocationUpdate))
             router.push('/home')
         }
@@ -461,18 +459,18 @@ const HeroLocationForm = ({ mobileview, handleModalClose }) => {
                                         <StyledButton
                                             radiuschange="true"
                                             sx={{
-                                            fontWeight: '400',
-                                            width: {
-                                                xs: '137px',
-                                                sm: '134px',
-                                                md: '134px',
-                                            },
-                                        }} >
-                                           <Stack
-                                              py="5px">
-                                               <AnimationDots size="0px"/>
-                                           </Stack>
-                                        </StyledButton>:
+                                                fontWeight: '400',
+                                                width: {
+                                                    xs: '137px',
+                                                    sm: '134px',
+                                                    md: '134px',
+                                                },
+                                            }} >
+                                            <Stack
+                                                py="5px">
+                                                <AnimationDots size="0px" />
+                                            </Stack>
+                                        </StyledButton> :
                                         <StyledButton
                                             languageDirection={languageDirection}
 
@@ -511,7 +509,7 @@ const HeroLocationForm = ({ mobileview, handleModalClose }) => {
                                 gap="20px"
                                 justifyContent="center"
                             >
-                                {isFetching ?  <StyledButton
+                                {isFetching ? <StyledButton
 
                                     sx={{
                                         fontWeight: '400',
@@ -523,20 +521,20 @@ const HeroLocationForm = ({ mobileview, handleModalClose }) => {
                                     }} >
                                     <Stack
                                         py="5px">
-                                        <AnimationDots size="0px"/>
+                                        <AnimationDots size="0px" />
                                     </Stack>
-                                </StyledButton>:(
+                                </StyledButton> : (
                                     <StyledButton
-                                    onClick={() => setLocationEnable()}
-                                    disabled={!location}
-                                >
-                                    <Typography
-                                        fontWeight="400"
-                                        fontSize="14px"
+                                        onClick={() => setLocationEnable()}
+                                        disabled={!location}
                                     >
-                                        {t('Set Location')}
-                                    </Typography>
-                                </StyledButton>)}
+                                        <Typography
+                                            fontWeight="400"
+                                            fontSize="14px"
+                                        >
+                                            {t('Set Location')}
+                                        </Typography>
+                                    </StyledButton>)}
                                 <StyledButton onClick={handleOpen}>
                                     <Typography
                                         fontWeight="400"
@@ -557,14 +555,15 @@ const HeroLocationForm = ({ mobileview, handleModalClose }) => {
                 </CustomBox>
             </Stack>
             {open && <MapModal open={open} handleClose={handleClose} />}
-            <LocationEnableCheck
+            {!isGeolocationEnabled && <LocationEnableCheck
                 openLocation={openLocation}
                 handleCloseLocation={handleCloseLocation}
                 isGeolocationEnabled={isGeolocationEnabled}
                 t={t}
                 coords={coords}
                 handleAgreeLocation={handleAgreeLocation}
-            />
+            />}
+
         </NoSsr>
     )
 }

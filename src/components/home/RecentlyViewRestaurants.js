@@ -9,7 +9,7 @@ import Slider from "react-slick";
 import CuisinesCard from "./cuisines/CuisinesCard";
 import {useRouter} from "next/router";
 
-import {useRecentlyViewRestaurants} from "../../hooks/react-query/recently-view-restaurants/useRecentlyViewRestaurants";
+import {useRecentlyViewRestaurants} from "@/hooks/react-query/recently-view-restaurants/useRecentlyViewRestaurants";
 import RestaurantCard from "../restaurant-details/RestaurantCard";
 import RestaurantBoxCard from "../restaurant-details/RestaurantBoxCard";
 import {useSelector} from "react-redux";
@@ -74,6 +74,7 @@ const RecentlyViewRestaurants = () => {
                                                     key={index}
                                                     coupons={restaurant?.coupons}
                                                     cuisines={restaurant?.cuisine}
+                                                    opening_time={restaurant?.current_opening_time}
                                                 />
                                             )
                                         })}

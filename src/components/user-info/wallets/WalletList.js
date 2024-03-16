@@ -14,7 +14,6 @@ import {
     Paper,
     useMediaQuery,
 } from '@mui/material'
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import {
     WallatBox,
     WallateBox,
@@ -24,11 +23,10 @@ import {
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import WalletsPage from './WalletsPage'
 import { useQuery } from 'react-query'
-import { WalletApi } from '../../../hooks/react-query/config/walletApi'
-import { getAmount, getTotalWalletAmount } from '../../../utils/customFunctions'
-import { ProfileApi } from '../../../hooks/react-query/config/profileApi'
+import { WalletApi } from "@/hooks/react-query/config/walletApi"
+import { getAmount, getTotalWalletAmount } from "@/utils/customFunctions"
+import { ProfileApi } from "@/hooks/react-query/config/profileApi"
 import WalletShimmer from './WalletShimmer'
-import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -38,20 +36,16 @@ import {
     CustomOutlinedInput,
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import CustomImageContainer from '../../CustomImageContainer'
 import walletImage from '../../../../public/static/profile/wa.svg'
 import { useTheme } from '@mui/material/styles'
-import noData from '../../../../public/static/nodata.png'
 import { onErrorResponse, onSingleErrorResponse } from '../../ErrorResponse'
-import LandingSliderImage from '../../../../public/static/banners/hero-banner-sm.png'
-import bg from '../../../../public/static/profile/wa.svg'
-import ScrollerProvider from '../../scroller-provider'
 import Skeleton from '@mui/material/Skeleton'
 import Meta from '../../Meta'
 import { AddCircle, CheckCircle } from '@mui/icons-material'
 import CustomModal from '../../custom-modal/CustomModal'
-import { useAddFundToWallet } from '../../../hooks/react-query/useAddFundToWallet'
+import { useAddFundToWallet } from "@/hooks/react-query/useAddFundToWallet"
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import Router from 'next/router'
@@ -59,10 +53,9 @@ import * as PropTypes from 'prop-types'
 import { PrimaryButton } from '../../products-page/FoodOrRestaurant'
 import toast from 'react-hot-toast'
 import WalletFundBonus from './WalletBonus'
-import Tooltip from '@mui/material/Tooltip'
 import HowToUse from './HowToUse'
 import CloseIcon from '@mui/icons-material/Close'
-import { noTransactionFound } from '../../../utils/LocalImages'
+import { noTransactionFound } from "@/utils/LocalImages"
 import CustomPopover from '../../custom-popover/CustomPopover'
 import useWalletBonus from '../../../hooks/react-query/useGetWalletBonus'
 const validationSchema = Yup.object({
@@ -299,6 +292,7 @@ const Wallet = ({ page }) => {
                                                 sx={{
                                                     color: (theme) =>
                                                         theme.palette.neutral[100],
+                                                    cursor:"pointer"
                                                 }}
                                             />
                                         </Stack>
@@ -361,6 +355,7 @@ const Wallet = ({ page }) => {
                                                 component="span"
                                                 fontWeight="600"
                                                 fontSize="14px"
+                                                color={theme.palette.neutral[1000]}
                                             >
                                                 {t('Add fund')}
                                             </Typography>
@@ -422,23 +417,14 @@ const Wallet = ({ page }) => {
                                             placeholder={t('Enter Amount')}
                                             value={formik.values.amount}
                                             onChange={formik.handleChange}
-                                            error={
-                                                formik.touched.amount &&
-                                                Boolean(formik.errors.amount)
-                                            }
-                                            helpertext={
-                                                formik.touched.amount &&
-                                                formik.errors.amount
-                                            }
+                                            error={formik.touched.amount && Boolean(formik.errors.amount)}
+                                            helperText={formik.touched.amount && formik.errors.amount}
                                             onKeyPress={(event) => {
-                                                if (
-                                                    event?.key === '-' ||
-                                                    event?.key === '+'
-                                                ) {
-                                                    event.preventDefault()
+                                                if (event?.key === '-' || event?.key === '+') {
+                                                    event.preventDefault();
                                                 }
                                             }}
-                                        />
+                                            />
                                         <Box mt={3}>
                                             <Typography
                                                 variant="body1"
@@ -465,106 +451,103 @@ const Wallet = ({ page }) => {
                                                     )
                                                 </Typography>
                                             </Typography>
-                                            {formik.values.amount > 0 && (
-                                                <>
-                                                    <Stack>
-                                                        {global?.active_payment_method_list?.map(
-                                                            (item, i) => (
-                                                                <addFundIsLoading
-                                                                    key={
-                                                                        item?.gateway
+                                            <Stack>
+                                                {global?.active_payment_method_list?.map(
+                                                    (item, i) => (
+                                                        <addFundIsLoading
+                                                            key={
+                                                                item?.gateway
+                                                            }
+                                                        >
+                                                            <CustomRadioBox>
+                                                                <label
+                                                                    className={
+                                                                        value ===
+                                                                        item.gateway
+                                                                            ? 'active'
+                                                                            : ''
                                                                     }
                                                                 >
-                                                                    <CustomRadioBox>
-                                                                        <label
-                                                                            className={
-                                                                                value ==
-                                                                                    item.gateway
-                                                                                    ? 'active'
-                                                                                    : ''
-                                                                            }
-                                                                        >
-                                                                            <input
-                                                                                type="radio"
-                                                                                name="payment_method"
-                                                                                value={
-                                                                                    item?.gateway
-                                                                                }
-                                                                                onChange={(
-                                                                                    e
-                                                                                ) => {
-                                                                                    setValue(
-                                                                                        e
-                                                                                            .target
-                                                                                            .value
-                                                                                    )
-                                                                                    formik.handleChange(
-                                                                                        e
-                                                                                    )
-                                                                                }}
-                                                                                style={{
-                                                                                    display:
-                                                                                        'none',
-                                                                                }}
+                                                                    <input
+                                                                        type="radio"
+                                                                        name="payment_method"
+                                                                        value={
+                                                                            item?.gateway
+                                                                        }
+                                                                        onChange={(
+                                                                            e
+                                                                        ) => {
+                                                                            setValue(
+                                                                                e
+                                                                                    .target
+                                                                                    .value
+                                                                            )
+                                                                            formik.handleChange(
+                                                                                e
+                                                                            )
+                                                                        }}
+                                                                        style={{
+                                                                            display:
+                                                                                'none',
+                                                                        }}
+                                                                    />
+                                                                    {value ===
+                                                                    item.gateway ? (
+                                                                        <CheckCircle />
+                                                                    ) : (
+                                                                        <Box
+                                                                            sx={{
+                                                                                width: '18px',
+                                                                                borderRadius:
+                                                                                    '50%',
+                                                                                aspectRatio:
+                                                                                    '1',
+                                                                                border: `1px solid ${theme.palette.divider}`,
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                    <Stack
+                                                                        direction="row"
+                                                                        gap={
+                                                                            1
+                                                                        }
+                                                                        sx={{
+                                                                            img: {
+                                                                                height: '24px',
+                                                                                width: 'unset',
+                                                                            },
+                                                                        }}
+                                                                    >
+                                                                        {item?.gateway_image && (
+                                                                            <img
+                                                                                src={`${base_url}/${item?.gateway_image}`}
                                                                             />
-                                                                            {value ==
-                                                                                item.gateway ? (
-                                                                                <CheckCircle />
-                                                                            ) : (
-                                                                                <Box
-                                                                                    sx={{
-                                                                                        width: '18px',
-                                                                                        borderRadius:
-                                                                                            '50%',
-                                                                                        aspectRatio:
-                                                                                            '1',
-                                                                                        border: `1px solid ${theme.palette.divider}`,
-                                                                                    }}
-                                                                                />
-                                                                            )}
-                                                                            <Stack
-                                                                                direction="row"
-                                                                                gap={
-                                                                                    1
-                                                                                }
-                                                                                sx={{
-                                                                                    img: {
-                                                                                        height: '24px',
-                                                                                        width: 'unset',
-                                                                                    },
-                                                                                }}
-                                                                            >
-                                                                                {item?.gateway_image && (
-                                                                                    <img
-                                                                                        src={`${base_url}/${item?.gateway_image}`}
-                                                                                    />
-                                                                                )}
-                                                                                <Box
-                                                                                    sx={{
-                                                                                        color: (
-                                                                                            theme
-                                                                                        ) =>
-                                                                                            theme
-                                                                                                .palette
-                                                                                                .neutral[1000],
-                                                                                    }}
-                                                                                >
-                                                                                    {
-                                                                                        item?.gateway_title
-                                                                                    }
-                                                                                </Box>
-                                                                            </Stack>
-                                                                        </label>
-                                                                    </CustomRadioBox>
-                                                                </addFundIsLoading>
-                                                            )
-                                                        )}
-                                                    </Stack>
-                                                </>
-                                            )}
+                                                                        )}
+                                                                        <Box
+                                                                            sx={{
+                                                                                color: (
+                                                                                    theme
+                                                                                ) =>
+                                                                                    theme
+                                                                                        .palette
+                                                                                        .neutral[1000],
+                                                                            }}
+                                                                        >
+                                                                            {
+                                                                                item?.gateway_title
+                                                                            }
+                                                                        </Box>
+                                                                    </Stack>
+                                                                </label>
+                                                            </CustomRadioBox>
+                                                        </addFundIsLoading>
+                                                    )
+                                                )}
+                                            </Stack>
                                         </Box>
                                         <Box mt={4}>
-                                            <PrimaryButton
+                                            <Button
+                                                variant="contained"
                                                 backgroundColor={
                                                     theme.palette.primary.main
                                                 }
@@ -572,6 +555,7 @@ const Wallet = ({ page }) => {
                                                 height="50px"
                                                 type="submit"
                                                 loading={addFundIsLoading}
+                                                disabled={formik.values.amount===""}
                                             >
                                                 <Typography
                                                     color={
@@ -582,7 +566,7 @@ const Wallet = ({ page }) => {
                                                     {' '}
                                                     {t('Add fund')}
                                                 </Typography>
-                                            </PrimaryButton>
+                                            </Button>
                                         </Box>
                                     </form>
                                 </Box>
@@ -608,16 +592,17 @@ const Wallet = ({ page }) => {
                                 alignItems: 'center',
                             }}
                         >
-                            <Typography fontSize="16px" fontWeight="500">
+                            <Typography fontSize={{xs:"14px",sm:"16px" }} fontWeight="500">
                                 {t('Wallet History')}
                             </Typography>
                             {page != 'loyalty' && (
                                 <CustomSelect
                                     value={transactionType}
                                     onChange={(e) => handleChange(e)}
+                                    sx={{fontSize:"12px"}}
                                 >
                                     {transaction_options?.map((item, i) => (
-                                        <MenuItem key={i} value={item?.value}>
+                                        <MenuItem key={i} value={item?.value}   sx={{fontSize:"12px"}} >
                                             {t(item?.label)}
                                         </MenuItem>
                                     ))}
@@ -655,8 +640,8 @@ const Wallet = ({ page }) => {
                             <CustomEmptyResult
                                 label='No Transaction History'
                                 image={noTransactionFound}
-                                height={80}
-                                width={80}
+                                height="50px"
+                                width="60px"
                             />
                         )}
                         <CustomStackFullWidth

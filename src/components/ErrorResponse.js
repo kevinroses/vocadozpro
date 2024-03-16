@@ -6,10 +6,12 @@ import Router from 'next/router'
 
 import { store } from '../redux/store'
 import { removeToken } from '../redux/slices/userToken'
+import { CustomToaster, CustomToasterTokenExpired } from './custom-toaster/CustomToaster'
+import GooglePlay from '@/assets/images/icons/GooglePlay'
 const handleTokenExpire = (status) => {
     if (status === 401) {
         if (window?.localStorage.getItem('token')) {
-            toast.error(t('Your token has been expired. Please sign in again'))
+            CustomToasterTokenExpired('Session Time Out', 'Though it is a demo site, our system automatically reset after one hour and that’s why you logged out');
             window?.localStorage.removeItem('token')
             store.dispatch(removeToken())
             Router.push('/home')
@@ -18,21 +20,17 @@ const handleTokenExpire = (status) => {
 }
 
 const handle404 = () => {
-    toast.error(t('404 not found.'), {
-        id: 'error',
-    })
+    CustomToaster('error', '404 not found.');
     Router.push('/404')
 }
 
 export const onErrorResponse = (error) => {
     error?.response?.data?.errors?.forEach((item) => {
-        toast.error(item?.message)
+        CustomToaster('error', item?.message);
     })
     handleTokenExpire(error?.response?.status)
 }
 export const onSingleErrorResponse = (error) => {
-    toast.error(error?.response?.data?.message, {
-        id: 'error',
-    })
+    CustomToaster('error', error?.response?.data?.message);
     handleTokenExpire(error?.response?.status)
 }

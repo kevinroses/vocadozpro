@@ -4,8 +4,9 @@ import products from "../../components/products-page/Products";
 const initialState = {
     searchTagData: [],
     isProductsOrRestaurants: "products",
-    selectedValue:"",
-    selectedName:'',
+    selectedValue: "",
+    selectedName: '',
+    sort_by: ""
 }
 
 export const searchTag = createSlice({
@@ -18,11 +19,14 @@ export const searchTag = createSlice({
         setProductsOrRestaurants: (state, action) => {
             state.isProductsOrRestaurants = action.payload
         },
-        setSelectedValue:(state, action)=>{
+        setSelectedValue: (state, action) => {
             state.selectedValue = action.payload
         },
-        setSelectedName:(state, action)=>{
+        setSelectedName: (state, action) => {
             state.selectedName = action.payload
+        },
+        setSort_by: (state, action) => {
+            state.sort_by = action.payload
         }
 
         // incrementByAmount: (state, action) => {
@@ -32,5 +36,5 @@ export const searchTag = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setSearchTagData,setProductsOrRestaurants,setSelectedName,setSelectedValue } = searchTag.actions
+export const { setSort_by, setSearchTagData, setProductsOrRestaurants, setSelectedName, setSelectedValue } = searchTag.actions
 export default searchTag.reducer

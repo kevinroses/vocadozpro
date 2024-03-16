@@ -1,19 +1,24 @@
-import { Modal, Box } from '@mui/material'
+import { Modal, Box, IconButton, useTheme, Stack } from '@mui/material'
 import React, { useState } from 'react'
 import SignInPage from './sign-in'
 import SignUpPage from './sign-up'
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../../redux/slices/customer";
+import { setUser } from "@/redux/slices/customer";
 import { useQuery } from "react-query";
-import { ProfileApi } from "../../hooks/react-query/config/profileApi";
+import { ProfileApi } from "@/hooks/react-query/config/profileApi";
 import { onSingleErrorResponse } from "../ErrorResponse";
-import { setWishList } from "../../redux/slices/wishList";
-import { useWishListGet } from "../../hooks/react-query/config/wish-list/useWishListGet";
+import { setWishList } from "@/redux/slices/wishList";
+import { useWishListGet } from "@/hooks/react-query/config/wish-list/useWishListGet";
 import { toast } from "react-hot-toast";
-import { loginSuccessFull } from "../../utils/ToasterMessages";
-import { setToken } from "../../redux/slices/userToken";
+import { loginSuccessFull } from "@/utils/ToasterMessages";
+import { setToken } from "@/redux/slices/userToken";
 import { t } from "i18next";
 import PhoneInputForm from "./sign-in/social-login/PhoneInputForm";
+import ForgotPassword from './forgot-password/ForgotPassword';
+import { CustomStackFullWidth } from '@/styled-components/CustomStyles.style';
+import CloseIcon from "@mui/icons-material/Close";
+import { CustomBoxForModal } from './auth.style';
+import { CustomToaster } from '../custom-toaster/CustomToaster';
 
 const AuthModal = ({
     open,
@@ -22,17 +27,17 @@ const AuthModal = ({
     modalFor,
     setModalFor, cartListRefetch
 }) => {
-    const { openMapDrawer } = useSelector((state) => state.globalSettings)
-    const { userInfo:fbUserInfo, jwtToken:fbJwtToken } = useSelector(
+    const { openMapDrawer,global } = useSelector((state) => state.globalSettings)
+    const theme = useTheme()
+    const { userInfo: fbUserInfo, jwtToken: fbJwtToken } = useSelector(
         (state) => state.fbCredentialsStore
     )
     const [signInPage, setSignInPage] = useState(true)
     const [userInfo, setUserInfo] = useState(null)
     const [jwtToken, setJwtToken] = useState(null)
-    const [medium,setMedium] = useState("")
-
-    const user=medium==="google"?userInfo:fbUserInfo
-    const jwt=medium==="google"?jwtToken:fbJwtToken
+    const [medium, setMedium] = useState("")
+    const user = medium === "google" ? userInfo : fbUserInfo
+    const jwt = medium === "google" ? jwtToken : fbJwtToken
 
     const dispatch = useDispatch()
     const userOnSuccessHandler = (res) => {
@@ -47,14 +52,21 @@ const AuthModal = ({
             onError: onSingleErrorResponse,
         }
     )
+    let zoneid = undefined;
+    if (typeof window !== "undefined") {
+        zoneid = localStorage.getItem("zoneid");
+    }
     const onSuccessHandler = (res) => {
         dispatch(setWishList(res))
     }
     const { refetch } = useWishListGet(onSuccessHandler)
     const handleSuccess = async (value) => {
         localStorage.setItem('token', value)
-        toast.success(t(loginSuccessFull))
-        await refetch()
+        // toast.success(t(loginSuccessFull))
+        CustomToaster('success', loginSuccessFull);
+        if(zoneid){
+            await refetch()
+        }
         await profileRefatch()
         dispatch(setToken(value))
         handleClose?.()
@@ -78,26 +90,32 @@ const AuthModal = ({
                     setUserInfo={setUserInfo}
                     handleSuccess={handleSuccess}
                     setMedium={setMedium}
+                    zoneid={zoneid}
 
                 />
             )
-        } else if(modalFor==="phone_modal"){
+        } else if (modalFor === "phone_modal") {
             return (
                 <>
-                {user && jwt && (
-                    <PhoneInputForm
-                        userInfo={user}
-                        jwtToken={jwt}
-                        global={global}
-                        medium={medium}
-                        handleRegistrationOnSuccess={
-                            handleRegistrationOnSuccess
-                        }
-                    />
-                )}
+                    {user && jwt?.clientId && (
+                        <PhoneInputForm
+                            userInfo={user}
+                            jwtToken={jwt}
+                            global={global}
+                            medium={medium}
+                            handleRegistrationOnSuccess={
+                                handleRegistrationOnSuccess
+                            }
+                            setModalFor={setModalFor}
+                        />
+                    )}
                 </>
             )
-        }else {
+        }
+        else if (modalFor === "forgot_password") {
+            return <ForgotPassword setModalFor={setModalFor} />
+
+        } else {
             return (
                 <SignUpPage
                     handleClose={handleClose}
@@ -121,7 +139,33 @@ const AuthModal = ({
                 maxWidth="400px"
 
             >
-                {handleModal()}
+                <CustomBoxForModal>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="flex-end"
+                        sx={{ position: "relative" }}
+                    >
+                        <IconButton
+                            onClick={handleClose}
+                            sx={{
+                                zIndex: "99",
+                                position: "absolute",
+                                top: -40,
+                                right: -40,
+                                backgroundColor: (theme) => theme.palette.neutral[100],
+                                borderRadius: "50%",
+                                [theme.breakpoints.down("sm")]: {
+                                    top: -30,
+                                    right: -30,
+                                },
+                            }}
+                        >
+                            <CloseIcon sx={{ fontSize: { xs: "16px", sm: "18px", md: "20px" }, fontWeight: "500" }} />
+                        </IconButton>
+                    </Stack>
+                    {handleModal()}
+                </CustomBoxForModal>
             </Modal>
         </Box>
     )

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, IconButton, Modal, Stack, TextField, useMediaQuery } from "@mui/material";
+import { alpha, Box, Button, IconButton, Modal, Stack, TextField, useMediaQuery } from "@mui/material";
 import Typography from '@mui/material/Typography'
 import { useMutation, useQuery } from 'react-query'
 import { ButtonBox } from './Address.style'
 import MenuItem from '@mui/material/MenuItem'
-import { ProfileApi } from '../../../hooks/react-query/config/profileApi'
-import { AddressApi } from '../../../hooks/react-query/config/addressApi'
+import { ProfileApi } from "@/hooks/react-query/config/profileApi"
+import { AddressApi } from "@/hooks/react-query/config/addressApi"
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
 import CloseIcon from '@mui/icons-material/Close'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 import AddressForm from './AddressForm'
 import { onErrorResponse } from '../../ErrorResponse'
@@ -19,8 +20,8 @@ import { RTL } from '../../RTL/RTL'
 import { PrimaryButton } from '../../products-page/FoodOrRestaurant'
 import CreateIcon from "@mui/icons-material/Create";
 import AddLocationIcon from '@mui/icons-material/AddLocation';
-import { setGuestUserInfo } from "../../../redux/slices/guestUserInfo";
-import { CustomStackFullWidth } from '../../../styled-components/CustomStyles.style';
+import { setGuestUserInfo } from "@/redux/slices/guestUserInfo";
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style";
 import MapWithSearchBox from "../../google-map/MapWithSearchBox";
 
 const style = {
@@ -34,7 +35,7 @@ const style = {
     boxShadow: 24,
     borderRadius: "10px",
 }
-const AddNewAddress = ({ refetch, buttonbg, guestUser, orderType }) => {
+const AddNewAddress = ({ refetch, buttonbg, guestUser, orderType,setOpenGuestUserModal }) => {
     const theme = useTheme()
     const dispatch = useDispatch()
     const { t } = useTranslation()
@@ -49,7 +50,11 @@ const AddNewAddress = ({ refetch, buttonbg, guestUser, orderType }) => {
 
     const { data, isError } = useQuery(['profile-info'], ProfileApi.profileInfo)
     const clickAddNew = () => {
-        setOpen(true)
+        if (guestUser && orderType === "take_away") {
+            setOpenGuestUserModal(true);
+        } else {
+            setOpen(true)
+        }
     }
     const handleChange = (e) => {
         setValue(e.target.value)
@@ -95,11 +100,18 @@ const AddNewAddress = ({ refetch, buttonbg, guestUser, orderType }) => {
             </IconButton> :
                 <PrimaryButton
                     variant={buttonbg === 'true' ? '' : 'outlined'}
-                    sx={{ borderRadius: buttonbg === 'true' ? '5px' : '20px', minWidth: "0" }}
+                    sx={{
+                        borderRadius: buttonbg === 'true' ? '5px' : '20px', minWidth: "0",
+                        justifyContent: 'left',
+                        padding: isXs ? "5px" : buttonbg === "true" ? "5px 0px" : "5px 10px",
+                        '&:hover': {
+                            backgroundColor: theme => theme.palette.neutral[100],
+                        }
+                    }}
                     onClick={clickAddNew}
-                    padding={isXs ? "5px" : "5px 10px"}
+
                     backgroundColor={
-                        buttonbg === 'true' ? theme.palette.primary.main : ''
+                        buttonbg === 'true' ? '' : ''
                     }
                 >
                     <Stack
@@ -107,24 +119,31 @@ const AddNewAddress = ({ refetch, buttonbg, guestUser, orderType }) => {
                         spacing={0.5}
                         color={theme.palette.neutral[1000]}
                         alignItems="center"
+                        justifyContent="center"
                     >
-                        {!isXs &&
-                            <Typography
-                                fontSize={{ xs: '12px', sm: '12px', md: '14px' }}
-                                fontWeight="400"
-                                color={buttonbg === 'true' && whiteColor}
-                            >
-                                {t('Add Address')}
-                            </Typography>
-                        }
-                        <AddLocationIcon
+                        {buttonbg === 'true' && <AddCircleOutlineIcon
+                            style={{
+                                width: '18px',
+                                height: '18px',
+                                color: primaryColor,
+                            }}
+                        />}
+                        <Typography
+                            fontSize={{ xs: '12px', sm: '12px', md: buttonbg === 'true' ? '12px' : '14px' }}
+                            fontWeight={buttonbg === 'true' ? "500" : "400"}
+                            color={buttonbg === 'true' ? theme => theme.palette.primary.main : theme => theme.palette.primary.main}
+                        >
+                            {t('Add Address')}
+                        </Typography>
+
+                        {buttonbg !== 'true' && <AddLocationIcon
                             style={{
                                 width: '18px',
                                 height: '18px',
                                 color:
                                     buttonbg === 'true' ? whiteColor : primaryColor,
                             }}
-                        />
+                        />}
                     </Stack>
                 </PrimaryButton >}
 
@@ -134,7 +153,7 @@ const AddNewAddress = ({ refetch, buttonbg, guestUser, orderType }) => {
                         open={open}
                         onClose={() => {
                             setOpen(false)
-                            setSearchKey({ description: '' })
+
                         }}
                         aria-labelledby="child-modal-title"
                         aria-describedby="child-modal-description"
@@ -153,8 +172,8 @@ const AddNewAddress = ({ refetch, buttonbg, guestUser, orderType }) => {
                             </button>
 
                             <RTL direction={languageDirection}>
-                                <CustomStackFullWidth flexDirection={{ xs: "column", sm: "row" }} gap={{xs:"10px", md:"15px"}}>
-                                    <MapWithSearchBox orderType={orderType} />
+                                <CustomStackFullWidth flexDirection={{ xs: "column", sm: "row" }} gap={{ xs: "10px", md: "15px" }}>
+                                    <MapWithSearchBox orderType={orderType} mapHeight="200px" />
                                     <AddressForm
                                         deliveryAddress={
                                             formatted_address

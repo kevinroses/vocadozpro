@@ -60,7 +60,8 @@ const QuickView = (props) => {
         handleClickQuantityButton,
         setIncrOpen,
         incrOpen,
-        addToCart
+        addToCart,
+        horizontal
     } = props;
     const theme = useTheme();
     return (
@@ -77,7 +78,7 @@ const QuickView = (props) => {
                     </IconButtonStyled>
                 </PrimaryToolTip>
             )}
-            {!noWishlist && (
+            {!noWishlist && !product?.available_date_ends && (
                 <>
                     {isInList(id) ? (
                         <PrimaryToolTip theme={theme} text="Remove from wishlist">
@@ -111,6 +112,7 @@ const QuickView = (props) => {
                     }
                     setIncrOpen={setIncrOpen}
                     incrOpen={incrOpen}
+                    horizontal={horizontal}
                 />
             )}
         </CustomStackFullWidth>

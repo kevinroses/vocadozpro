@@ -44,10 +44,10 @@ export const RestaurantDetailsNavButton = styled(Button)(
         borderLeftBottom,
         borderLeftTop,
     }) => ({
-        backgroundColor: background ? theme.palette.primary.main : 'inherit',
+        //backgroundColor: background ? theme.palette.primary.main : 'inherit',
         color: theme.palette.neutral[1000],
-        borderRadius: languageDirection !== 'rtl' ? '15px' : '0px',
-        borderBottomLeftRadius: borderLeftBottom && borderLeftBottom,
+        //borderRadius: languageDirection !== 'rtl' ? '15px' : '0px',
+        //borderBottomLeftRadius: borderLeftBottom && borderLeftBottom,
         padding:"6px 16px ",
         '&:hover': {
             backgroundColor: background && theme.palette.primary.light,
@@ -123,13 +123,13 @@ export const CustomFoodCardNew = styled(Card)(
         // eslint-disable-next-line no-mixed-operators
         position: 'relative',
         // margin: horizontal ? '10px' : '0 auto',
-        padding: '10px',
+        padding: '8px',
         overflow: 'hidden',
         width: horizontal ? width : '100%',
         maxWidth: maxwidth,
         cursor: 'pointer',
-        borderRadius: horizontal ? '8px' : '15px',
-        boxShadow: `0px 0px 2px ${theme.palette.neutral[300]}, 0px 5px 20px ${theme.palette.paperBoxShadow}`,
+        borderRadius: horizontal ? '8px' : '10px',
+        boxShadow: horizontal ?`8px 10px 10px rgba(154 154 154 / 10%)`:` 8px 10px 10px rgba(0, 0, 0, 0.10)`,
         // border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
         height: height ? height : '100%',
         [theme.breakpoints.down('sm')]: {

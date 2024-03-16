@@ -6,17 +6,12 @@ import FoodCard from '../../food-card/FoodCard'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { useSelector } from 'react-redux'
-
-import { AllRoutes } from '../../../AllRoutes'
 import { useTranslation } from 'react-i18next'
-
 import CustomImageContainer from '../../CustomImageContainer'
-
 import {
     CustomStackFullWidth,
     CustomViewAll,
-} from '../../../styled-components/CustomStyles.style'
-
+} from "@/styled-components/CustomStyles.style"
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
@@ -25,8 +20,8 @@ import { useRouter } from 'next/router'
 import Slider from 'react-slick'
 import { HandleNext, HandlePrev } from '../../CustomSliderIcon'
 
-const SliderCustom = styled(Stack)(
-    ({ theme, language_direction, nopadding }) => ({
+const SliderCustom1 = styled(Box)(
+    ({ theme, nopadding }) => ({
         position: "relative",
         width: "100%",
         paddingY: "10px",
@@ -37,7 +32,7 @@ const SliderCustom = styled(Stack)(
             "& .slick-list": {
                 paddingY: nopadding !== "true" && "8px",
                 "& .slick-track": {
-                    //float: theme.direction === "ltr" ? "left" : "right",
+                    float:theme.direction==="ltr"?'left':'right',
                     gap: "5px",
                 },
             },
@@ -89,6 +84,7 @@ const NearbyPopularFood = ({ data, isLoading, isFetching }) => {
         prevArrow: hoverOn && <HandlePrev />,
         nextArrow: hoverOn && <HandleNext />,
         cssEase: "linear",
+        rtl:languageDirection==="rtl",
         responsive: [
             {
                 breakpoint: 300,
@@ -196,8 +192,8 @@ const NearbyPopularFood = ({ data, isLoading, isFetching }) => {
 
             <Grid
                 container
-                paddingTop={popularFood.length > 0 && '1.9rem'}
-                gap="1.4rem"
+                paddingTop={popularFood.length > 0 && { xs: "0.5rem", sm: "1.4rem" }}
+                gap={{ xs: ".3rem", sm: "1.4rem" }}
                 onMouseEnter={() => setHoverOn(true)}
                 onMouseLeave={() => setHoverOn(false)}
             >
@@ -242,12 +238,11 @@ const NearbyPopularFood = ({ data, isLoading, isFetching }) => {
                     </Grid>
                 )}
                 {!isLoading ? (
-                    <CustomStackFullWidth>
-                        <SliderCustom
-                            gap="12px"
-                            paddingBottom={isSmall ? "10px" : "20px"}
-                            //languageDirection={languageDirection}
-                        >
+                    <SliderCustom1
+                        gap="12px"
+                        paddingBottom={isSmall ? "10px" : "20px"}
+                    >
+                    <CustomStackFullWidth >
                             <Slider {...settings}>
                                 {popularFood?.map((product) => {
                                     if (
@@ -271,17 +266,17 @@ const NearbyPopularFood = ({ data, isLoading, isFetching }) => {
                                     }
                                 })}
                             </Slider>
-                        </SliderCustom>
                     </CustomStackFullWidth>
+                    </SliderCustom1>
                 ) : (
                     <CustomStackFullWidth>
-                        <SliderCustom nopadding="true">
+                        <SliderCustom1 nopadding="true">
                             <Slider {...settings}>
                                 {[...Array(12)].map((item, index) => (
                                     <FoodCardHorizontalShimmer key={index} maxWidth="375px" />
                                 ))}
                             </Slider>
-                        </SliderCustom>
+                        </SliderCustom1>
                     </CustomStackFullWidth>
                 )
 

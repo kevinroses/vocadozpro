@@ -1,47 +1,49 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Stack } from '@mui/material'
 import GoogleLoginComp from './GoogleLoginComp'
 import FbLoginComp from './FbLoginComp'
 import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'react-hot-toast'
-import { loginSuccessFull } from '../../../../utils/ToasterMessages'
 import { useTranslation } from 'react-i18next'
-
-import ProfileAndWishlistSet from '../../../profile-and-wishlist-set/ProfileAndWishlistSet'
-import { setWishList } from '../../../../redux/slices/wishList'
-import { useWishListGet } from '../../../../hooks/react-query/config/wish-list/useWishListGet'
-import { setUser } from '../../../../redux/slices/customer'
-import { useQuery } from 'react-query'
-import { ProfileApi } from '../../../../hooks/react-query/config/profileApi'
-import { onSingleErrorResponse } from '../../../ErrorResponse'
-import AppleLoginComp from './AppleLoginComp'
-import { setToken } from '../../../../redux/slices/userToken'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 
 const SocialLogins = (props) => {
-    const { socialLogins, handleParentModalClose,  setJwtToken,setUserInfo ,handleSuccess,setModalFor,setMedium} = props
+    const { socialLogins, handleParentModalClose, setJwtToken, setUserInfo, handleSuccess, setModalFor, setMedium } = props
     const { global } = useSelector((state) => state.globalSettings)
+    const [isSingle, setIsSingle] = useState(false);
     const { t } = useTranslation()
-
+    useEffect(() => {
+        if (socialLogins) {
+            let length = 0;
+            socialLogins.map(item => {
+                if (item.status === true) {
+                    length = length + 1;
+                }
+            })
+            if (length > 1) {
+                setIsSingle(false)
+            } else {
+                setIsSingle(true)
+            }
+        }
+    }, [])
     return (
-        <Stack alignItems="center" justifyContent="center" columnGap=".4rem" direction={{xs:"column",md:"row"}} rowGap={{xs:".4rem",md:"0rem"}}>
+        <CustomStackFullWidth alignItems="center" justifyContent="center" columnGap="1.5rem" flexDirection="row">
             {socialLogins.map((item, index) => {
-                if (item?.login_medium === 'facebook' &&
-                    item.status === true) {
+                if (item?.login_medium === 'facebook' && item?.status === true) {
                     return (
-                    <FbLoginComp
-                        key={index}
-                        handleSuccess={handleSuccess}
-                        handleParentModalClose={handleParentModalClose}
-                        global={global}
-                        setJwtToken={setJwtToken}
-                        setUserInfo={setUserInfo}
-                        setModalFor={setModalFor}
-                        setMedium={setMedium}
-                    />
+                        <FbLoginComp
+                            key={index}
+                            handleSuccess={handleSuccess}
+                            handleParentModalClose={handleParentModalClose}
+                            global={global}
+                            setJwtToken={setJwtToken}
+                            setUserInfo={setUserInfo}
+                            setModalFor={setModalFor}
+                            setMedium={setMedium}
+                            isSingle={isSingle}
+                        />
                     )
-                } else if (
-                    item?.login_medium === 'google' && item.status === true
-                ) {
+                } else if (item?.login_medium === 'google' && item.status === true) {
                     return (
                         <GoogleLoginComp
                             key={index}
@@ -52,12 +54,13 @@ const SocialLogins = (props) => {
                             setUserInfo={setUserInfo}
                             setModalFor={setModalFor}
                             setMedium={setMedium}
+                            isSingle={isSingle}
                         />
                     )
                 }
             })}
             {/*<AppleLoginComp/>*/}
-        </Stack>
+        </CustomStackFullWidth>
     )
 }
 

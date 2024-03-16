@@ -2,18 +2,19 @@ import React from 'react'
 import OrderDetail from '../../../components/order-details/OrderDetail'
 import { useSelector } from 'react-redux'
 import Meta from '../../../components/Meta'
-import { ConfigApi } from '../../../hooks/react-query/config/useConfig'
-import { CustomHeader } from '../../../api/Headers'
 import CustomContainer from '../../../components/container'
 import { Stack } from '@mui/material'
+import { useRouter } from "next/router";
 
 const index = ({ configData }) => {
+    const router = useRouter()
+    const { orderId } = router.query
     return (
         <div className="div">
             <Meta title={`Order details - ${configData?.business_name}`} />
             <CustomContainer>
                 <Stack pt="60px">
-                    <OrderDetail />
+                    <OrderDetail orderId={orderId} />
                 </Stack>
             </CustomContainer>
         </div>

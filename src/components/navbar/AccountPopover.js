@@ -36,6 +36,7 @@ import refer from '../../../public/static/refer_code.png'
 import wish from '../../../public/static/profile/wish.svg'
 import settings from '../../../public/static/profile/settings.svg'
 import { removeToken } from '../../redux/slices/userToken'
+import { CustomToaster } from '../custom-toaster/CustomToaster'
 
 export const menuData = [
     {
@@ -96,7 +97,7 @@ export const AccountPopover = (props) => {
     const { global } = useSelector((state) => state.globalSettings)
     const router = useRouter()
     const { t } = useTranslation()
-    const { cartListRefetch,anchorEl, onClose, open, ...other } = props
+    const { cartListRefetch, anchorEl, onClose, open, ...other } = props
     const dispatch = useDispatch()
     const handleLogout = async () => {
         setIsLogoutLoading(true)
@@ -108,7 +109,8 @@ export const AccountPopover = (props) => {
                 dispatch(clearWishList(a))
                 cartListRefetch()
                 // dispatch(setClearCart())
-                toast.success(t(logoutSuccessFull))
+                // toast.success(t(logoutSuccessFull))
+                CustomToaster('success', logoutSuccessFull);
                 onClose?.()
                 if (router.pathname === '/') {
                     router.push('/')
@@ -174,10 +176,9 @@ export const AccountPopover = (props) => {
                                         onClick={() => handleClick(menu)}
                                         key={menu.id}
                                         sx={{
-                                            justifyContent: `${
-                                                languageDirection === 'rtl' &&
+                                            justifyContent: `${languageDirection === 'rtl' &&
                                                 'flex-end'
-                                            }`,
+                                                }`,
                                             '&:hover': {
                                                 backgroundColor: (theme) =>
                                                     alpha(
@@ -206,11 +207,10 @@ export const AccountPopover = (props) => {
                     <MenuItem
                         onClick={() => setOpenModal(true)}
                         sx={{
-                            justifyContent: `${
-                                languageDirection === 'rtl'
+                            justifyContent: `${languageDirection === 'rtl'
                                     ? 'flex-end'
                                     : 'flex-start'
-                            }`,
+                                }`,
                             '&:hover': {
                                 backgroundColor: (theme) =>
                                     alpha(theme.palette.primary.main, 0.3),

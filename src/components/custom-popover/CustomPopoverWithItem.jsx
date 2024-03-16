@@ -46,7 +46,7 @@ const CustomPopoverWithItem = ({
                     sx={{
                         background: (theme) =>
                             theme.palette.neutral[300],
-                        color: `${theme.palette.neutral[100]} !important`,
+                        color: `${theme.palette.neutral[1000]} !important`,
                         width: '130px',
                         fontWeight: 400,
                         '&:hover': {

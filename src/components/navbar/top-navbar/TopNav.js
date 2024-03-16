@@ -3,21 +3,22 @@ import { Stack, Box, Container, Card, NoSsr } from "@mui/material";
 import { useTheme } from '@mui/material/styles'
 import { useSelector } from "react-redux";
 import { withTranslation } from 'react-i18next'
-import { CustomStackForLoaction } from '../../../styled-components/CustomStyles.style'
+import { CustomStackForLoaction } from "@/styled-components/CustomStyles.style"
 import Toolbar from '@mui/material/Toolbar'
 import DrawerMenu from '../DrawerMenu'
 import ThemeSwitches from './ThemeSwitches'
 import { useQuery } from 'react-query'
 import AddressReselect from './address-reselect/AddressReselect'
-import { useSettings } from '../../../contexts/use-settings'
+import { useSettings } from "@/contexts/use-settings"
 import LogoSide from "../second-navbar/LogoSide";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { ConfigApi } from "../../../hooks/react-query/config/useConfig";
-import { onSingleErrorResponse } from "../../ErrorResponse";
 import useGetGuest from '../../../hooks/react-query/profile/useGetGuest';
+import Skeleton from "@mui/material/Skeleton";
+import { useRouter } from "next/router";
 
 const TopNav = ({ cartListRefetch }) => {
     const theme = useTheme()
+
     const [theme_mode, setThemeMode] = useState('')
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
     const [userLocation, setUserLocation] = useState(null)
@@ -95,25 +96,7 @@ const TopNav = ({ cartListRefetch }) => {
         window.location.reload()
     }
 
-    // const { isLoading, data, isError, error, refetch } = useQuery(
-    //     ['config'],
-    //     ConfigApi.config,
-    //     {
-    //         enabled: false,
-    //         onError: onSingleErrorResponse,
-    //         staleTime: 1000 * 60 * 8,
-    //         cacheTime: 8 * 60 * 1000,
-    //     }
-    // )
-    // useEffect(() => {
-    //     refetch()
-    // }, [])
 
-    // useEffect(() => {
-    //     if (data) {
-    //         //dispatch(setGlobalSettings(data))
-    //     }
-    // }, [data])
     return (
         <NoSsr>
             <Card sx={{ borderRadius: "0px", zIndex: '99', position: 'relative' }}>
@@ -135,11 +118,12 @@ const TopNav = ({ cartListRefetch }) => {
                                 justifyContent="space-between"
                             >
                                 <CustomStackForLoaction direction="row" spacing={2}>
-                                    <LogoSide
+                                    {global ?  <LogoSide
                                         global={global}
                                         width="auto"
                                         businessLogo={businessLogo}
-                                    />
+                                    />:<Skeleton width="40px"/>}
+
 
                                     {/* {userLocation && ( */}
                                     <AddressReselect location={userLocation} userLocationUpdate={userLocationUpdate} />

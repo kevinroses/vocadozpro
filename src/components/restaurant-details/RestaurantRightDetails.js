@@ -9,10 +9,6 @@ import 'slick-carousel/slick/slick-theme.css'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { Stack } from '@mui/system'
-import { useQuery } from 'react-query'
-import { CouponApi } from '../../hooks/react-query/config/couponApi'
-import { onErrorResponse, onSingleErrorResponse } from '../ErrorResponse'
-import { useSelector } from 'react-redux'
 import { NoSsr } from '@mui/material'
 import { RestaurantCouponStack } from './restaurant-details.style'
 import { settings } from './CouponSettings'
@@ -29,6 +25,7 @@ const RestaurantRightDetails = ({ details, restaurantCoverUrl, data }) => {
                     position: !isSmall && 'relative',
                     background: (theme) => theme.palette.neutral[100],
                 }}
+
             >
                 <CustomImageContainer
                     src={`${restaurantCoverUrl}/${details.cover_photo}`}

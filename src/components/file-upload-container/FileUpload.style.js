@@ -11,7 +11,7 @@ export const ImageContainerFileUpload = styled(ImageContainer)(({ theme }) => ({
 }))
 export const FileUploadTextContainer = styled(Box)(({ theme }) => ({
     textAlign: 'center',
-    width: '8rem',
+    width: '100%',
 }))
 export const FileUploadHeader = styled(CustomBoxFullWidth)(({ theme }) => ({
     display: 'flex',

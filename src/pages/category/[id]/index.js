@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import RestaurantDetails from '../../../components/restaurant-details/RestaurantDetails'
-import Head from 'next/head'
 import Meta from '../../../components/Meta.js'
 import CategoryDetailsPage from '../../../components/category/CategoryDetailsPage'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
-import { RestaurantsApi } from '../../../hooks/react-query/config/restaurantApi'
-import { CategoryApi } from '../../../hooks/react-query/config/categoryApi'
+import { CategoryApi } from "@/hooks/react-query/config/categoryApi"
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { Container } from '@mui/material'
 import CustomContainer from '../../../components/container'
 import HomeGuard from "../../../components/home-guard/HomeGuard";

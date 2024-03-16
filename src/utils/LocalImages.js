@@ -3,7 +3,7 @@ import no_restaurant_image from '../../public/static/no-data-images/no restauran
 import no_food_found_image from '../../public/static/no-data-images/no food.png'
 import no_order_found_image from '../../public/static/no-data-images/No order in history.png'
 import no_address_found_image from '../../public/static/no-data-images/no-address-data.svg'
-import no_translation_found from '../../public/static/no-data-images/No transaction.png'
+import no_translation_found from '../../public/static/lagNodata.png'
 import no_data_found from '../../public/static/no-data-images/Asset 3 1.png'
 
 export const imageNotFoundPlaceholder = NotFoundPlaceholder

@@ -5,9 +5,9 @@ import { styled, useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import RestaurantLeftDetails from '../RestaurantLeftDetails'
 import RestaurantRightDetails from '../RestaurantRightDetails'
-import { useGetScreenPosition } from '../../../hooks/custom-hooks/useGetScreenPosition'
+import { useGetScreenPosition } from "@/hooks/custom-hooks/useGetScreenPosition"
 import { useQuery } from 'react-query'
-import { CouponApi } from '../../../hooks/react-query/config/couponApi'
+import { CouponApi } from "@/hooks/react-query/config/couponApi"
 import { onErrorResponse } from '../../ErrorResponse'
 import Slider from 'react-slick'
 import { Stack } from '@mui/system'
@@ -15,7 +15,17 @@ import RestaurantCoupon from '../RestaurantCoupon'
 import { RestaurantCouponStack } from '../restaurant-details.style'
 import { settings } from '../CouponSettings'
 import RestaurantAnnouncementMessege from '../RestaurantAnnouncementMessege'
-
+const SliderCustom = styled(Stack)(
+    ({ theme, language_direction, nopadding }) => ({
+        "& .slick-slider": {
+            "& .slick-list": {
+                "& .slick-track": {
+                    gap: "0px",
+                },
+            },
+        },
+    })
+);
 const StyledImageBox = styled(Box)(({ theme, height, objectfit }) => ({
     height: height,
     width: '100%',
@@ -73,6 +83,7 @@ const TopBanner = ({ details }) => {
                           <>
                               {data?.data.length > 0 && (
                                   <RestaurantCouponStack isSmall={isSmall}>
+                                      <SliderCustom>
                                       {
                                           <Slider {...settings}>
                                               {data?.data?.map((coupon) => {
@@ -86,20 +97,24 @@ const TopBanner = ({ details }) => {
                                               })}
                                           </Slider>
                                       }
+                                      </SliderCustom>
                                   </RestaurantCouponStack>
                               )}
                           </>
                       </Grid>
                   )}
                   <Grid item container xs={12} sm={12} md={4.7}>
-                      <RestaurantLeftDetails
-                          details={details}
-                          restaurantCoverUrl={restaurantCoverUrl}
-                          currencySymbol={currencySymbol}
-                          currencySymbolDirection={currencySymbolDirection}
-                          digitAfterDecimalPoint={digitAfterDecimalPoint}
-                          scrollPosition={scrollPosition}
-                      />
+                      <NoSsr>
+                          <RestaurantLeftDetails
+                              details={details}
+                              restaurantCoverUrl={restaurantCoverUrl}
+                              currencySymbol={currencySymbol}
+                              currencySymbolDirection={currencySymbolDirection}
+                              digitAfterDecimalPoint={digitAfterDecimalPoint}
+                              scrollPosition={scrollPosition}
+                          />
+                      </NoSsr>
+
                   </Grid>
                   {isSmall ? (
                       <>

@@ -17,7 +17,7 @@ import Stack from '@mui/material/Stack'
 import AddRoadOutlinedIcon from '@mui/icons-material/AddRoadOutlined'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
-import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
+import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
 import { useSelector } from 'react-redux'
 import RestaurantBoxCard from '../restaurant-details/RestaurantBoxCard'
 import { useTranslation } from 'react-i18next'
@@ -25,7 +25,7 @@ import CustomShimmerRestaurant from '../CustomShimmer/CustomShimmerRestaurant'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import GroupButtons from '../restaurant-details/foodSection/GroupButtons'
 
 const ResturantList = ({ restaurantType }) => {
@@ -105,6 +105,7 @@ const ResturantList = ({ restaurantType }) => {
                                         rating_count={restaurant?.rating_count}
                                         coupons={restaurant?.coupons}
                                         cuisines={restaurant?.cuisine}
+                                        opening_time={restaurant?.current_opening_time}
                                     />
                                 </Grid>
                             )

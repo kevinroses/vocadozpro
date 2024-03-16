@@ -5,8 +5,7 @@ import ImageNotFound from '../../../public/static/no-image-found.png'
 
 export const CategoryButton = styled(Button)(({ theme, active }) => ({
     cursor: 'pointer',
-
-    color: theme.palette.customColor.six,
+    color: `theme.palette.customColor.six !important`,
     borderBottom:
         active === 'true' && `3px solid ${theme.palette.primary.main}`,
     minWidth: 'auto',
@@ -47,6 +46,7 @@ export const DiscountImageGrid = styled(Grid)(
         borderRadius: '5px',
         position: 'relative',
         zIndex: 1,
+        marginBottom:".5rem",
         '&::after': {
             content: '" "',
             position: 'absolute',

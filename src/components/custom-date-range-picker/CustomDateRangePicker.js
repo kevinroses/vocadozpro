@@ -3,7 +3,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import {Grid, Stack, TextField} from '@mui/material'
 import {DesktopDatePicker, MobileDateRangePicker} from '@mui/lab'
-import {CustomStackFullWidth} from "../../styled-components/CustomStyles.style";
+import {CustomStackFullWidth} from "@/styled-components/CustomStyles.style";
 import {Box} from "@mui/system";
 
 const CustomDateRangePicker = (props) => {

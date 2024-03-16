@@ -1,13 +1,11 @@
-import React, { memo, useEffect, useRef } from 'react'
+import React, { memo, useEffect, useRef, useState } from "react";
 import { Grid, Typography } from "@mui/material";
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useQuery } from 'react-query'
 import Slider from 'react-slick'
 
-import { CategoryApi } from '../../../hooks/react-query/config/categoryApi'
 import FeaturedCategoryCard from '../../featured-category-item/FeaturedCategoryCard'
-
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 // import 'react-multi-carousel/lib/styles.css'
@@ -16,20 +14,21 @@ import { useRouter } from 'next/router'
 import {
     CustomStackFullWidth,
     CustomViewAll,
-} from '../../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { CustomTypography } from '../../custom-tables/Tables.style'
-
 import { useTheme } from '@mui/material/styles'
 import { onErrorResponse } from '../../ErrorResponse'
 import useScrollSticky from "../Search-filter-tag/useScrollSticky";
 import Card from "@mui/material/Card";
 import CustomContainer from "../../container";
 import { Stack } from "@mui/system";
+import { HandleNext, HandlePrev } from "@/components/CustomSliderIcon";
 
 const FeatureCatagories = () => {
     const theme = useTheme()
     const { t } = useTranslation()
     const router = useRouter()
+    const [hoverOn, setHoverOn] = useState(false)
     const { catOffsetElementRef } = useScrollSticky();
     const { global } = useSelector((state) => state.globalSettings)
     const { featuredCategories } = useSelector((state) => state.storedData)
@@ -43,6 +42,8 @@ const FeatureCatagories = () => {
         slidesToShow: categoryIsSticky ? 12 : 7,
         slidesToScroll: 3,
         autoplay: true,
+        nextArrow: hoverOn && <HandleNext />,
+        prevArrow: hoverOn && <HandlePrev />,
         responsive: [
             {
                 breakpoint: 1450,
@@ -121,7 +122,10 @@ const FeatureCatagories = () => {
                                 <CustomViewAll onClick={() => router.push('/categories')} sx={{ marginInlineEnd: "10px" }}><Typography fontSize="14px" fontWeight="500" >{t("Explore More")}</Typography></CustomViewAll>
                             </Stack>
                         </Grid>}
-                    <Grid item xs={12} md={12} >
+                    <Grid item xs={12} md={12}
+                          onMouseEnter={() => setHoverOn(true)}
+                          onMouseLeave={() => setHoverOn(false)}
+                    >
                         {featuredCategories?.length > 0 ? (
                             <Slider
                                 className="slick__slider"

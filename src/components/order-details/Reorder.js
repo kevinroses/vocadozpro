@@ -1,31 +1,34 @@
-import React, {useEffect} from 'react';
-import {PrimaryButton} from "../products-page/FoodOrRestaurant";
-import {t} from "i18next";
-import {useMutation} from "react-query";
-import {OrderApi} from "../../hooks/react-query/config/orderApi";
-import {onErrorResponse} from "../ErrorResponse";
+import React, { useEffect } from 'react';
+import { PrimaryButton } from "../products-page/FoodOrRestaurant";
+import { t } from "i18next";
+import { useMutation } from "react-query";
+import { OrderApi } from "@/hooks/react-query/config/orderApi";
+import { onErrorResponse } from "../ErrorResponse";
 import { useDispatch, useSelector } from "react-redux";
 import {
     calculateItemBasePrice,
     getConvertDiscount,
     handleProductValueWithOutDiscount
-} from "../../utils/customFunctions";
-import {toast} from "react-hot-toast";
-import {setClearCart, setReorderCartItemByDispatch} from "../../redux/slices/cart";
+} from "@/utils/customFunctions";
+import { toast } from "react-hot-toast";
+import { setClearCart, setReorderCartItemByDispatch } from "@/redux/slices/cart";
 import { handleValuesFromCartItems } from "../checkout-page/CheckoutPage";
-import useAddCartItem from "../../hooks/react-query/add-cart/useAddCartItem";
 import useReorderAddToCart from "../../hooks/react-query/reorder/useReorderAddToCart";
 import { getSelectedAddons, getSelectedVariations } from "../navbar/second-navbar/SecondNavbar";
 import { getGuestId } from "../checkout-page/functions/getGuestUserId";
-import { setCouponInfo } from "../../redux/slices/global";
+import { setCouponInfo, setOpenMapDrawer } from "@/redux/slices/global";
 import useDeleteAllCartItem from "../../hooks/react-query/add-cart/useDeleteAllCartItem";
 
 
-const Reorder = ({orderData, orderZoneId}) => {
+const Reorder = ({ orderData, orderZoneId }) => {
     const { cartList } = useSelector((state) => state.cart)
     const dispatch = useDispatch()
-    const { mutate:removeCartMutate } = useDeleteAllCartItem();
-    const { mutate:reorderAddToCartMutate, isLoading:addToCartLoading } = useReorderAddToCart();
+    let location = undefined;
+    if (typeof window !== "undefined") {
+        location = localStorage.getItem("location");
+    }
+    const { mutate: removeCartMutate } = useDeleteAllCartItem();
+    const { mutate: reorderAddToCartMutate, isLoading: addToCartLoading } = useReorderAddToCart();
     const orderItemId = () => {
         let currentId = []
         orderData?.forEach((item) => {
@@ -33,7 +36,10 @@ const Reorder = ({orderData, orderZoneId}) => {
         })
         return currentId
     }
-    const {data, mutate, isLoading} =
+    const handleReselectAddress = () => {
+        dispatch(setOpenMapDrawer(true))
+    }
+    const { data, mutate, isLoading } =
         useMutation(
             'food-lists',
             OrderApi.foodLists
@@ -41,8 +47,8 @@ const Reorder = ({orderData, orderZoneId}) => {
     useEffect(() => {
         const foodId = JSON.stringify(orderItemId())
         mutate(foodId, {
-                onError: onErrorResponse
-            }
+            onError: onErrorResponse
+        }
         )
     }, [orderData])
 
@@ -155,33 +161,33 @@ const Reorder = ({orderData, orderZoneId}) => {
     }
 
 
-    const handleSuccess=(res)=>{
-        if(res){
-              let cartNewItem=res?.map((item)=>{
-                  return{
-                      ...item?.item,
-                      cartItemId: item?.id,
-                      variations: item?.item?.variations,
-                      quantity: item?.quantity,
-                      totalPrice:
-                          getConvertDiscount(
-                              item?.item?.discount,
-                              item?.item?.discount_type,
-                              handleProductValueWithOutDiscount(item?.item),
-                              item?.item?.restaurant_discount
-                          )
-                          *
-                          item?.quantity,
-                      selectedAddons:getSelectedAddons(item?.item?.addons),
-                      itemBasePrice: getConvertDiscount(
-                          item?.item?.discount,
-                          item?.item?.discount_type,
-                          calculateItemBasePrice(item?.item, item?.item?.variations),
-                          item?.item?.restaurant_discount
-                      ),
-                      selectedOptions:getSelectedVariations(item?.item?.variations)
-                  }
-              })
+    const handleSuccess = (res) => {
+        if (res) {
+            let cartNewItem = res?.map((item) => {
+                return {
+                    ...item?.item,
+                    cartItemId: item?.id,
+                    variations: item?.item?.variations,
+                    quantity: item?.quantity,
+                    totalPrice:
+                        getConvertDiscount(
+                            item?.item?.discount,
+                            item?.item?.discount_type,
+                            handleProductValueWithOutDiscount(item?.item),
+                            item?.item?.restaurant_discount
+                        )
+                        *
+                        item?.quantity,
+                    selectedAddons: getSelectedAddons(item?.item?.addons),
+                    itemBasePrice: getConvertDiscount(
+                        item?.item?.discount,
+                        item?.item?.discount_type,
+                        calculateItemBasePrice(item?.item, item?.item?.variations),
+                        item?.item?.restaurant_discount
+                    ),
+                    selectedOptions: getSelectedVariations(item?.item?.variations)
+                }
+            })
             dispatch(setReorderCartItemByDispatch(cartNewItem))
             toast.success(t('Reorder-able items added to the cart successfully.'))
         }
@@ -236,10 +242,10 @@ const Reorder = ({orderData, orderZoneId}) => {
                         let totalPrice = (itemsBasePrice * similar?.[0]?.quantity)
                         let totalQty = 0;
                         return {
-                            model:rItem.available_date_starts ? "ItemCampaign" : "Food",
+                            model: rItem.available_date_starts ? "ItemCampaign" : "Food",
                             add_on_ids: rItem?.add_on?.length > 0 ? rItem?.add_on?.map((add) => {
                                 return add.id;
-                            }):[],
+                            }) : [],
                             add_on_qtys:
                                 rItem?.add_on?.length > 0
                                     ? rItem?.add_on?.map((add) => {
@@ -269,9 +275,9 @@ const Reorder = ({orderData, orderZoneId}) => {
 
                 if (item_list?.length > 0) {
                     if (item_list?.every(item => item !== undefined)) {
-                        reorderAddToCartMutate(item_list,{
-                            onSuccess:handleSuccess,
-                            onErrorResponse:onErrorResponse
+                        reorderAddToCartMutate(item_list, {
+                            onSuccess: handleSuccess,
+                            onErrorResponse: onErrorResponse
                         })
                         // toast.success(t('Reorder-able items added to the cart successfully.'))
                         // dispatch(setClearCart())
@@ -288,17 +294,21 @@ const Reorder = ({orderData, orderZoneId}) => {
         }
     }
 
-const clearCartData = async () => {
-    if(cartList?.length > 0){
-        await  dispatch(setClearCart())
-        await  removeCartMutate(getGuestId(), {
-            //onSuccess: handleSuccess,
-            onError: onErrorResponse,
-        });
+    const clearCartData = async () => {
+        if (location) {
+            if (cartList?.length > 0) {
+                await dispatch(setClearCart())
+                await removeCartMutate(getGuestId(), {
+                    //onSuccess: handleSuccess,
+                    onError: onErrorResponse,
+                });
 
+            }
+            reorderAddToCart()
+        } else {
+            handleReselectAddress()
+        }
     }
-     reorderAddToCart()
-}
     return (
         <PrimaryButton
             variant="contained"

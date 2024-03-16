@@ -1,7 +1,20 @@
+
 import React, { useEffect, useState } from 'react'
-import { alpha, Box, Button, Divider, Grid, IconButton, Stack, Typography, useMediaQuery } from "@mui/material";
+import {
+    alpha,
+    Box,
+    Button,
+    Divider,
+    Grid,
+    IconButton, NoSsr,
+    Stack,
+    styled,
+    Typography,
+    useMediaQuery
+} from "@mui/material";
 import StarIcon from '@mui/icons-material/Star'
 import {
+
     CalculationGrid,
     CustomOrderStatus,
     CustomProductDivider,
@@ -20,17 +33,17 @@ import {
     TotalGrid,
 } from './OrderDetail.style'
 import { useQuery } from 'react-query'
-import { OrderApi } from '../../hooks/react-query/config/orderApi'
+import { OrderApi } from "@/hooks/react-query/config/orderApi"
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
-import { getAmount } from '../../utils/customFunctions'
+import { getAmount } from "@/utils/customFunctions"
 import { useDispatch, useSelector } from "react-redux";
-import { ImageSource } from '../../utils/ImageSource'
+import { ImageSource } from "@/utils/ImageSource"
 import {
     CustomColouredTypography,
     CustomPaperBigCard,
     CustomStackFullWidth
-} from "../../styled-components/CustomStyles.style";
+} from "@/styled-components/CustomStyles.style";
 import TopDetails from './TopDetails'
 import OrderDetailsBottom from './OrderDetailsBottom'
 import OrderDetailsShimmer from './OrderDetailsShimmer'
@@ -45,8 +58,8 @@ import { useTheme } from '@mui/material/styles'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
 import RefundModal from '../order-history/RefundModal'
-import { useGetRefundReasons } from '../../hooks/react-query/refund-request/useGetRefundReasons'
-import { useStoreRefundRequest } from '../../hooks/react-query/refund-request/useStoreRefundRequest'
+import { useGetRefundReasons } from "@/hooks/react-query/refund-request/useGetRefundReasons"
+import { useStoreRefundRequest } from "@/hooks/react-query/refund-request/useStoreRefundRequest"
 import { toast } from 'react-hot-toast'
 import { onErrorResponse, onSingleErrorResponse } from '../ErrorResponse'
 import { getVariationNames } from './OrderSummeryVariations'
@@ -56,28 +69,40 @@ import Reorder from './Reorder'
 import SubscriptionDetails from './subscription-details'
 import BottomActions from './subscription-details/BottomActions'
 import Skeleton from '@mui/material/Skeleton'
-import OfflinePayment from '../checkout-page/assets/OfflinePayment'
-import EditOrder from './assets/EditOrder'
 import OfflineOrderDetails from './offline-payment/OfflineOrderDetails'
 import CustomModal from '../custom-modal/CustomModal'
 import CloseIcon from "@mui/icons-material/Close";
 import OfflineDetailsModal from './offline-payment/OfflineDetailsModal'
 import { getGuestId, getToken } from "../checkout-page/functions/getGuestUserId";
 import jwt from 'base-64'
-import useGetTrackOrderData from "../../hooks/react-query/useGetTrackOrderData";
-import { clearOfflinePaymentInfo, setOrderDetailsModal } from '../../redux/slices/OfflinePayment'
+import { clearOfflinePaymentInfo, setOrderDetailsModal } from "@/redux/slices/OfflinePayment"
 import { RTL } from '../RTL/RTL'
 import Meta from '../Meta'
 import CustomFormatedDateTime from '../date/CustomFormatedDateTime'
 import DeliveryIcon from '../../assets/images/icons/DeliveryIcon'
 import CustomDivider from "../CustomDivider";
-import ReportProblemIcon from '@mui/icons-material/ReportProblem';
-import { t } from "i18next";
+
 import TrackingPage from "../order-tracking/TrackingPage";
 import startReview from "../../../public/static/star-review.png";
+import ReviewSideDrawer from "@/components/order-details/ReviewSideDrawer";
+import { setDeliveryManInfoByDispatch } from "@/redux/slices/searchFilter";
+import CustomAvatar from "@/components/custom-avatar/CustomAvatar";
+import CustomRatings from "@/components/custom-ratings/CustomRatings";
+import InfoIcon from '@mui/icons-material/Info';
 
-
-
+import Tooltip, {tooltipClasses} from '@mui/material/Tooltip';
+import { CustomToaster } from "@/components/custom-toaster/CustomToaster";
+const CustomTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} arrow classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+        color: alpha(theme.palette.neutral[1000],.8),
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: theme.palette.neutral[1000],
+        color:theme.palette.neutral[100]
+    },
+}));
 function getRestaurantValue(data, key) {
     return data?.data?.details[0]?.food_details?.[key]
 }
@@ -183,11 +208,15 @@ const OrderDetails = ({OrderIdDigital}) => {
     const { orderDetailsModal } = useSelector((state) => state.offlinePayment);
     const [openOfflineModal, setOpenOfflineModal] = useState(orderDetailsModal);
     const [openModal, setOpenModal] = useState(false)
+    const [openReviewModal, setOpenReviewModal] = useState(false)
+
     const guestId = getGuestId();
     const userPhone = phone && jwt.decode(phone)
     const tempOrderId = orderId ? orderId : OrderIdDigital
     const restaurantBaseUrl = global?.base_urls?.restaurant_image_url
+    const deliveryManImage = global?.base_urls?.delivery_man_image_url
     let languageDirection = undefined
+    const tip_text=t("order delivered out of")
     if (typeof window !== 'undefined') {
         languageDirection = localStorage.getItem('direction')
     }
@@ -205,7 +234,7 @@ const OrderDetails = ({OrderIdDigital}) => {
 
     const { mutate, isLoading: refundIsLoading } = useStoreRefundRequest()
     const formSubmitHandler = (values) => {
-        const tempValue = { ...values, tempOrderId }
+        const tempValue = { ...values, orderId:tempOrderId }
         const onSuccessHandler = async (resData) => {
             if (resData) {
                 await refetchTrackData()
@@ -246,7 +275,8 @@ const OrderDetails = ({OrderIdDigital}) => {
         await refetchOrderDetails()
         await refetchTrackData()
     }
-    const handleTotalAmount = () => {
+
+    const  handleTotalAmount = () => {
         if (trackData?.data?.subscription) {
             if (trackData?.data?.subscription?.quantity > 0) {
                 return (
@@ -290,15 +320,123 @@ const OrderDetails = ({OrderIdDigital}) => {
     const getCommonValue = (data, key) => {
         return data?.data?.details[0]?.[key]
     }
+    const handleSideDrawer=()=>{
+        dispatch(setDeliveryManInfoByDispatch(trackData?.data?.delivery_man))
+        setOpenReviewModal(true)
+    }
+
+//
+
+
+
+    const getReviewButton = (trackData) => {
+        if (!trackData?.data?.is_reviewed && !trackData?.data?.is_dm_reviewed ) {
+            return (
+                <Button
+                    onClick={handleSideDrawer}
+                    variant="outlined"
+                    sx={{
+                        p: {
+                            xs: '5px',
+                            sm: '5px',
+                            md: '2px 10px',
+                        },
+                    }}
+                >
+                    <Stack
+                        alignItems="center"
+                        justifyContent="space-between"
+                        direction="row"
+                        gap={{ xs: "5px", sm: "6px", md: "10px" }}
+                        flexWrap="wrap"
+                    >
+                        <CustomImageContainer
+                            src={startReview.src}
+                            width={{ xs: "15px", md: "20px" }}
+                            height={{ xs: "15px", md: "20px" }}
+                        />
+                        <CustomColouredTypography color="primary" fontWeight={600} fontSize="14px" smallFont="12px">
+                            {t('Give Review')}
+                        </CustomColouredTypography>
+                    </Stack>
+                </Button>
+            );
+        } else if (!trackData?.data?.is_reviewed) {
+            return (
+                <Button
+                    onClick={handleSideDrawer}
+                    variant="outlined"
+                    sx={{
+                        p: {
+                            xs: '5px',
+                            sm: '5px',
+                            md: '2px 10px',
+                        },
+                    }}
+                >
+                    <Stack
+                        alignItems="center"
+                        justifyContent="space-between"
+                        direction="row"
+                        gap={{ xs: "5px", sm: "6px", md: "10px" }}
+                        flexWrap="wrap"
+                    >
+                        <CustomImageContainer
+                            src={startReview.src}
+                            width={{ xs: "15px", md: "20px" }}
+                            height={{ xs: "15px", md: "20px" }}
+                        />
+                        <CustomColouredTypography color="primary" fontWeight={600} fontSize="14px" smallFont="12px">
+                            {t('Give Review')}
+                        </CustomColouredTypography>
+                    </Stack>
+                </Button>
+            );
+        }
+        else if (!trackData?.data?.is_dm_reviewed) {
+            return (
+                <Button
+                    onClick={handleSideDrawer}
+                    variant="outlined"
+                    sx={{
+                        p: {
+                            xs: '5px',
+                            sm: '5px',
+                            md: '2px 10px',
+                        },
+                    }}
+                >
+                    <Stack
+                        alignItems="center"
+                        justifyContent="space-between"
+                        direction="row"
+                        gap={{ xs: "5px", sm: "6px", md: "10px" }}
+                        flexWrap="wrap"
+                    >
+                        <CustomImageContainer
+                            src={startReview.src}
+                            width={{ xs: "15px", md: "20px" }}
+                            height={{ xs: "15px", md: "20px" }}
+                        />
+                        <CustomColouredTypography color="primary" fontWeight={600} fontSize="14px" smallFont="12px">
+                            {t('Give Review')}
+                        </CustomColouredTypography>
+                    </Stack>
+                </Button>
+            );
+        }else {
+            return  null
+        }
+    };
 
     return (
-        <>
+        <NoSsr>
             <Meta title={`Order details - ${global?.business_name}`} />
             <CustomPaperBigCard
                 padding={isXSmall ? '0' : '0px'}
                 border={false}
                 nopadding={isXSmall && "true"}
-                sx={{ minHeight: !isXSmall && '558px', boxShadow: isXSmall && 'unset' }}
+                sx={{ minHeight: !isXSmall && '558px', boxShadow: isXSmall && 'unset',marginBottom:"1rem" }}
             >
                 <Grid container>
                     <Grid item xs={12} md={7} padding={{ xs: "10px", sm: "20px", md: "20px" }}>
@@ -311,7 +449,7 @@ const OrderDetails = ({OrderIdDigital}) => {
 
                                 }}
                             >
-                                {t('Order')} # {getCommonValue(data, 'order_id')}
+                                {trackData?.data?.subscription !== null? t("Subscription"):t('Order')} # {getCommonValue(data, 'order_id')}
                             </Typography>
                             {trackData && (
                                 <CustomOrderStatus color={backgroundColorOrderStatus()}>
@@ -328,6 +466,11 @@ const OrderDetails = ({OrderIdDigital}) => {
                                 </CustomOrderStatus>
 
                             )}
+                            <CustomOrderStatus color={theme.palette.success.main}>
+                            <Typography fontSize="12px" fontWeight="500" textTransform="capitalize" color={theme.palette.success.main}>
+                                {trackData?.data?.order_type==="delivery" ? t("Home Delivery"):t(trackData?.data?.order_type).replaceAll('_', ' ')}
+                            </Typography>
+                            </CustomOrderStatus>
                         </Stack>
                         <Stack height="100%" flexDirection={{ xs: "column", md: "row" }} gap="5px" alignItems={{ md: "left", xs: "center" }}>
                             <Stack flexDirection="row" gap="5px" paddingInlineEnd="5px" alignItems="center" >
@@ -340,7 +483,24 @@ const OrderDetails = ({OrderIdDigital}) => {
                                         date={data?.data?.details?.[0]?.created_at}
                                     />
                                 </Typography>
+                                 {/*<Typography fontSize="12px" fontWeight="500" textTransform="capitalize" color={theme.palette.success.main}>*/}
+                                 {/*    {t(trackData?.data?.order_type).replaceAll('_', ' ')}*/}
+
+                                 {/*</Typography>*/}
                             </Stack>
+                            {trackData?.data?.scheduled!==0 &&
+                                <Stack flexDirection="row" gap="5px" paddingInlineEnd="5px" alignItems="center" >
+                                    <Typography fontSize="12px" fontWeight={400} sx={{ color: theme.palette.text.secondary, }}>
+                                        {t("Scheduled delivery")}
+                                    </Typography>
+                                    <Typography fontSize="12px" fontWeight={500}
+                                                sx={{ color: theme.palette.customColor.fifteen, }}>
+                                        <CustomFormatedDateTime
+                                            date={trackData?.data?.schedule_at}
+                                        />
+                                    </Typography>
+                                </Stack>}
+
                         </Stack>
                     </Grid>
 
@@ -349,39 +509,10 @@ const OrderDetails = ({OrderIdDigital}) => {
                             {
                                 trackData && (
                                     <>
-                                        {trackData?.data?.order_status === 'delivered' && !isTrackOrder && (
+                                        {trackData?.data?.order_status === 'delivered' && !isTrackOrder && getToken() &&  (
                                             <Stack flexDirection="row" gap="15px">
-                                                <Link href={`/rate-and-review/${tempOrderId}`}>
-                                                    <Button
-
-                                                        variant="outlined"
-                                                        sx={{
-                                                            p: {
-                                                                xs: '5px',
-                                                                sm: '5px',
-                                                                md: '2px 10px',
-                                                            },
-                                                        }}
-                                                    >
-                                                        <Stack
-                                                            alignItems="center"
-                                                            justifyContent="space-between"
-                                                            direction="row"
-                                                            gap={{ xs: "5px", sm: "6px", md: "10px" }}
-                                                            flexWrap="wrap"
-                                                        >
-                                                            <CustomImageContainer
-                                                                src={startReview.src}
-                                                                width={{ xs: "15px", md: "20px" }}
-                                                                height={{ xs: "15px", md: "20px" }}
-                                                            />
-                                                            <CustomColouredTypography color="primary" fontWeight={600} fontSize="14px" smallFont="12px">
-                                                                {t('Give Review')}
-                                                            </CustomColouredTypography>
-                                                        </Stack>
-                                                    </Button>
-                                                </Link>
-                                                {(global?.repeat_order_option && getToken()) && !isTrackOrder && (
+                                                {getReviewButton(trackData)}
+                                                {trackData?.data?.subscription === null &&  (global?.repeat_order_option && getToken()) && !isTrackOrder && (
                                                     <Reorder
                                                         orderData={data?.data?.details}
                                                         orderZoneId={
@@ -392,7 +523,7 @@ const OrderDetails = ({OrderIdDigital}) => {
                                                 )}
                                             </Stack>
                                         )}
-                                        {trackData && getToken() &&
+                                        { trackData?.data?.subscription === null &&  trackData && getToken() &&
                                             (trackData?.data?.order_status === 'canceled' ||
                                                 trackData?.data?.order_status === 'failed') && (
                                                 <Stack>
@@ -450,9 +581,9 @@ const OrderDetails = ({OrderIdDigital}) => {
                     {!trackOrderLoading && <TrackingPage data={trackData?.data} />}
                 </>) : (
                     <>
-                        <Grid container spacing={2} padding={{ xs: "10px", sm: "20px", md: "20px" }}>
-                            <Grid item xs={12} sm={8} md={8} display="flex" flexDirection="column" gap={{ xs: "15px", sm: "20px", md: "25px" }}>
-                                {trackData && trackData?.data?.subscription === null && (
+                        <Grid container spacing={2} padding={{ xs: "10px", sm: "15px", md: "15px" }}>
+                            <Grid item xs={12} sm={7.3} md={7.3} display="flex" flexDirection="column" gap={{ xs: "15px", sm: "20px", md: "25px" }}>
+                                {trackData && trackData?.data?.subscription === null && trackData?.data?.order_status !== 'pending' && (
                                     <>
                                         {trackData ? (
                                             <DeliveryTimeInfoVisibility trackData={trackData} />
@@ -461,6 +592,37 @@ const OrderDetails = ({OrderIdDigital}) => {
                                         )}
                                     </>
                                 )}
+                                {trackData &&
+                                    trackData?.data &&
+                                    trackData?.data?.subscription !== null && (
+                                        <SubscriptionDetails
+                                            subscriptionData={
+                                                trackData?.data?.subscription
+                                            }
+                                            t={t}
+                                            subscriptionSchedules={
+                                                data?.data?.subscription_schedules
+                                            }
+                                            orderId={trackData?.data?.id}
+                                            paymentMethod={
+                                                trackData?.data?.payment_method
+                                            }
+                                            subscriptionCancelled={
+                                                trackData?.data?.canceled_by
+                                            }
+                                            subscriptionCancellationReason={
+                                                trackData?.data?.cancellation_reason
+                                            }
+                                            subscriptionCancellationNote={
+                                                trackData?.data?.cancellation_note
+                                            }
+                                            subscriptionOrderNote={
+                                                trackData?.data?.order_note
+                                            }
+                                            orderAmount={trackData?.data?.order_amount}
+                                        />
+                                    )}
+
                                 <ProductDetailsWrapper>
                                     {data?.data?.details?.length > 0 &&
                                         data?.data?.details?.map((product, id) => (
@@ -676,6 +838,8 @@ const OrderDetails = ({OrderIdDigital}) => {
                                                 </InfoTypography>
                                             </Stack>
                                         </Stack>
+
+
                                         {trackData &&
                                             trackData?.data?.order_status !==
                                             'delivered' &&
@@ -769,6 +933,93 @@ const OrderDetails = ({OrderIdDigital}) => {
                                                 </Stack>
                                             )}
                                     </IformationGrid>
+                                    {trackData?.data?.delivery_man
+                                        && trackData?.data?.order_status !==
+                                        'delivered' &&
+                                        trackData?.data?.order_status !==
+                                        'failed' &&
+                                        trackData?.data?.order_status !==
+                                        'canceled' &&
+                                        trackData?.data?.order_status !==
+                                        'refunded' && getToken()  &&
+                                        <Stack gap="25px">
+                                            <TitleTypography>
+                                                {t('Delivery Man Information')}
+                                            </TitleTypography>
+                                            <IformationGrid bgColor={theme.palette.sectionBg}>
+                                                <Stack
+                                                    direction="row"
+                                                    justifyContent="space-between"
+                                                    alignItems="center"
+                                                    spacing={2}
+                                                >
+                                                    <Stack>
+                                                        {trackData && (
+                                                            <CustomImageContainer
+                                                                src={`${deliveryManImage}/${trackData?.data?.delivery_man?.image}`}
+                                                                height="80px"
+                                                                width="80px"
+                                                                borderRadius=".5rem"
+                                                                objectFit="cover"
+                                                                alt={trackData?.data?.delivery_man?.f_name}
+                                                            />
+                                                        )}
+                                                    </Stack>
+                                                    <Stack alignItems="flex-start">
+                                                        <Typography fontSize="16px" fontweight="500">
+                                                            {trackData?.data?.delivery_man?.f_name.concat(
+                                                                ' ',
+                                                                trackData?.data?.delivery_man?.l_name
+                                                            )}
+                                                        </Typography>
+                                                        <InfoTypography sx={{ fontWeight: 'bold' ,}}>
+                                                            {trackData &&
+                                                                trackData?.data?.delivery_man?.avg_rating?.toFixed(
+                                                                    1
+                                                                )}
+                                                            <StarIcon
+                                                                sx={{
+                                                                    marginLeft:"4px",
+                                                                    fontSize: '16px',
+                                                                    color: (theme) =>
+                                                                        theme.palette.primary.main,
+                                                                }}
+                                                            />{' '}
+                                                        </InfoTypography>
+                                                    </Stack>
+                                                </Stack>
+                                                <Stack direction="row" spacing={2}>
+                                                    {/*<Typography>call</Typography>*/}
+                                                    <Stack sx={{ cursor: 'pointer' }}>
+                                                        <Link
+                                                            href={{
+                                                                pathname: '/info',
+                                                                query: {
+                                                                    page: 'inbox',
+                                                                    type: 'delivery_man',
+                                                                    id: trackData?.data?.delivery_man?.id,
+                                                                    routeName: 'delivery_man_id',
+                                                                    chatFrom: 'true',
+                                                                    restaurantName: trackData?.data?.delivery_man?.f_name,
+                                                                    logo: trackData?.data?.delivery_man?.image,
+                                                                },
+                                                            }}
+                                                        >
+                                                            <ChatIcon
+                                                                sx={{
+                                                                    height: 25,
+                                                                    width: 25,
+                                                                    color: (theme) =>
+                                                                        theme.palette.primary.main,
+                                                                }}
+                                                            ></ChatIcon>
+                                                        </Link>
+                                                    </Stack>
+                                                </Stack>
+                                            </IformationGrid>
+                                        </Stack>
+                                    }
+
                                     <Stack gap="15px">
                                         <TitleTypography>
                                             {t('Payment Information')}
@@ -876,7 +1127,6 @@ const OrderDetails = ({OrderIdDigital}) => {
                                     </Stack>
                                     {trackData?.data?.refund &&
                                         <Stack width="100%" mt=".5rem">
-
                                             <Stack spacing={1} alignItems="center" direction="row">
                                                 {trackData?.data?.refund &&
                                                     trackData?.data?.order_status ===
@@ -930,51 +1180,9 @@ const OrderDetails = ({OrderIdDigital}) => {
                                     )}
 
                                 </Stack>
-                                {trackData &&
-                                    trackData?.data &&
-                                    trackData?.data?.subscription !== null && (
-                                        <SubscriptionDetails
-                                            subscriptionData={
-                                                trackData?.data?.subscription
-                                            }
-                                            t={t}
-                                            subscriptionSchedules={
-                                                data?.data?.subscription_schedules
-                                            }
-                                            orderId={trackData?.data?.id}
-                                            paymentMethod={
-                                                trackData?.data?.payment_method
-                                            }
-                                            subscriptionCancelled={
-                                                trackData?.data?.canceled_by
-                                            }
-                                            subscriptionCancellationReason={
-                                                trackData?.data?.cancellation_reason
-                                            }
-                                            subscriptionCancellationNote={
-                                                trackData?.data?.cancellation_note
-                                            }
-                                            subscriptionOrderNote={
-                                                trackData?.data?.order_note
-                                            }
-                                        />
-                                    )}
-                                {
-                                    trackData &&
-                                    trackData?.data?.subscription !== null &&
-                                    trackData?.data?.subscription?.status !== 'canceled' && (
-                                        //this bottom actions are for subscriptions order
-                                        <BottomActions
-                                            refetchAll={refetchAll}
-                                            subscriptionId={trackData?.data?.subscription?.id}
-                                            t={t}
-                                            minDate={trackData?.data?.subscription?.start_at}
-                                            maxDate={trackData?.data?.subscription?.end_at}
-                                        />
-                                    )
-                                }
+
                             </Grid>
-                            <Grid item sm={4} xs={12}
+                            <Grid item sm={4.7} xs={12}
                             >
                                 <OrderSummaryGrid container sx={{
                                     position: "sticky",
@@ -983,7 +1191,7 @@ const OrderDetails = ({OrderIdDigital}) => {
                                     borderRadius: "5px"
                                 }}>
                                     <Grid item md={12} xs={12} >
-                                        <Typography fontSize="16px" lineHeight="28px" fontWeight={500} sx={{ paddingBlock: "12px", color: theme.palette.neutral[400] }}>
+                                        <Typography fontSize="16px" lineHeight="28px" fontWeight={500} sx={{ paddingBlock: "12px", color: theme.palette.neutral[1000] }}>
                                             {t('Summary')}
                                         </Typography>
                                     </Grid>
@@ -994,12 +1202,12 @@ const OrderDetails = ({OrderIdDigital}) => {
                                         xs={12}
                                         spacing={1}
                                     >
-                                        <Grid item md={8} xs={8}>
+                                        <Grid item md={7} xs={8}>
                                             <InfoTypography>
                                                 {t('Items Price')}
                                             </InfoTypography>
                                         </Grid>
-                                        <Grid item md={4} xs={4}>
+                                        <Grid item md={5} xs={4}>
                                             <InfoTypography align="right">
                                                 {data &&
                                                     getAmount(
@@ -1026,12 +1234,12 @@ const OrderDetails = ({OrderIdDigital}) => {
                                                     )}
                                             </InfoTypography>
                                         </Grid>
-                                        <Grid item md={8} xs={8}>
+                                        <Grid item md={7} xs={8}>
                                             <InfoTypography>
                                                 {t('Discount')}
                                             </InfoTypography>
                                         </Grid>
-                                        <Grid item md={4} xs={4}>
+                                        <Grid item md={5} xs={4}>
                                             <InfoTypography align="right">
                                                 (-)
                                                 <InfoTypography
@@ -1168,57 +1376,7 @@ const OrderDetails = ({OrderIdDigital}) => {
                                                     )}
                                             </InfoTypography>
                                         </Grid>
-                                        <Grid item md={12} xs={12} mb="10px">
-                                            <Stack
-                                                width="100%"
-                                                sx={{
-                                                    mt: '12px',
-                                                    borderBottom: `0.088rem dashed ${theme.palette.neutral[300]}`,
-                                                }}
-                                            ></Stack>
-                                        </Grid>
-                                        <Grid item md={8} xs={8}>
-                                            <InfoTypography>
-                                                {t('Sub Total')}
-                                            </InfoTypography>
-                                        </Grid>
-                                        <Grid item md={4} xs={4}>
-                                            <InfoTypography align="right">
-                                                {trackData &&
-                                                    getAmount(
-                                                        trackData?.data?.order_amount,
-                                                        currencySymbolDirection,
-                                                        currencySymbol,
-                                                        digitAfterDecimalPoint
-                                                    )}
-                                            </InfoTypography>
-                                        </Grid>
 
-                                        {trackData?.data?.subscription !== null && (
-                                            <>
-                                                <Grid item md={8} xs={8}>
-                                                    <Typography
-                                                       fontSize="13px"
-                                                       fontWeight="600"
-                                                        color="primary.main"
-                                                    >
-                                                        {t('Subscription Order Count')}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item md={4} xs={4}>
-                                                    <Typography
-                                                        variant="h5"
-                                                        align="right"
-                                                        color={theme.palette.primary.main}
-                                                    >
-                                                        {
-                                                            trackData?.data?.subscription
-                                                                ?.quantity
-                                                        }
-                                                    </Typography>
-                                                </Grid>
-                                            </>
-                                        )}
                                     </Grid>
                                     <Grid item md={12} xs={12} mb="10px">
                                         <Stack
@@ -1231,12 +1389,12 @@ const OrderDetails = ({OrderIdDigital}) => {
                                     </Grid>
                                     <TotalGrid container md={12} xs={12}>
                                         <Grid item md={8} xs={8}>
-                                            <Typography fontSize="16px" fontWeight={500} sx={{ color: theme.palette.neutral[400] }}>
+                                            <Typography fontSize="16px" fontWeight="400" sx={{ color: theme.palette.neutral[400] }}>
                                                 {t('Total')}
                                             </Typography>
                                         </Grid>
                                         <Grid item md={4} xs={4} align="right">
-                                            <Typography fontWeight={600} color={theme.palette.neutral[400]}>
+                                            <Typography fontWeight="400" color={theme.palette.neutral[400]}>
                                                 {trackData &&
                                                     getAmount(
                                                         handleTotalAmount(),
@@ -1246,6 +1404,66 @@ const OrderDetails = ({OrderIdDigital}) => {
                                                     )}
                                             </Typography>
                                         </Grid>
+                                        {trackData?.data?.subscription !== null && (
+                                            <>
+                                                <Grid item md={8} xs={8} pt=".5rem" pb=".5rem">
+                                                  <Stack direction="row" alignItems="center">
+                                                      <InfoTypography >
+                                                          {`${t('Total Delivered')} (${trackData?.data?.subscription?.delivered_count})`}
+                                                      </InfoTypography>
+                                                      <CustomTooltip title={`${trackData?.data?.subscription?.delivered_count} ${tip_text} ${trackData?.data?.subscription?.quantity}`} arrow placement="top"
+                                                      >
+                                                          <InfoIcon sx={{fontSize:"20px",color:theme=>theme.palette.info.main}}/>
+                                                      </CustomTooltip>
+
+                                                  </Stack>
+                                                </Grid>
+                                                <Grid item md={4} xs={4} pt=".5rem" pb=".5rem">
+                                                    <InfoTypography align="right"
+                                                    >
+                                                        (-){
+                                                          getAmount(
+                                                              trackData?.data?.subscription?.paid_amount,
+                                                              currencySymbolDirection,
+                                                              currencySymbol,
+                                                              digitAfterDecimalPoint
+                                                          )
+                                                        }
+                                                    </InfoTypography>
+                                                </Grid>
+                                                <Grid item md={8} xs={8}>
+                                                    <Typography fontWeight="600" >
+                                                        {t('Due')}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item md={4} xs={4}>
+                                                    <Typography fontWeight="600" align="right"
+                                                    >{
+                                                        getAmount(
+                                                            handleTotalAmount()-trackData?.data?.subscription?.paid_amount,
+                                                            currencySymbolDirection,
+                                                            currencySymbol,
+                                                            digitAfterDecimalPoint
+                                                        )
+                                                    }
+                                                    </Typography>
+                                                </Grid>
+                                            </>
+                                        )}
+                                        {
+                                            trackData &&
+                                            trackData?.data?.subscription !== null &&
+                                            trackData?.data?.subscription?.status !== 'canceled' && (
+                                                //this bottom actions are for subscriptions order
+                                                <BottomActions
+                                                    refetchAll={refetchAll}
+                                                    subscriptionId={trackData?.data?.subscription?.id}
+                                                    t={t}
+                                                    minDate={trackData?.data?.subscription?.start_at}
+                                                    maxDate={trackData?.data?.subscription?.end_at}
+                                                />
+                                            )
+                                        }
                                         {trackData?.data?.partially_paid_amount &&
                                             trackData?.data?.order_status !== 'canceled' ? (
                                             <>
@@ -1357,7 +1575,7 @@ const OrderDetails = ({OrderIdDigital}) => {
                                             </>
                                         ) : null}
                                     </TotalGrid>
-                                    {global?.refund_active_status && (trackData?.data?.order_status === 'delivered') && (trackData && trackData?.data?.subscription === null) && (
+                                    {global?.refund_active_status && (trackData?.data?.order_status === 'delivered') && (trackData && trackData?.data?.subscription === null) && getToken() &&  (
                                         <RefundButton
                                             variant="outlined"
                                             onClick={() => setOpenModal(true)}
@@ -1434,7 +1652,16 @@ const OrderDetails = ({OrderIdDigital}) => {
                 formSubmit={formSubmitHandler}
                 refundIsLoading={refundIsLoading}
             />
-        </>
+            <ReviewSideDrawer
+             open={openReviewModal}
+             onClose={() => setOpenReviewModal(false)}
+             orderId={tempOrderId}
+             refetchTrackData={refetchTrackData}
+               is_reviewed={trackData?.data?.is_reviewed}
+             is_dm_reviewed={trackData?.data?.is_dm_reviewed}
+
+            />
+        </NoSsr>
     )
 }
 

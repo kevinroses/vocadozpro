@@ -16,12 +16,14 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
 import ChatIcon from '@mui/icons-material/Chat'
+import CustomDrawerWishlist from './CustomDrawerWishlist'
 
 const BottomNav = (props) => {
     const { t } = useTranslation()
     const router = useRouter()
     const { setSideDrawerOpen } = props
     const { cartList } = useSelector((state) => state.cart)
+    const [openWishlistModal, setOpenWishlistModal] = useState(false)
 
     let zoneid = undefined
     if (typeof window !== 'undefined') {
@@ -84,10 +86,11 @@ const BottomNav = (props) => {
                     </Link>
 
                     <MuiBottomNavigationAction
-                        onClick={() => routeToWishList('wishlist')}
+                        onClick={() => setOpenWishlistModal(!openWishlistModal)}
                         icon={
                             <Badge badgeContent={0} color="error">
                                 <FavoriteBorderOutlinedIcon />
+                                <CustomDrawerWishlist openWishlistModal={openWishlistModal} setOpenWishlistModal={setOpenWishlistModal} />
                             </Badge>
                         }
                     />

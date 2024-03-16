@@ -1,19 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { alpha, Grid, IconButton, Popover, Typography } from '@mui/material'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import { CategoryButton } from './restaurant-details.style'
 import { styled, useTheme } from '@mui/material/styles'
 import FilterButton from '../Button/FilterButton'
 import { Box, Stack } from '@mui/system'
 import RestaurantFilterCard from '../home/restaurant/RestaurantFilterCard'
 import { filterData } from '../home/restaurant/FilterData'
-import { setFilterbyByCuisineDispatch } from '../../redux/slices/searchFilter'
 import { RTL } from '../RTL/RTL'
-import { CustomTypographyEllipsis } from '../../styled-components/CustomTypographies.style'
 import SearchIcon from '@mui/icons-material/Search'
 import { t } from 'i18next'
 import CustomSearch from '../custom-search/CustomSearch'
-import CloseIcon from '@mui/icons-material/Close'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 const CustomBox = styled(Box)(({ theme }) => ({
     width: '100%',
@@ -49,18 +46,7 @@ const CustomBox = styled(Box)(({ theme }) => ({
             opacity: 1,
         },
     },
-    // '&::after': {
-    //     content: '" "',
-    //     display: 'flex',
-    //     width: '20px',
-    //     height: '100%',
-    //     right: 0,
-    //     position: 'absolute',
-    //     marginLeft: 'auto',
-    //     top: 0,
-    //     background: theme.palette.neutral[300],
-    //     opacity: '.3',
-    // },
+
 }))
 
 const RestaurantCategoryBar = (props) => {
@@ -157,23 +143,30 @@ const RestaurantCategoryBar = (props) => {
             }
         }
     }
+    const handleReset = () => {
+        const data = checkedFilterKey?.map((item) => ({
+            ...item,
+            isActive: false
+        }));
+        setCheckedFilterKey(data)
 
+    };
     return (
         <RTL direction={languageDirection}>
             <Grid
                 container
                 sx={{
-                    borderBottom: `1px solid ${theme.palette.borderBottomBg}`,
+
                     position: 'sticky',
                     top: { xs: '168px', sm: '200px', md: '270px' },
                     background: (theme) => theme.palette.neutral[1800],
                     padding: {
                         xs: '5px 5px 7px 10px',
-                        sm: '20px 5px 0px 0px',
-                        md: '20px 5px 0px 0px',
+                        sm: '4px 5px 0px 0px',
+                        md: '4px 5px 0px 0px',
                     },
                     zIndex: 999,
-                    boxShadow: `0px 4px 15px ${alpha(
+                    boxShadow: `0px 4px 15px 0px ${alpha(
                         theme.palette.primary.main,
                         0.1
                     )}`,
@@ -219,9 +212,10 @@ const RestaurantCategoryBar = (props) => {
                                                     sm: '14px',
                                                     md: '14px',
                                                 }}
-                                                fontWeight="500"
+                                                fontWeight={selectedId===item?.id ? "500":"400"}
+
                                                 color={
-                                                    theme.palette.primary.main
+                                                    theme.palette.neutral[900]
                                                 }
                                             >
                                                 {item?.name}
@@ -243,6 +237,7 @@ const RestaurantCategoryBar = (props) => {
                     sm={2}
                     md={2}
                     align={languageDirection === 'rtl' ? 'left' : 'right'}
+                    marginBottom={{xs:"0px",md:"8px"}}
                 >
                     <Stack
                         direction="row"
@@ -257,38 +252,40 @@ const RestaurantCategoryBar = (props) => {
                         alignItems="center"
                         paddingLeft="15px"
                     >
-                        {isSmall && (
-                            <IconButton
-                                onClick={handleSearchBox}
-                                sx={{
-                                    background: (theme) =>
-                                        alpha(theme.palette.primary.main, 0.3),
-                                    borderRadius: '3px',
-                                    padding: '6px',
-                                    fontSize: '1.4rem',
-                                }}
-                            >
-                                {!searchBoxOpen ? (
-                                    <SearchIcon
-                                        fontSize="1.3rem"
-                                        sx={{
-                                            color: (theme) =>
-                                                theme.palette.primary.main,
-                                        }}
-                                    />
-                                ) : (
-                                    <ArrowForwardIosIcon
-                                        fontSize="14px"
-                                        sx={{
-                                            color: (theme) =>
-                                                theme.palette.primary.main,
-                                        }}
-                                    />
-                                )}
-                            </IconButton>
-                        )}
+                       <Stack direction="row" spacing={1} justifySelf="flex-end" >
+                           {isSmall && (
+                               <IconButton
+                                   onClick={handleSearchBox}
+                                   sx={{
+                                       background: (theme) =>
+                                           alpha(theme.palette.primary.main, 0.3),
+                                       borderRadius: '3px',
+                                       padding: '6px',
+                                       fontSize: '1.4rem',
+                                   }}
+                               >
+                                   {!searchBoxOpen ? (
+                                       <SearchIcon
+                                           fontSize="1.3rem"
+                                           sx={{
+                                               color: (theme) =>
+                                                   theme.palette.primary.main,
+                                           }}
+                                       />
+                                   ) : (
+                                       <ArrowForwardIosIcon
+                                           fontSize="14px"
+                                           sx={{
+                                               color: (theme) =>
+                                                   theme.palette.primary.main,
+                                           }}
+                                       />
+                                   )}
+                               </IconButton>
+                           )}
 
-                        <FilterButton handleClick={handleDropClick} />
+                           <FilterButton handleClick={handleDropClick} />
+                       </Stack>
                     </Stack>
                 </Grid>
             </Grid>
@@ -314,6 +311,7 @@ const RestaurantCategoryBar = (props) => {
                     setCheckedFilterKey={setCheckedFilterKey}
                     // handleClear={handleClear}
                     setFilterKey={setFilterKey}
+                    handleReset={handleReset}
                     // handleFilter={handleFilter}
                     // handleClearAll={handleClearAll}
                     // foodOrRestaurant={foodOrRestaurant}

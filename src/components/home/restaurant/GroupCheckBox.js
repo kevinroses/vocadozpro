@@ -27,11 +27,9 @@ const GroupCheckBox = ({
     const theme=useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
     const handleChange = (event, id) => {
-
         let newArr = checkboxData.map((item) =>
             item?.id === id ? { ...item, isActive: event.target.checked } : item
         )
-
         setCheckedFilterKey(newArr)
         handleDropClose()
         //

@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography'
 
 const FileFormatInfo = (props) => {
     const { text } = props
+
     return (
         <CustomBoxImageText>
             <Typography>{text}</Typography>

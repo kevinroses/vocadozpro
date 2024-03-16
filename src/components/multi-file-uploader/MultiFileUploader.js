@@ -19,7 +19,8 @@ const MultiFileUploader = (props) => {
         titleText,
         hintText,
         totalFiles,
-        gridControl
+        gridControl,
+        fullWidth
     } = props
     const [files, setFiles] = useState(totalFiles ? totalFiles : [])
     const [error, setError] = useState(false)
@@ -74,11 +75,12 @@ const MultiFileUploader = (props) => {
                         supportedFileFormats={supportedFileFormats}
                         replaceFiles={replaceFilesByIndex}
                         gridControl={gridControl}
+                        fullWidth={fullWidth}
                     />
                 </>
             ) : (
                 <Grid container>
-                    <Grid item xs={12} sm={4} md={4}>
+                    <Grid item xs={12} sm={4} md={fullWidth?12:4}>
                         <FileInputField
                             titleText={titleText}
                             labelText={labelText}

@@ -12,6 +12,7 @@ import {
     Autocomplete,
     TextField,
     Grid,
+    useTheme,
 } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
 import GpsFixedIcon from '@mui/icons-material/GpsFixed'
@@ -34,6 +35,7 @@ import LocationEnableCheck from '../LocationEnableCheck'
 import { FacebookCircularProgress } from '../HeroLocationForm'
 import { CustomStackFullWidth } from '../../../styled-components/CustomStyles.style'
 import { CustomTypographyGray } from '../../error/Errors.style'
+import { CustomToaster } from '@/components/custom-toaster/CustomToaster'
 
 const CustomBoxWrapper = styled(Box)(({ theme }) => ({
     outline: 'none',
@@ -71,6 +73,7 @@ const CssTextField = styled(TextField)(({ theme }) => ({
         border: 'none',
     },
     '& .MuiOutlinedInput-root': {
+        fontSize: "13px",
         padding: '7px',
         border: '2px solid',
         borderColor: theme.palette.primary.main,
@@ -86,11 +89,11 @@ const CssTextField = styled(TextField)(({ theme }) => ({
     },
 }))
 
-const MapModal = ({ open, handleClose }) => {
+const MapModal = ({ open, handleClose, redirectUrl }) => {
     const router = useRouter()
-    const { global,userLocationUpdate } = useSelector((state) => state.globalSettings)
+    const theme = useTheme()
+    const { global, userLocationUpdate } = useSelector((state) => state.globalSettings)
     const [isEnableLocation, setIsEnableLocation] = useState(false)
-
     const [searchKey, setSearchKey] = useState('')
     const [enabled, setEnabled] = useState(false)
     const [predictions, setPredictions] = useState([])
@@ -197,6 +200,8 @@ const MapModal = ({ open, handleClose }) => {
             dispatch(setZoneData(zoneData?.data?.zone_data))
             //  setLocation(undefined)
             setLocationEnabled(false)
+        } else {
+            locationRefetch()
         }
         if (!zoneData) {
             setZoneId(undefined)
@@ -228,8 +233,22 @@ const MapModal = ({ open, handleClose }) => {
             )
             localStorage.setItem('currentLatLng', JSON.stringify(location))
             dispatch(setUserLocationUpdate(!userLocationUpdate))
-            toast.success(t('New location has been set.'))
-            router.push('/home')
+            CustomToaster('success', 'New location has been set.');
+            if (redirectUrl) {
+                if (redirectUrl?.query === undefined) {
+                    router.push({ pathname: redirectUrl?.pathname })
+                } else {
+                    router.push({
+                        pathname: redirectUrl?.pathname,
+                        query: {
+                            restaurantType: redirectUrl?.query,
+                        },
+                    })
+                }
+
+            } else {
+                router.push('/home')
+            }
         }
         handleClose()
     }
@@ -263,6 +282,14 @@ const MapModal = ({ open, handleClose }) => {
         >
             <CustomBoxWrapper>
                 <Grid container spacing={1}>
+                    <Grid item md={12}>
+                        <Typography fontWeight="600" fontSize={{ xs: '14px', sm: '16px' }} color={theme.palette.neutral[1000]}>
+                            {t("Pick Location")}
+                        </Typography>
+                        <Typography fontSize={{ xs: "12px", sm: "14px" }} color={theme.palette.neutral[1000]}>
+                            {t("Sharing your accurate location enhances precision in search results and delivery estimates, ensures effortless order delivery.")}
+                        </Typography>
+                    </Grid>
                     <Grid item xs={12} sm={12} md={8}>
                         <Paper sx={{ outline: 'none' }}>
                             {loadingAuto ? (
@@ -332,8 +359,9 @@ const MapModal = ({ open, handleClose }) => {
                     <Grid item xs={12} sm={12} md={4}>
                         <LoadingButton
                             sx={{
+                                fontSize: { xs: '13px', sm: "14px" },
                                 width: '100%',
-                                padding: '16px 16px',
+                                padding: { xs: "12px", sm: '13.5px' },
                                 color: (theme) =>
                                     theme.palette.whiteContainer.main,
                             }}
@@ -403,41 +431,10 @@ const MapModal = ({ open, handleClose }) => {
                         justifyConatent="center"
                         alignItems="center"
                     >
-                        <LocationView>
-                            {geoCodeResults?.data?.results?.length > 0 ? (
-                                <>
-                                    <RoomIcon
-                                        fontSize="small"
-                                        color="primary"
-                                    />
-                                    <Typography
-                                        textAlign="left"
-                                        fontSize={{
-                                            xs: '14px',
-                                            sm: '14',
-                                            md: '16px',
-                                        }}
-                                    >
-                                        {
-                                            geoCodeResults?.data?.results[0]
-                                                ?.formatted_address
-                                        }
-                                    </Typography>
-                                </>
-                            ) : (
-                                <>
-                                    <Skeleton
-                                        variant="rounded"
-                                        width={300}
-                                        height={20}
-                                    />
-                                </>
-                            )}
-                        </LocationView>
                     </CustomStackFullWidth>
-                    {placeDescription && (
-                        <LocationView>{placeDescription}</LocationView>
-                    )}
+                    {/*{placeDescription && (*/}
+                    {/*    <LocationView>{placeDescription}</LocationView>*/}
+                    {/*)}*/}
 
                     {errorLocation?.response?.data ? (
                         <Button

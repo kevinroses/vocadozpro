@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import {
-    CustomBoxForFilePreviewer,
+    CustomBoxForFilePreviewer, CustomBoxImageText,
     FilePreviewerWrapper,
-    IconButtonImagePreviewer,
-} from './FilePreviewer.style'
+    IconButtonImagePreviewer
+} from "./FilePreviewer.style";
 import DeleteIcon from '@mui/icons-material/Delete'
 import Typography from '@mui/material/Typography'
 // import { CustomBoxImageText } from '../form-fields/FileInputField'
@@ -14,7 +14,7 @@ import docIcon from '../../assets/images/icons/docx.png'
 import txtIcon from '../../assets/images/icons/txt-file.png'
 import folderIcon from '../../assets/images/icons/folder.png'
 import CustomImageContainer from '../CustomImageContainer'
-
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 const FilePreviewer = (props) => {
     const {
         file,
@@ -29,6 +29,7 @@ const FilePreviewer = (props) => {
         label,
         titleText,
         gridControl,
+        fullWidth
     } = props
 
     const [multipleImages, setMultipleImages] = useState([])
@@ -48,32 +49,12 @@ const FilePreviewer = (props) => {
     const renderFilePreview = () => {
         if (file?.length > 0) {
             return (
-                <Grid container spacing={3}>
-                    {multipleImages.map((image, index) => {
-                        return (
-                            <Grid
-                                item
-                                xs={12}
-                                sm={gridControl === 'true' ? 4 : 3}
-                                md={gridControl === 'true' ? 4 : 3}
-                                key={index}
-                            >
-                                <CustomBoxForFilePreviewer width={width}>
-                                    {previewBasedOnType(image, index)}
-                                    <IconButtonImagePreviewer
-                                        onClick={() => onDelete(index)}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButtonImagePreviewer>
-                                </CustomBoxForFilePreviewer>
-                            </Grid>
-                        )
-                    })}
+                <Grid container spacing={fullWidth?0:3} rowGap={fullWidth?"1.5rem":"0rem"} columnGap={fullWidth?".8rem":"0rem"}>
                     <Grid
                         item
                         xs={12}
                         sm={gridControl === 'true' ? 4 : 3}
-                        md={gridControl === 'true' ? 4 : 3}
+                        md={fullWidth?12:gridControl === 'true' ? 4 : 3}
                     >
                         <FileInputField
                             titleText={titleText}
@@ -85,6 +66,27 @@ const FilePreviewer = (props) => {
                             acceptedFileInput={acceptedFileInput}
                         />
                     </Grid>
+                    {multipleImages.map((image, index) => {
+                        return (
+                            <Grid
+                                item
+                                xs={12}
+                                sm={gridControl === 'true' ? 4 : 3}
+                                md={gridControl === 'true' ?fullWidth? 2.5:4 : 3}
+                                key={index}
+                            >
+                                <CustomBoxForFilePreviewer fullWidth={fullWidth} width={width}>
+                                    {previewBasedOnType(image, index)}
+                                    <IconButtonImagePreviewer
+                                        onClick={() => onDelete(index)}
+                                    >
+                                        <DeleteForeverIcon style={{  fontSize:"1rem"}} />
+                                    </IconButtonImagePreviewer>
+                                </CustomBoxForFilePreviewer>
+                            </Grid>
+                        )
+                    })}
+
                 </Grid>
             )
         } else {
@@ -93,7 +95,7 @@ const FilePreviewer = (props) => {
                 type: file.name.split('.').pop(),
             }
             return (
-                <CustomBoxForFilePreviewer>
+                <CustomBoxForFilePreviewer fullWidth={fullWidth}>
                     {previewBasedOnType(previewImage)}
                     <IconButtonImagePreviewer onClick={() => deleteImage()}>
                         <DeleteIcon />
@@ -111,10 +113,12 @@ const FilePreviewer = (props) => {
         ) {
             return (
                 <FilePreviewerWrapper
+                    fullWidth={fullWidth}
                 // onClick={() => anchor.current.click()}
                 // width={width}
+                    borderRadius="5px"
                 >
-                    <CustomImageContainer src={file.url} alt="preview" />
+                    <CustomImageContainer src={file.url} alt="preview" objectFit="cover" />
                     {/*<img src={file.url} alt="preview" />*/}
                 </FilePreviewerWrapper>
             )

@@ -1,15 +1,14 @@
-import { Button, Grid, Stack, Typography, styled, useMediaQuery, useTheme, IconButton } from "@mui/material";
+import { Button, Grid, Stack, Typography, styled, useMediaQuery, useTheme, IconButton, SwipeableDrawer, Skeleton } from "@mui/material";
 import React, { memo, useEffect, useRef, useState } from "react";
-import { CustomStackFullWidth, SliderCustom } from "../../../styled-components/CustomStyles.style";
+import { CustomStackFullWidth, SliderCustom } from "@/styled-components/CustomStyles.style";
 import { MapSetionWrapper, VisitAgainWrapper } from "../HomeStyle";
 import FindNearbyIcon from "../../../assets/images/icons/FindNearbyIcon";
 import { t } from "i18next";
 import RoomIcon from "@mui/icons-material/Room";
-import { useGetRestaurant } from "../../../hooks/react-query/restaurants/useGetRestaurant";
 import Slider from "react-slick";
 import RestaurantBoxCard from "../../restaurant-details/RestaurantBoxCard";
 import { HandleNext, HandlePrev } from "../../CustomSliderIcon";
-import { useOrderAgainRestaurants } from "../../../hooks/react-query/wanna-try-again/useOrderAgainRestaurants";
+import { useOrderAgainRestaurants } from "@/hooks/react-query/wanna-try-again/useOrderAgainRestaurants";
 import { useSelector } from "react-redux";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -17,20 +16,21 @@ import CustomModal from "../../custom-modal/CustomModal";
 import MapComponent from "../../restaurant-details/google-address/MapComponent";
 import { Box } from "@mui/system";
 import NearByRestaurant from "./NearByRestaurant";
-import { useRecommendedRestaurant } from "../../../hooks/react-query/wanna-try-again/useRecommendedRestaurant";
-import { useRecentlyViewRestaurantsOnSuccess } from "../../../hooks/react-query/recently-view-restaurants/useRecentlyViewRestaurants";
+import { useRecommendedRestaurant } from "@/hooks/react-query/wanna-try-again/useRecommendedRestaurant";
+import { useRecentlyViewRestaurantsOnSuccess } from "@/hooks/react-query/recently-view-restaurants/useRecentlyViewRestaurants";
 import FoodCardShimmer from "../../food-card/FoodCarShimmer";
 import CloseIcon from "@mui/icons-material/Close";
 import { getToken } from "../../checkout-page/functions/getGuestUserId";
+
 const CustomSlider = styled(Stack)(
-    ({ theme, languageDirection, gap, paddingBottom, isCenter }) => ( isCenter && {
+    ({ theme, languageDirection, gap, paddingBottom, isCenter }) => (isCenter && {
         // height: "100%",
         // paddingY: '1rem',
         justifyContent: "center",
         '& .custom-slide ': {
             transform: "scale(.9)",
             transition: "all 500ms ease-in-out",
-            opacity: 0.8,
+
         },
         '& .custom-active-slide ': {
             transform: "scale(1)",
@@ -74,12 +74,24 @@ const CustomSlider = styled(Stack)(
         }
     })
 )
+const Puller = styled('div')(({ theme }) => ({
+    width: '80px',
+    height: '4px',
+    backgroundColor: theme.palette.neutral[400],
+    borderRadius: 3,
+    position: 'absolute',
+    top: 20,
+}));
+
 const VisitAgain = () => {
     const theme = useTheme();
+    const drawerBleeding = 0;
     const [hoverOn, setHoverOn] = useState(false);
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+    const isXSmall = useMediaQuery(theme.breakpoints.down('sm'))
     const languageDirection = localStorage.getItem('direction')
     const [open, setOpen] = useState(false)
+    const [openDrawer, setOpenDrawer] = useState(false)
     const { global } = useSelector((state) => state.globalSettings);
     const token = getToken()
     const [userData, setUserData] = useState(null);
@@ -128,6 +140,7 @@ const VisitAgain = () => {
         isRefetching: isRefetchingRecent
     } = useRecentlyViewRestaurantsOnSuccess(handleSuccess3)
 
+
     useEffect(() => {
         getUserData();
     }, [token]);
@@ -139,7 +152,9 @@ const VisitAgain = () => {
             refetchRecommended();
         }
     }
-
+    const toggleDrawer = () => () => {
+        setOpenDrawer(!openDrawer)
+    };
     const settings = {
         speed: 500,
         slidesToShow: 3,
@@ -255,20 +270,41 @@ const VisitAgain = () => {
                             </Typography>
 
                         </CustomStackFullWidth>
-                        <Button
-                            variant="contained"
-                            startIcon={<RoomIcon />}
-                            onClick={() => setOpen(true)}
-                            sx={{
-                                backgroundColor: theme.palette.whiteContainer.main,
-                                color: theme.palette.primary.main,
-                                "&:hover": {
-                                    backgroundColor: theme.palette.neutral[200]
-                                }
-                            }}
-                        >
-                            {t("See Location")}
-                        </Button>
+                        {isXSmall ? (
+                            <Button
+                                variant="contained"
+                                startIcon={<RoomIcon />}
+                                onClick={((toggleDrawer()))}
+                                sx={{
+                                    backgroundColor: theme.palette.whiteContainer.main,
+                                    color: theme.palette.primary.main,
+                                    "&:hover": {
+                                        backgroundColor: theme.palette.neutral[200]
+                                    }
+                                }}
+                            >
+                                {t("See Location")}
+                            </Button>
+
+                        ) : (
+                            <Button
+                                variant="contained"
+                                startIcon={<RoomIcon />}
+                                onClick={() => setOpen(true)}
+                                sx={{
+                                    backgroundColor: theme.palette.whiteContainer.main,
+                                    color: theme.palette.primary.main,
+                                    "&:hover": {
+                                        backgroundColor: theme.palette.neutral[200]
+                                    }
+                                }}
+                            >
+                                {t("See Location")}
+                            </Button>
+
+                        )
+
+                        }
 
                     </div>
                 </MapSetionWrapper>
@@ -303,9 +339,9 @@ const VisitAgain = () => {
                         <Grid container>
                             <Grid item xs={12} md={12}>
                                 <Stack flexDirection="row" gap="25px" alignItems="center" padding="0px 30px">
-                                    <FoodCardShimmer cardWidth="280px" cardHeight="230px" />
+                                    {!isXSmall && <FoodCardShimmer cardWidth="280px" cardHeight="230px" />}
                                     <FoodCardShimmer cardWidth="350px" cardHeight="270px" />
-                                    <FoodCardShimmer cardWidth="280px" cardHeight="230px" />
+                                    {!isXSmall && <FoodCardShimmer cardWidth="280px" cardHeight="230px" />}
                                 </Stack>
                             </Grid>
                         </Grid>) : (
@@ -315,7 +351,7 @@ const VisitAgain = () => {
                                     gap="12px"
                                     paddingBottom={isSmall ? "10px" : "20px"}
                                     languageDirection={languageDirection}
-                                    isCenter ={userData?.length <= 3 ? false : true}
+                                    isCenter={userData?.length <= 3 ? false : true}
                                 >
                                     <Slider {...settings}>
                                         {userData?.map((restaurantData, index) => {
@@ -350,10 +386,10 @@ const VisitAgain = () => {
                                                     rating_count={restaurantData?.rating_count}
                                                     visitAgain={true}
                                                     foods={restaurantData?.foods}
+                                                    opening_time={restaurantData?.current_opening_time}
                                                 />
 
                                             );
-
                                         }
                                         )}
                                     </Slider>
@@ -365,36 +401,67 @@ const VisitAgain = () => {
                 <Stack>
                 </Stack>
             </Grid>
-            {open &&
-                <CustomModal openModal={open} setModalOpen={setOpen} maxWidth={{ xs: "90%", md: "500px" }}>
+            {
+                open &&
+                <CustomModal openModal={open} setModalOpen={setOpen} maxWidth={{ xs: "90%", sm: "98vw", md: "1000px" }}>
                     <CustomStackFullWidth
                         direction="row"
                         alignItems="center"
                         justifyContent="flex-end"
+                        height="65%"
                         sx={{ position: "relative" }}
                     >
                         <IconButton
+                            sx={{ position: "absolute", top: 3, right: 3 }}
                             onClick={() => setOpen(false)}
-                            sx={{
-                                zIndex: "99",
-                                position: "absolute",
-                                top: 0,
-                                right: 0,
-                                backgroundColor: (theme) => theme.palette.neutral[100],
-                                borderRadius: "50%",
-                                [theme.breakpoints.down("md")]: {
-                                    top: 0,
-                                    right: 0,
-                                },
-                            }}
                         >
-                            <CloseIcon sx={{ fontSize: "14px", fontWeight: "500" }} />
+                            <CloseIcon sx={{ fontSize: "16px" }} />
                         </IconButton>
+                        <NearByRestaurant />
                     </CustomStackFullWidth>
-                    <NearByRestaurant />
                 </CustomModal>
             }
-        </Grid>
+            {openDrawer && <SwipeableDrawer
+                anchor="bottom"
+                open={openDrawer}
+                onClose={toggleDrawer()}
+                onOpen={toggleDrawer()}
+                swipeAreaWidth={drawerBleeding}
+                disableSwipeToOpen={false}
+                ModalProps={{
+                    keepMounted: true,
+                }}
+                PaperProps={{
+                    sx: {
+                        borderRadius: "20px 20px 0 0"
+                    }
+                }}
+            >
+                <CustomStackFullWidth>
+                    <CustomStackFullWidth
+                        sx={{
+                            position: 'absolute',
+                            top: -drawerBleeding,
+                            alignItems: "center",
+                            zIndex: 300,
+                            height: "45px",
+                            background: `linear-gradient(179deg, #FFF 1.26%, rgba(255, 255, 255, 0.00) 98.74%)`
+                        }}
+                    >
+                        <Puller />
+                    </CustomStackFullWidth>
+                    <Stack
+                        sx={{
+                            overflow: 'auto',
+                            height: '93vh',
+                            borderRadius: "20px",
+                        }}
+                    >
+                        <NearByRestaurant />
+                    </Stack>
+                </CustomStackFullWidth>
+            </SwipeableDrawer>}
+        </Grid >
     );
 };
 

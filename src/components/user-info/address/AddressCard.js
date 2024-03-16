@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { CustomTypography } from '../../custom-tables/Tables.style'
 import { IconButton, Modal, Popover, Stack, Typography } from '@mui/material'
-import deleteImg from '../../../../public/static/Vector (5).png'
 import { t } from 'i18next'
 import { useTheme } from '@mui/material/styles'
 import DeleteAddress from './DeleteAddress'
@@ -21,12 +20,14 @@ import { RTL } from '../../RTL/RTL';
 import MapWithSearchBox from "../../google-map/MapWithSearchBox";
 import AddressForm from './AddressForm'
 import { useMutation, useQuery } from 'react-query'
-import { AddressApi } from '../../../hooks/react-query/config/addressApi'
+import { AddressApi } from "@/hooks/react-query/config/addressApi"
 import { useDispatch, useSelector } from 'react-redux'
-import { ProfileApi } from '../../../hooks/react-query/config/profileApi';
+import { ProfileApi } from "@/hooks/react-query/config/profileApi";
 import CloseIcon from '@mui/icons-material/Close';
 import toast from 'react-hot-toast'
-import { setLocation } from '../../../redux/slices/addressData'
+import { setLocation } from "@/redux/slices/addressData"
+import { onErrorResponse } from "@/components/ErrorResponse";
+import { setGuestUserInfo } from "@/redux/slices/guestUserInfo";
 
 const style = {
     position: 'absolute',
@@ -51,8 +52,7 @@ const AddressCard = ({ address, refetch }) => {
     const { token } = useSelector((state) => state.userToken)
     const { location, formatted_address } = useSelector((state) => state.addressData);
     const { data, isError } = useQuery(['profile-info'], ProfileApi.profileInfo);
-    // console.log('address', address)
-    useState(() => {
+    useEffect(() => {
         if (address?.address_type === "Home") {
             setAddressSymbol(<HomeRoundedIcon sx={{ width: "20px", height: "20px", color: theme.palette.customColor.twelve }} />)
         } else if (address.address_type === "Office") {
@@ -188,14 +188,6 @@ const AddressCard = ({ address, refetch }) => {
                     </Stack>
                 </CustomStackFullWidth>
             </CustomStackFullWidth>
-            {/* {open && (
-                <DeleteAddress
-                    open={open}
-                    handleClose={handleClose}
-                    addressId={address?.id}
-                    refetch={refetch}
-                />
-            )} */}
             <CustomPopover
                 anchorEl={anchorEl}
                 setAnchorEl={setAnchorEl}

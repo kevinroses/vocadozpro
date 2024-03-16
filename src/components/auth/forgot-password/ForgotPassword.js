@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import {
     CustomPaper,
     FlexContainerCenter,
@@ -7,9 +7,10 @@ import {
 import ForgotPasswordNumberForm from './ForgotPasswordNumberForm'
 import OtpForm from './OtpForm'
 import NewPassword from './NewPassword'
-import { useOtp } from '../../../hooks/react-query/config/forgot-password/useOtp'
+import { useOtp } from "@/hooks/react-query/config/forgot-password/useOtp"
+import { CustomBoxForModal } from '../auth.style'
 
-const ForgotPassword = () => {
+const ForgotPassword = ({ setModalFor }) => {
     const [page, setPage] = useState(0)
     const [data, setData] = useState({
         phone: '',
@@ -34,6 +35,7 @@ const ForgotPassword = () => {
                     goNext={goNext}
                     handleFirstForm={handleFirstForm}
                     data={data}
+                    setModalFor={setModalFor}
                 />
             )
         } else if (page === 1) {
@@ -45,13 +47,13 @@ const ForgotPassword = () => {
                     isLoading={isLoading}
                 />
             )
-        } else page === 2
-        {
+        } else if (page === 2) {
             return (
                 <NewPassword
                     data={data}
                     handleFirstForm={handleFirstForm}
                     goBack={goBack}
+                    setModalFor={setModalFor}
                 />
             )
         }
@@ -64,14 +66,14 @@ const ForgotPassword = () => {
     const { mutate, isLoading } = useOtp(onSuccessHandler)
     const formSubmitHandler = (values) => {
         handleFirstForm(values)
-        mutate(values, { onSuccess: onSuccessHandler })
+        mutate(values)
     }
     return (
-        <Box minHeight="50vh" marginTop="200px">
-            <FlexContainerCenter>
-                <CustomPaper elevation={5}>{pageShow()}</CustomPaper>
-            </FlexContainerCenter>
-        </Box>
+        // <Box minHeight="50vh" marginTop="200px">
+        <Stack>
+            {pageShow()}
+        </Stack>
+        // </Box>
     )
 }
 

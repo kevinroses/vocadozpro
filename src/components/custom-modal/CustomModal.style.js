@@ -22,6 +22,9 @@ export const CustomModalWrapper = styled(Box)(
         backgroundColor: bgColor ? bgColor : theme.palette.neutral[100],
         p: 2,
         outline: 'none',
-        width:'100%'
+        width:'100%',
+        [theme.breakpoints.down("md")]: {
+            width: "92%"
+        },
     })
 )

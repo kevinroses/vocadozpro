@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { Container, CssBaseline, Grid } from '@mui/material'
-import { CustomPaperBigCard } from '../../styled-components/CustomStyles.style'
+import { CustomPaperBigCard } from "@/styled-components/CustomStyles.style"
 import CustomPageTitle from '../CustomPageTitle'
 import ResturantList from '../type-wise-resturant-page/ResturantList'
 import RestaurantBoxCard from '../restaurant-details/RestaurantBoxCard'
-import { useRecentlyViewRestaurants } from '../../hooks/react-query/recently-view-restaurants/useRecentlyViewRestaurants'
+import { useRecentlyViewRestaurants } from "@/hooks/react-query/recently-view-restaurants/useRecentlyViewRestaurants"
 import { useSelector } from 'react-redux'
 import CustomShimmerCategories from '../CustomShimmer/CustomShimmerCategories'
 
@@ -66,6 +66,7 @@ const RecentlyViewRestaurantsPage = () => {
                                             rating_count={restaurant?.rating_count}
                                             coupons={restaurant?.coupons}
                                             cuisines={restaurant?.cuisine}
+                                            opening_time={restaurant?.current_opening_time}
 
 
                                         />

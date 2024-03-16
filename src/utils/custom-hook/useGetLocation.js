@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { GoogleApi } from "../../hooks/react-query/config/googleApi";
-import { setFormattedAddress, setLocation, setZoneIds } from "../../redux/slices/addressData";
+import { GoogleApi } from "@/hooks/react-query/config/googleApi";
+import { setFormattedAddress, setLocation, setZoneIds } from "@/redux/slices/addressData";
 
 
 export const useGetLocation = (coords) => {

@@ -41,6 +41,7 @@ import ThemeSwitches from './top-navbar/ThemeSwitches'
 import { getToken } from '../checkout-page/functions/getGuestUserId'
 import { CustomLink, CustomStackFullWidth } from "../../styled-components/CustomStyles.style";
 import { CustomTypography } from "../custom-tables/Tables.style";
+import { CustomToaster } from '../custom-toaster/CustomToaster'
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -74,6 +75,9 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
     const { featuredCategories, cuisines } = useSelector(
         (state) => state.storedData
     )
+    const { countryCode, language } = useSelector(
+        (state) => state.languageChange
+    )
     const { t } = useTranslation()
     const router = useRouter()
     const dispatch = useDispatch()
@@ -102,7 +106,8 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
             dispatch(clearWishList(a))
             dispatch(setClearCart())
             await cartListRefetch()
-            toast.success(t(logoutSuccessFull))
+            // toast.success(t(logoutSuccessFull))
+            CustomToaster('success', logoutSuccessFull);
             if (router.pathname === '/') {
                 router.push('/')
             } else {
@@ -332,6 +337,16 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
                                 themeMode={theme_mode}
                             />
                         </ListItemButton>
+                        <ListItemButton>
+                            <ListItemText
+                                primary={<Typography sx={{ fontSize: '12px' }}>{t('Language')}</Typography>}
+                            />
+                            <CustomLanguage
+                                countryCode={countryCode}
+                                language={language}
+                                isMobile={true}
+                            />
+                        </ListItemButton>
 
                     </List>
 
@@ -435,6 +450,16 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
                                     checked={theme_mode === 'light'}
                                     handleThemeChangeMode={changeThemeMode}
                                     themeMode={theme_mode}
+                                />
+                            </ListItemButton>
+                            <ListItemButton>
+                                <ListItemText
+                                    primary={<Typography sx={{ fontSize: '12px' }}>{t('Language')}</Typography>}
+                                />
+                                <CustomLanguage
+                                    countryCode={countryCode}
+                                    language={language}
+                                    isMobile={true}
                                 />
                             </ListItemButton>
                         </>

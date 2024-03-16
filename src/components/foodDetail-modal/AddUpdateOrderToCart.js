@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import NotAvailableCard from './NotAvailableCard'
 import { Button, Stack } from '@mui/material'
 import { CustomTypography } from '../custom-tables/Tables.style'
-import { isAvailable } from '../../utils/customFunctions'
+import { isAvailable } from "@/utils/customFunctions"
 
 const AddUpdateOrderToCart = (props) => {
-    const { modalData, isInCart, addToCard, t, product, orderNow,addToCartLoading } = props
+    const { modalData, isInCart, addToCard, t, product, orderNow,addToCartLoading,getFullFillRequirements } = props
     return (
         <Stack spacing={1}>
             <NotAvailableCard
@@ -56,7 +56,7 @@ const AddUpdateOrderToCart = (props) => {
                                         !isAvailable(
                                             modalData[0].available_time_starts,
                                             modalData[0].available_time_ends
-                                        )
+                                        )|| !getFullFillRequirements()
                                     }
                                     onClick={() => orderNow()}
                                     variant="contained"

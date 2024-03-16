@@ -6,10 +6,10 @@ import {
 } from '../../styled-components/CustomStyles.style'
 import InfoCard from './InfoCard'
 import SimpleBar from 'simplebar-react'
+import 'simplebar-react/dist/simplebar.min.css'
 import { CustomTypography } from '../custom-tables/Tables.style'
 import { t } from 'i18next'
 import Skeleton from '@mui/material/Skeleton'
-import 'simplebar-react/dist/simplebar.min.css'
 
 import { makeStyles } from '@material-ui/core/styles'
 import {useSelector} from "react-redux";
@@ -134,13 +134,13 @@ const ContactLists = ({
                     </List>
                 </SimpleBar>
             )}
-            {channelList.length === 0 && (
+            {/* {channelList.length === 0 && (
                <Stack width="100%" justifyContent="center" alignItems="center">
                    <CustomTypography>
                        {t('You have no channels.')}
                    </CustomTypography>
                </Stack>
-            )}
+            )} */}
         </CustomStackFullWidth>
     )
 }

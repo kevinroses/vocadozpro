@@ -10,11 +10,11 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Skeleton from '@mui/material/Skeleton'
-import { CustomStackFullWidth, CustomViewAll, SliderCustom } from "../../styled-components/CustomStyles.style";
+import { CustomStackFullWidth, CustomViewAll, SliderCustom } from "@/styled-components/CustomStyles.style";
 import FoodCardShimmer from '../food-card/FoodCarShimmer'
 import { HandleNext, HandlePrev } from '../CustomSliderIcon'
 import { useQuery } from 'react-query'
-import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
+import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
 import { onErrorResponse } from "../ErrorResponse";
 import LatestRestaurantCard from "../restaurant-details/LatestRestaurantCard";
 import { CustomGridWithBgColor, CustomSideOverLay } from './food-campaign/FoodCampaign.style'
@@ -25,14 +25,14 @@ import NewRestaurantAnimations from "./NewRestaurantAnimation";
 import { setNewRestaurant } from "../../redux/slices/scrollPosition";
 
 const NewRestaurant = () => {
-   const dispatch=useDispatch()
+    const dispatch = useDispatch()
     const { t } = useTranslation()
     const [hoverOn, setHoverOn] = useState(false)
-    const [gifShow,setGifShow] = useState(false)
+    const [gifShow, setGifShow] = useState(false)
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
     const { newOffsetElementRef } = useScrollSticky();
-    const {newRestaurant}=useSelector((state) => state.scrollPosition)
+    const { newRestaurant } = useSelector((state) => state.scrollPosition)
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             dispatch(setNewRestaurant(false));
@@ -60,16 +60,16 @@ const NewRestaurant = () => {
 
     const settings = {
         speed: 500,
-        slidesToShow: 3.4,
+        slidesToShow: 4.4,
         slidesToScroll: 1,
         initialSlide: 0,
-        nextArrow: hoverOn && <HandleNext />,
+        nextArrow: hoverOn && <HandleNext overLay={true} />,
         prevArrow: hoverOn && <HandlePrev />,
         responsive: [
             {
                 breakpoint: 2000,
                 settings: {
-                    slidesToShow: 3.7,
+                    slidesToShow: 3.4,
                     slidesToScroll: 1,
                     infinite: false,
                 },
@@ -77,7 +77,7 @@ const NewRestaurant = () => {
             {
                 breakpoint: 1600,
                 settings: {
-                    slidesToShow: 3.6,
+                    slidesToShow: 3.2,
                     slidesToScroll: 1,
                     infinite: false,
                 },
@@ -85,7 +85,7 @@ const NewRestaurant = () => {
             {
                 breakpoint: 1340,
                 settings: {
-                    slidesToShow: 3.5,
+                    slidesToShow: 3.2,
                     slidesToScroll: 1,
                     infinite: false,
                 },
@@ -93,7 +93,7 @@ const NewRestaurant = () => {
             {
                 breakpoint: 1075,
                 settings: {
-                    slidesToShow: 3.1,
+                    slidesToShow: 2.9,
                     slidesToScroll: 1,
                     infinite: false,
                 },
@@ -101,15 +101,23 @@ const NewRestaurant = () => {
             {
                 breakpoint: 999,
                 settings: {
-                    slidesToShow: 3,
+                    slidesToShow: 2.7,
                     slidesToScroll: 1,
                     infinite: false,
                 },
             },
             {
-                breakpoint: 800,
+                breakpoint: 850,
                 settings: {
-                    slidesToShow: 2.5,
+                    slidesToShow: 2.3,
+                    slidesToScroll: 1,
+                    infinite: false,
+                },
+            },
+            {
+                breakpoint: 770,
+                settings: {
+                    slidesToShow: 1.9,
                     slidesToScroll: 1,
                     infinite: false,
                 },
@@ -117,7 +125,7 @@ const NewRestaurant = () => {
             {
                 breakpoint: 670,
                 settings: {
-                    slidesToShow: 2.1,
+                    slidesToShow: 1.8,
                     slidesToScroll: 1,
                     infinite: false,
                 },
@@ -131,32 +139,40 @@ const NewRestaurant = () => {
                 },
             },
             {
-                breakpoint: 450,
+                breakpoint: 495,
                 settings: {
-                    slidesToShow: 1.4,
+                    slidesToShow: 1.3,
                     slidesToScroll: 1,
                     infinite: false,
                 },
             },
             {
-                breakpoint: 370,
+                breakpoint: 460,
                 settings: {
-                    slidesToShow: 1.1,
+                    slidesToShow: 1.25,
                     slidesToScroll: 1,
                     infinite: false,
                 },
             },
             {
-                breakpoint: 300,
+                breakpoint: 400,
                 settings: {
                     slidesToShow: 1,
                     slidesToScroll: 1,
                     infinite: false,
                 },
             },
+            // {
+            //     breakpoint: 370,
+            //     settings: {
+            //         slidesToShow: 1,
+            //         slidesToScroll: 1,
+            //         infinite: false,
+            //     },
+            // },
         ],
     }
-    const handleClick=()=>{
+    const handleClick = () => {
         Router.push({
             pathname: '/home',
 
@@ -170,16 +186,12 @@ const NewRestaurant = () => {
         <Grid
             position="relative"
             container
-            paddingTop={newRestuarants?.data?.length > 0 && '1.9rem'}
+            paddingTop={newRestuarants?.data?.length > 0 && { xs: "0", sm: "1.9rem" }}
             gap="1.4rem"
             ref={newOffsetElementRef}
         >
-            {newRestaurant &&
-                <Stack position="absolute" zIndex="999" justifyContent="center" alignItems="center" width="100%">
-                    <NewRestaurantAnimations/>
-                </Stack>}
-
             <CustomGridWithBgColor
+                newSection={true}
                 foodsize={newRestuarants?.data?.length}
                 padding="23px 0 0 23px"
                 item
@@ -195,11 +207,19 @@ const NewRestaurant = () => {
                         direction="row"
                         alignItems="center"
                         justifyContent="space-between"
-                        paddingBottom="20px"
+                        paddingBottom={{ xs: "0px", md: "20px" }}
                     >
                         <Stack direction="row" spacing={1}>
-
                             <Typography
+                                sx={{
+                                    background: 'linear-gradient(90deg, #414141 0.02%, #FF8B03 40%, #414141 80%)',
+                                    backgroundClip: "text",
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    backgroundSize: '200% auto',
+                                    animation: 'bgPosition 2s ease-in-out infinite alternate',
+                                    WebkitAnimation: 'bgPosition 2s ease-in-out infinite alternate'
+                                }}
                                 variant="h3"
                                 color={theme.palette.neutral[1000]}
                                 fontSize={{ xs: "16px", md: "20px" }}
@@ -215,13 +235,11 @@ const NewRestaurant = () => {
                             alignItems="center"
                             marginRight="2rem"
                         >
-                                <Typography fontSize="14px" fontWeight="500" >{t('View all')}</Typography>
+                            <Typography fontSize="14px" fontWeight="500" >{t('View all')}</Typography>
                         </CustomViewAll>
                     </CustomStackFullWidth>
                 )}
-                {hoverOn && newRestuarants?.data?.length >= 4 && (
-                    <CustomSideOverLay left="unset" right="0" />
-                )}
+
                 {!isLoading ? (
                     <CustomStackFullWidth>
                         <SliderCustom
@@ -231,7 +249,6 @@ const NewRestaurant = () => {
                         >
                             <Slider {...settings}>
                                 {newRestuarants?.data?.map((restaurantData) => {
-
                                     return (
                                         <Stack>
                                             <LatestRestaurantCard

@@ -5,7 +5,8 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
 import { addDays, subDays } from "date-fns";
 import moment from "moment";
-const Calendar = ({ handleValue,minDate, maxDate,diffStartEnd }) => {
+import { RTL } from "../RTL/RTL";
+const Calendar = ({ handleValue, minDate, maxDate, diffStartEnd }) => {
 
     const today = new Date();
     const [state, setState] = useState([
@@ -24,20 +25,15 @@ const Calendar = ({ handleValue,minDate, maxDate,diffStartEnd }) => {
         if (state[0]?.startDate && state[0]?.endDate) {
             const startDate = moment(state[0]?.startDate);
             const endDate = moment(state[0]?.endDate);
-            if(diffStartEnd){
-                if (!startDate.isSame(endDate)) {
-                    handleValue?.(state);
-                }
-            }else{
+            if (!startDate.isSame(endDate)) {
                 handleValue?.(state);
             }
-
         }
     }, [state]);
 
     return (
-        <>
-            {minDate && maxDate ?(
+        <RTL direction={'ltr'}>
+            {minDate && maxDate ? (
                 <DateRangePicker
                     onChange={handleOnChange}
                     showSelectionPreview={false}
@@ -48,7 +44,7 @@ const Calendar = ({ handleValue,minDate, maxDate,diffStartEnd }) => {
                     minDate={moment(minDate).toDate()}
                     maxDate={moment(maxDate).toDate()}
                 />
-            ):(<DateRangePicker
+            ) : (<DateRangePicker
                 onChange={handleOnChange}
                 showSelectionPreview={false}
                 moveRangeOnFirstSelection={false}
@@ -57,7 +53,7 @@ const Calendar = ({ handleValue,minDate, maxDate,diffStartEnd }) => {
                 direction="horizontal"
                 minDate={today}
             />)}
-        </>
+        </RTL>
 
     );
 };

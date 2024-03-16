@@ -9,7 +9,7 @@ import DeliveryAddress from './DeliveryAddress'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import OrderType from './order-type'
 import AdditionalAddresses from './AdditionalAddresses'
 import { Typography } from "@mui/material";

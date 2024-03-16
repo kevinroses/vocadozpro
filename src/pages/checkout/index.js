@@ -5,15 +5,12 @@ import { Container, CssBaseline } from '@mui/material'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
-import ProductPage from '../../components/products-page/ProductPage'
-import { useTranslation } from 'react-i18next'
+} from "@/styled-components/CustomStyles.style"
 import Router, { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
-import { CustomHeader } from '../../api/Headers'
 import CustomContainer from '../../components/container'
-import { getServerSideProps } from '../index'
 import HomeGuard from "../../components/home-guard/HomeGuard";
+import { getServerSideProps } from '../index'
 const CheckoutLayout = ({ configdata }) => {
     const { cartList } = useSelector((state) => state.cart)
     const { token } = useSelector((state) => state.userToken)
@@ -24,7 +21,7 @@ const CheckoutLayout = ({ configdata }) => {
 
     return (
         <>
-        <HomeGuard>
+        <HomeGuard from="checkout" page={page}>
             <CssBaseline />
             <CustomContainer>
                 <CustomStackFullWidth sx={{ marginTop: '5rem' }}>
@@ -44,4 +41,4 @@ const CheckoutLayout = ({ configdata }) => {
     )
 }
 export default CheckoutLayout
-// export { getServerSideProps }
+ // export { getServerSideProps }
