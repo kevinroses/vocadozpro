@@ -12,6 +12,7 @@ const RestaurantsData = ({
     offset,
     setOffset,
     global,
+                             restaurantType
 }) => {
     const matchesToMd = useMediaQuery('(min-width:740px)')
     const matchesToSmall = useMediaQuery('(min-width:400px)')
@@ -43,7 +44,7 @@ const RestaurantsData = ({
                     />
                 </Grid>
             ))}
-            {resData?.data?.restaurants?.length > page_limit ? (
+            {restaurantType!=="latest" && resData?.data?.restaurants?.length > page_limit ? (
                 <Grid item xs={12} sm={12} md={12} align="center">
                     <CustomePagination
                         total_size={resData?.data?.restaurants?.length}

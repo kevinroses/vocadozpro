@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CustomStackFullWidth } from "../../styled-components/CustomStyles.style";
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style";
 import { Stack, styled, Button, Grid, FormControl, RadioGroup, FormControlLabel, Radio, Tooltip } from "@mui/material";
 import { PymentTitle } from "./CheckOut.style";
 import { t } from "i18next";

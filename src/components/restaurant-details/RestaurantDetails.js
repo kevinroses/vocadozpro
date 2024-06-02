@@ -29,17 +29,17 @@ const getCombinedCategoriesAndProducts = (
 	all_products,
 	restaurantCategoryIds,
 	recommendProducts,
-	popularProducts
+	// popularProducts
 ) => {
 	const allCategories = all_categories;
 	const allProducts = all_products;
 
-	const popular = {
-		id: 1112,
-		name: t("Popular"),
-		products: popularProducts,
-		isBgColor: true
-	};
+	// const popular = {
+	// 	id: 1112,
+	// 	name: t("Popular"),
+	// 	products: popularProducts,
+	// 	isBgColor: true
+	// };
 	const recommend = {
 		id: 1233,
 		name: t("Recommend Products"),
@@ -68,13 +68,10 @@ const getCombinedCategoriesAndProducts = (
 			}
 		});
 		if (
-			popularProducts?.length > 0 &&
 			recommendProducts?.products?.length > 0
 		) {
-			return [popular, recommend, ...data];
-		} else if (popularProducts?.length > 0) {
-			return [popular, ...data];
-		} else if (recommendProducts?.products?.length > 0) {
+			return [recommend, ...data];
+		}  else if (recommendProducts?.products?.length > 0) {
 			return [recommend, ...data];
 		} else {
 			return data;
@@ -156,7 +153,7 @@ const RestaurantDetails = ({ restaurantData, configData }) => {
 			allFoods,
 			restaurantCategoryIds,
 			recommendProducts,
-			popularProducts
+			// popularProducts
 		);
 
 		const hasProducts = combined?.filter(
@@ -165,7 +162,7 @@ const RestaurantDetails = ({ restaurantData, configData }) => {
 		setData(hasProducts);
 		//setSelectedId(hasProducts?.[0]?.id)
 		setIsFirstRender(false);
-	}, [allFoods, allCategories, recommendProducts, popularProducts]);
+	}, [allFoods, allCategories, recommendProducts]);
 
 	const handleFocusedSection = debounce((val) => {
 		setSelectedId(val?.id);
@@ -208,7 +205,7 @@ const RestaurantDetails = ({ restaurantData, configData }) => {
 			allFoods,
 			restaurantCategoryIds,
 			recommendProducts,
-			popularProducts
+			// popularProducts
 		);
 
 		const filterData = combined?.map((item) => {

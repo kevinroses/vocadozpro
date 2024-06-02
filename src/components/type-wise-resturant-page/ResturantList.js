@@ -1,31 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import { RestaurantsApi } from '@/hooks/react-query/config/restaurantApi'
+import { CustomStackFullWidth } from '@/styled-components/CustomStyles.style'
+import { Box, Grid, styled } from '@mui/material'
 import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import {
-    Box,
-    CircularProgress,
-    Grid,
-    styled,
-    ToggleButton,
-    ToggleButtonGroup,
-} from '@mui/material'
-import { Dropdown } from 'react-bootstrap'
-import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import Pagination from '@mui/material/Pagination'
-import Stack from '@mui/material/Stack'
-import AddRoadOutlinedIcon from '@mui/icons-material/AddRoadOutlined'
-import { useRouter } from 'next/router'
-import { useQuery } from 'react-query'
-import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
-import { useSelector } from 'react-redux'
-import RestaurantBoxCard from '../restaurant-details/RestaurantBoxCard'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 import CustomShimmerRestaurant from '../CustomShimmer/CustomShimmerRestaurant'
-import {
-    CustomPaperBigCard,
-    CustomStackFullWidth,
-} from "@/styled-components/CustomStyles.style"
+import RestaurantBoxCard from '../restaurant-details/RestaurantBoxCard'
 import GroupButtons from '../restaurant-details/foodSection/GroupButtons'
 
 const ResturantList = ({ restaurantType }) => {
@@ -62,8 +44,6 @@ const ResturantList = ({ restaurantType }) => {
 
     return (
         <Box>
-
-
             <Grid
                 container
                 item
@@ -105,7 +85,9 @@ const ResturantList = ({ restaurantType }) => {
                                         rating_count={restaurant?.rating_count}
                                         coupons={restaurant?.coupons}
                                         cuisines={restaurant?.cuisine}
-                                        opening_time={restaurant?.current_opening_time}
+                                        opening_time={
+                                            restaurant?.current_opening_time
+                                        }
                                     />
                                 </Grid>
                             )

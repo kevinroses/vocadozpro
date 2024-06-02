@@ -1,9 +1,10 @@
-import { handleValuesFromCartItems } from "../checkout-page/CheckoutPage";
+import { handleIdsFromCartItems, handleValuesFromCartItems } from "../checkout-page/CheckoutPage";
 import { getSelectedAddons } from "../navbar/second-navbar/SecondNavbar";
-import { calculateItemBasePrice, getConvertDiscount } from "../../utils/customFunctions";
-import { incrementProductQty } from "../../redux/slices/cart";
+import { calculateItemBasePrice, getConvertDiscount } from "@/utils/customFunctions";
+import { incrementProductQty } from "@/redux/slices/cart";
 
 export const getItemDataForAddToCart = (values,updateQuantity, mainPrice,guest_id) => {
+
   let totalQty = 0;
   return {
     guest_id: guest_id,
@@ -25,6 +26,13 @@ export const getItemDataForAddToCart = (values,updateQuantity, mainPrice,guest_i
     item_id: values?.id,
     price: mainPrice,
     quantity: updateQuantity,
+    variation_options:[]?.concat(...values?.variations?.length > 0
+        ? values?.variations?.map((variation) => {
+          return  variation.values
+              ?.filter(item => item.isSelected)
+              ?.map(item => item.option_id);
+        })
+        : []),
     variations:
       values?.variations?.length > 0
         ? values?.variations?.map((variation) => {

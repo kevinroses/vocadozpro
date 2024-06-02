@@ -7,7 +7,7 @@ import {
 import { Box, Stack } from '@mui/system'
 import CustomImageContainer from '../CustomImageContainer'
 import test_image from '../../../public/static/testImage.svg'
-import { IconButton, Typography, useMediaQuery } from '@mui/material'
+import { IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles'
 import VagSvg from '../foodDetail-modal/VagSvg'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -39,6 +39,7 @@ import CustomPopover from '../custom-popover/CustomPopover'
 import CustomPopoverWithItem from '../custom-popover/CustomPopoverWithItem'
 import WishListImage from '../../assets/images/WishListImage'
 import DeleteIcon from '../../assets/images/icons/DeleteIcon'
+import HalalSvg from "@/components/food-card/HalalSvg";
 
 const HorizontalFoodCard = (props) => {
     const {
@@ -180,6 +181,13 @@ const HorizontalFoodCard = (props) => {
                                                 : theme.palette.success.light
                                         }
                                     />
+
+                                    {product?.halal_tag_status===1 && product?.is_halal===1 &&  <Tooltip arrow title={t("This is a halal food")}>
+                                        <IconButton sx={{padding:"0px"}}>
+                                            <HalalSvg/>
+                                        </IconButton>
+                                    </Tooltip>}
+
                                 </Stack>
                                 <Typography
                                     variant="subtitle2"
@@ -260,7 +268,7 @@ const HorizontalFoodCard = (props) => {
 
                                 </IconButton>
                             )}
-                            {isInCart && !incrOpen && (
+                            {isInCart && !incrOpen && product?.variations?.length ===0 &&  (
                                 <AfterAddToCart
                                     isInCart={isInCart}
                                     product={product}

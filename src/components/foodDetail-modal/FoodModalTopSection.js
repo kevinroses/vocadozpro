@@ -1,5 +1,5 @@
 import React from 'react'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import CustomImageContainer from '../CustomImageContainer'
 import CloseIcon from '@mui/icons-material/Close'
 import { Stack } from '@mui/system'
@@ -22,6 +22,7 @@ const FoodModalTopSection = ({
     addToFavorite,
     deleteWishlistItem,
 }) => {
+
     const router = useRouter()
     let languageDirection = undefined
     if (typeof window !== 'undefined') {
@@ -93,7 +94,7 @@ const FoodModalTopSection = ({
                 </Stack>
                 {!product?.available_date_ends && (
                     <>
-                        {!isInList(product.id) ? (
+                        {!isInList(product?.id) ? (
                             <CustomFavICon
                                 languageDirection={languageDirection}
                             >

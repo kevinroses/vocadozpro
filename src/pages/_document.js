@@ -24,8 +24,6 @@ class CustomDocument extends Document {
                     {/*/>*/}
 
                     <meta name="theme-color" content="#111827" />
-                    <meta name="robots"
-                          content="nofollow, noindex, max-snippet:1, max-video-preview:1, max-image-preview:standard" />
                     <script
                         type="application/javascript"
                         src="https://accounts.google.com/gsi/client"
@@ -39,8 +37,8 @@ class CustomDocument extends Document {
                     {/*/>*/}
                 </Head>
                 <body>
-                <Main />
-                <NextScript />
+                    <Main />
+                    <NextScript />
                 </body>
             </Html>
         )

@@ -6,7 +6,7 @@ import { CustomTypography } from '../custom-tables/Tables.style'
 import { isAvailable } from "@/utils/customFunctions"
 
 const AddUpdateOrderToCart = (props) => {
-    const { modalData, isInCart, addToCard, t, product, orderNow,addToCartLoading,getFullFillRequirements } = props
+    const { isUpdateDisabled,modalData, isInCart, addToCard, t, product, orderNow,addToCartLoading,getFullFillRequirements } = props
     return (
         <Stack spacing={1}>
             <NotAvailableCard
@@ -22,7 +22,7 @@ const AddUpdateOrderToCart = (props) => {
                 <>
                     {isInCart(product?.id) && (
                         <Button
-                            // disabled={quantity <= 0}
+                             disabled={!isUpdateDisabled()}
                             onClick={() => addToCard()}
                             variant="contained"
                             fullWidth

@@ -1,28 +1,31 @@
-import React from 'react'
-import { CustomCardButton } from './FoodCard.style'
-import { Stack } from '@mui/system'
-import { alpha, Grow, IconButton, Typography, Fade } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
-import RemoveIcon from '@mui/icons-material/Remove'
-import AddIcon from '@mui/icons-material/Add'
-import { useTheme } from '@emotion/react'
-import { useDispatch } from 'react-redux'
+import { CustomToaster } from '@/components/custom-toaster/CustomToaster'
 import {
     decrementProductQty,
     incrementProductQty,
     removeProduct,
-} from "@/redux/slices/cart"
+} from '@/redux/slices/cart'
+import {
+    calculateItemBasePrice,
+    getConvertDiscount,
+    handleIncrementedTotal,
+} from '@/utils/customFunctions'
+import { useTheme } from '@emotion/react'
+import AddIcon from '@mui/icons-material/Add'
+import DeleteIcon from '@mui/icons-material/Delete'
+import RemoveIcon from '@mui/icons-material/Remove'
+import { IconButton, Typography, alpha } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import toast from 'react-hot-toast'
+import { Stack } from '@mui/system'
 import { t } from 'i18next'
-import { calculateItemBasePrice, getConvertDiscount, handleIncrementedTotal } from "@/utils/customFunctions";
-import { getItemDataForAddToCart } from "../floating-cart/helperFunction";
-import { onErrorResponse } from "../ErrorResponse";
-import useCartItemUpdate from "../../hooks/react-query/add-cart/useCartItemUpdate";
-import { getSelectedAddons } from "../navbar/second-navbar/SecondNavbar";
-import { getGuestId } from "../checkout-page/functions/getGuestUserId";
-import useDeleteCartItem from "../../hooks/react-query/add-cart/useDeleteCartItem";
-import CircularLoader from "../loader/CircularLoader";
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import useCartItemUpdate from '../../hooks/react-query/add-cart/useCartItemUpdate'
+import useDeleteCartItem from '../../hooks/react-query/add-cart/useDeleteCartItem'
+import { onErrorResponse } from '../ErrorResponse'
+import { getGuestId } from '../checkout-page/functions/getGuestUserId'
+import { getItemDataForAddToCart } from '../floating-cart/helperFunction'
+import CircularLoader from '../loader/CircularLoader'
+import { getSelectedAddons } from '../navbar/second-navbar/SecondNavbar'
 
 const FoodCardIncrementAndDecrement = ({
     getQuantity,
@@ -30,125 +33,148 @@ const FoodCardIncrementAndDecrement = ({
     setIncrOpen,
     incrOpen,
     isInCart,
-                                           horizontal
+    horizontal,
 }) => {
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
     const dispatch = useDispatch()
-  const { mutate: updateMutate,isLoading:updatedLoading } = useCartItemUpdate();
-  const { mutate:itemRemove,isLoading:removeIsLoading } = useDeleteCartItem();
-    const guestId =getGuestId()
-  const handleHover = () => {}
+    const { mutate: updateMutate, isLoading: updatedLoading } =
+        useCartItemUpdate()
+    const { mutate: itemRemove, isLoading: removeIsLoading } =
+        useDeleteCartItem()
+    const guestId = getGuestId()
+    const handleHover = () => {}
 
-  const cartUpdateHandleSuccess = (res) => {
-    if (res) {
-      res?.forEach((item) => {
-        if (isInCart?.cartItemId === item?.id) {
-          const product = {
-            ...item?.item,
-            cartItemId: item?.id,
-            totalPrice: item?.price,
-            quantity: item?.quantity,
-            variations: item?.item?.variations,
-            selectedAddons: getSelectedAddons(item?.item?.addons),
-            itemBasePrice:  getConvertDiscount(
-              item?.item?.discount,
-              item?.item?.discount_type,
-              calculateItemBasePrice(item, item?.item?.variations),
-              item?.item?.restaurant_discount
-            ),
-          };
+    const cartUpdateHandleSuccess = (res) => {
+        if (res) {
+            res?.forEach((item) => {
+                if (isInCart?.cartItemId === item?.id) {
+                    const product = {
+                        ...item?.item,
+                        cartItemId: item?.id,
+                        totalPrice: item?.price,
+                        quantity: item?.quantity,
+                        variations: item?.item?.variations,
+                        selectedAddons: getSelectedAddons(item?.item?.addons),
+                        itemBasePrice: getConvertDiscount(
+                            item?.item?.discount,
+                            item?.item?.discount_type,
+                            calculateItemBasePrice(
+                                item,
+                                item?.item?.variations
+                            ),
+                            item?.item?.restaurant_discount
+                        ),
+                    }
 
-          dispatch(incrementProductQty(product)) // Dispatch the single product
+                    dispatch(incrementProductQty(product)) // Dispatch the single product
+                }
+            })
         }
-      });
     }
-  };
+
     const handleIncrement = (e) => {
         e.stopPropagation()
-      const updateQuantity=isInCart?.quantity+1
-      const totalPrice = handleIncrementedTotal(
-        isInCart?.itemBasePrice,
-        updateQuantity,
-        isInCart?.discount,
-        isInCart?.discount_type
-      )
-      const itemObject=getItemDataForAddToCart(isInCart,updateQuantity,totalPrice,guestId)
-        if (product?.maximum_cart_quantity) {
-            if (
-                product?.maximum_cart_quantity &&
-                product?.maximum_cart_quantity <= getQuantity(product?.id)
-            ) {
-                toast.error(t('Out Of Limits'))
-            } else {
-              updateMutate(itemObject,{
-                onSuccess: cartUpdateHandleSuccess,
-                onError: onErrorResponse,
-              })
-               // dispatch(incrementProductQty(isInCart))
-            }
+        if (getQuantity(product?.id) >= product?.item_stock) {
+            CustomToaster('error', t('Out Of Stock'))
         } else {
-          updateMutate(itemObject,{
-            onSuccess: cartUpdateHandleSuccess,
-            onError: onErrorResponse,
-          })
-            //dispatch(incrementProductQty(isInCart))
+            const updateQuantity = isInCart?.quantity + 1
+            const totalPrice = handleIncrementedTotal(
+                isInCart?.itemBasePrice,
+                updateQuantity,
+                isInCart?.discount,
+                isInCart?.discount_type
+            )
+            const itemObject = getItemDataForAddToCart(
+                isInCart,
+                updateQuantity,
+                totalPrice,
+                guestId
+            )
+            if (product?.maximum_cart_quantity) {
+                if (
+                    product?.maximum_cart_quantity &&
+                    product?.maximum_cart_quantity <= getQuantity(product?.id)
+                ) {
+                    toast.error(t('Out Of Limits'))
+                } else {
+                    updateMutate(itemObject, {
+                        onSuccess: cartUpdateHandleSuccess,
+                        onError: onErrorResponse,
+                    })
+                    // dispatch(incrementProductQty(isInCart))
+                }
+            } else {
+                updateMutate(itemObject, {
+                    onSuccess: cartUpdateHandleSuccess,
+                    onError: onErrorResponse,
+                })
+                //dispatch(incrementProductQty(isInCart))
+            }
         }
     }
-  const cartUpdateHandleSuccessDecrement = (res) => {
-    if (res) {
-      res?.forEach((item) => {
-        if (isInCart?.cartItemId === item?.id) {
-          const product = {
-            ...item?.item,
-            cartItemId: item?.id,
-            totalPrice: item?.price,
-            quantity: item?.quantity,
-            variations: item?.item?.variations,
-            selectedAddons: getSelectedAddons(item?.item?.addons),
-            itemBasePrice:  getConvertDiscount(
-              item?.item?.discount,
-              item?.item?.discount_type,
-              calculateItemBasePrice(item, item?.item?.variations),
-              item?.item?.restaurant_discount
-            ),
-          };
+    const cartUpdateHandleSuccessDecrement = (res) => {
+        if (res) {
+            res?.forEach((item) => {
+                if (isInCart?.cartItemId === item?.id) {
+                    const product = {
+                        ...item?.item,
+                        cartItemId: item?.id,
+                        totalPrice: item?.price,
+                        quantity: item?.quantity,
+                        variations: item?.item?.variations,
+                        selectedAddons: getSelectedAddons(item?.item?.addons),
+                        itemBasePrice: getConvertDiscount(
+                            item?.item?.discount,
+                            item?.item?.discount_type,
+                            calculateItemBasePrice(
+                                item,
+                                item?.item?.variations
+                            ),
+                            item?.item?.restaurant_discount
+                        ),
+                    }
 
-          dispatch(decrementProductQty(product)) // Dispatch the single product
+                    dispatch(decrementProductQty(product)) // Dispatch the single product
+                }
+            })
         }
-      });
     }
-  };
     const handleDecrement = (e) => {
         e.stopPropagation()
-      const updateQuantity=isInCart?.quantity-1
-      const totalPrice = handleIncrementedTotal(
-        isInCart?.itemBasePrice,
-        updateQuantity,
-        isInCart?.discount,
-        isInCart?.discount_type
-      )
-      const itemObject=getItemDataForAddToCart(isInCart,updateQuantity,totalPrice,guestId)
-      updateMutate(itemObject,{
-        onSuccess: cartUpdateHandleSuccessDecrement,
-        onError: onErrorResponse,
-      })
+        const updateQuantity = isInCart?.quantity - 1
+        const totalPrice = handleIncrementedTotal(
+            isInCart?.itemBasePrice,
+            updateQuantity,
+            isInCart?.discount,
+            isInCart?.discount_type
+        )
+        const itemObject = getItemDataForAddToCart(
+            isInCart,
+            updateQuantity,
+            totalPrice,
+            guestId
+        )
+        updateMutate(itemObject, {
+            onSuccess: cartUpdateHandleSuccessDecrement,
+            onError: onErrorResponse,
+        })
         //dispatch(decrementProductQty(isInCart))
     }
-  const handleSuccess = () => {
-    dispatch(removeProduct(isInCart));
-    //toast.success(t(cart_item_remove));
-  };
-  const handleRemove = () => {
-    const cartIdAndGuestId = {
-      cart_id: isInCart?.cartItemId,
-      guestId: getGuestId(),
-    };
-    itemRemove(cartIdAndGuestId, {
-      onSuccess:  handleSuccess,
-      onError: onErrorResponse,
-    });
-  };
+    const handleSuccess = () => {
+        dispatch(removeProduct(isInCart))
+        //toast.success(t(cart_item_remove));
+    }
+    const handleRemove = () => {
+        const cartIdAndGuestId = {
+            cart_id: isInCart?.cartItemId,
+            guestId: getGuestId(),
+        }
+        itemRemove(cartIdAndGuestId, {
+            onSuccess: handleSuccess,
+            onError: onErrorResponse,
+        })
+    }
     // const handleRemove = (e) => {
     //     e.stopPropagation()
     //     dispatch(removeProduct(isInCart))
@@ -156,15 +182,15 @@ const FoodCardIncrementAndDecrement = ({
     return (
         <Stack
             sx={{
-                padding:"2px",
+                padding: '2px',
                 borderRadius: '15px',
-                border:"1px solid",
-                borderColor: theme=> alpha(theme.palette.primary.main,.5),
+                border: '1px solid',
+                borderColor: (theme) => alpha(theme.palette.primary.main, 0.5),
                 background: (theme) => theme.palette.neutral[200],
                 position: 'absolute',
-                right:horizontal==="true"? "0px": '10px',
+                right: horizontal === 'true' ? '0px' : '10px',
                 left: 'unset',
-                bottom: horizontal==="true" ? "0px": '8px',
+                bottom: horizontal === 'true' ? '0px' : '8px',
                 width: { xs: '60%', md: '40%' },
                 transformOrigin: 'right',
                 '@keyframes scaleXCustom': {
@@ -195,7 +221,7 @@ const FoodCardIncrementAndDecrement = ({
             >
                 {getQuantity(product?.id) === 1 ? (
                     <IconButton
-                      disabled={removeIsLoading}
+                        disabled={removeIsLoading}
                         aria-label="delete"
                         size="small"
                         color="error"
@@ -212,7 +238,7 @@ const FoodCardIncrementAndDecrement = ({
                 ) : (
                     <>
                         <IconButton
-                          disabled={updatedLoading}
+                            disabled={updatedLoading}
                             // disabled={
                             //   state.modalData[0]?.totalPrice === 0 ||
                             //   state.modalData[0]?.quantity <= 1
@@ -244,16 +270,20 @@ const FoodCardIncrementAndDecrement = ({
                     </>
                 )}
 
-              {updatedLoading?<CircularLoader size="14px"/>: <Typography
-                variant="h5"
-                fontWeight="500"
-                color={theme.palette.neutral[1000]}
-              >
-                {getQuantity(product?.id)}
-              </Typography>}
+                {updatedLoading ? (
+                    <CircularLoader size="14px" />
+                ) : (
+                    <Typography
+                        variant="h5"
+                        fontWeight="500"
+                        color={theme.palette.neutral[1000]}
+                    >
+                        {getQuantity(product?.id)}
+                    </Typography>
+                )}
 
                 <IconButton
-                  disabled={updatedLoading}
+                    disabled={updatedLoading}
                     color="primary"
                     aria-label="add"
                     onClick={(e) => handleIncrement(e)}

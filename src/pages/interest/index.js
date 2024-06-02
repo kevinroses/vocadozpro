@@ -1,26 +1,16 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Meta from '../../components/Meta'
-import InterestOptions from '../../components/interest/InterestOptions'
+import { setWelcomeModal } from '@/redux/slices/utils'
 import { Container } from '@mui/material'
-import {
-    CustomPaperBigCard,
-    CustomStackFullWidth,
-} from '../../styled-components/CustomStyles.style'
 import { Box } from '@mui/system'
-import { InfoSetByApi } from '../../components/InfoSetByApi'
 import { useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { onSingleErrorResponse } from '../../components/ErrorResponse'
+import Meta from '../../components/Meta'
+import HomeGuard from '../../components/home-guard/HomeGuard'
+import InterestOptions from '../../components/interest/InterestOptions'
 import { ProfileApi } from '../../hooks/react-query/config/profileApi'
-import { setUser } from '../../redux/slices/customer'
-import {
-    onErrorResponse,
-    onSingleErrorResponse,
-} from '../../components/ErrorResponse'
 import { setWalletAmount } from '../../redux/slices/cart'
-import { ConfigApi } from '../../hooks/react-query/config/useConfig'
-import { CustomHeader } from '../../api/Headers'
+import { setUser } from '../../redux/slices/customer'
 import { getServerSideProps } from '../index'
-import HomeGuard from "../../components/home-guard/HomeGuard";
 const Interest = ({ configData }) => {
     const { global } = useSelector((state) => state.globalSettings)
     const businessLogo = global?.base_urls?.business_logo_url
@@ -34,10 +24,11 @@ const Interest = ({ configData }) => {
     )
     const dispatch = useDispatch()
     if (data) {
-        // localStorage.setItem('wallet_amount', data?.data?.wallet_balance)
         dispatch(setWalletAmount(data?.data?.wallet_balance))
         dispatch(setUser(data?.data))
+        dispatch(setWelcomeModal(true))
     }
+
     return (
         <>
             <Meta
@@ -46,13 +37,16 @@ const Interest = ({ configData }) => {
                 keywords=""
                 ogImage={`${businessLogo}/${global?.logo}`}
             />
-        <HomeGuard>
-            <Container maxWidth="lg" sx={{ mb: { xs: '72px', md: '32px' } }}>
-                <Box mt={{ xs: '90px', md: '150px' }}>
-                    <InterestOptions />
-                </Box>
-            </Container>
-        </HomeGuard>
+            <HomeGuard>
+                <Container
+                    maxWidth="lg"
+                    sx={{ mb: { xs: '72px', md: '32px' } }}
+                >
+                    <Box mt={{ xs: '90px', md: '150px' }}>
+                        <InterestOptions />
+                    </Box>
+                </Container>
+            </HomeGuard>
         </>
     )
 }

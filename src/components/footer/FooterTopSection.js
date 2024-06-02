@@ -1,23 +1,19 @@
-import React from 'react'
 import {
     CustomColouredTypography,
     CustomStackFullWidth,
-} from "@/styled-components/CustomStyles.style"
-import SocialLinks from './SocialLinks'
-import { useSelector } from 'react-redux'
-import { Stack, Typography, useMediaQuery } from '@mui/material'
-import { RouteLinksData } from './RouteLinksData'
-import { t } from 'i18next'
+} from '@/styled-components/CustomStyles.style'
+import { alpha } from '@material-ui/core'
+import { Stack, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { t } from 'i18next'
 import Router from 'next/router'
-import { toast } from 'react-hot-toast'
+import { useSelector } from 'react-redux'
+import Slider from 'react-slick'
+import 'simplebar-react/dist/simplebar.min.css'
 import { RTL } from '../RTL/RTL'
 import { CustomToaster } from '../custom-toaster/CustomToaster'
-import { alpha } from '@material-ui/core'
-import { Scrollbar } from '../Scrollbar'
-import SimpleBar from 'simplebar-react'
-import 'simplebar-react/dist/simplebar.min.css'
-import Slider from 'react-slick'
+import { RouteLinksData } from './RouteLinksData'
+import SocialLinks from './SocialLinks'
 
 const FooterTopSection = () => {
     const theme = useTheme()
@@ -40,7 +36,7 @@ const FooterTopSection = () => {
                     { shallow: true }
                 )
             } else {
-                CustomToaster("error", 'You must be login to access this page.')
+                CustomToaster('error', 'You must be login to access this page.')
             }
         } else {
             Router.push(href)
@@ -49,8 +45,8 @@ const FooterTopSection = () => {
     const settings = {
         dots: false,
         infinite: false,
-        variableWidth: true
-    };
+        variableWidth: true,
+    }
     return (
         <RTL direction={languageDirection}>
             <CustomStackFullWidth spacing={{ xs: 2, sm: 4 }}>
@@ -68,11 +64,17 @@ const FooterTopSection = () => {
                                     }
                                     sx={{
                                         fontWeight: 400,
-                                        color: alpha(theme.palette.whiteContainer.main, 0.8),
+                                        color: alpha(
+                                            theme.palette.whiteContainer.main,
+                                            0.8
+                                        ),
                                         cursor: 'pointer',
                                         borderLeft:
                                             index !== 0 &&
-                                            `2px solid ${alpha(theme.palette.text.footerText, 0.8)}`,
+                                            `2px solid ${alpha(
+                                                theme.palette.text.footerText,
+                                                0.8
+                                            )}`,
                                         paddingLeft: '15px',
 
                                         '&:hover': {
@@ -91,7 +93,7 @@ const FooterTopSection = () => {
                         spacing={{ xs: 1.5, sm: 2 }}
                         alignItems="center"
                         justifyContent="center"
-                        direction='row'
+                        direction="row"
                     >
                         {RouteLinksData.map((item, index) => {
                             return (
@@ -104,11 +106,17 @@ const FooterTopSection = () => {
                                     }
                                     sx={{
                                         fontWeight: 400,
-                                        color: alpha(theme.palette.whiteContainer.main, 0.8),
+                                        color: alpha(
+                                            theme.palette.whiteContainer.main,
+                                            0.8
+                                        ),
                                         cursor: 'pointer',
                                         borderLeft:
                                             index !== 0 &&
-                                            `2px solid ${alpha(theme.palette.text.footerText, 0.8)}`,
+                                            `2px solid ${alpha(
+                                                theme.palette.text.footerText,
+                                                0.8
+                                            )}`,
                                         paddingLeft: '15px',
 
                                         '&:hover': {
@@ -120,9 +128,10 @@ const FooterTopSection = () => {
                                 </CustomColouredTypography>
                             )
                         })}
-                    </Stack>)}
+                    </Stack>
+                )}
             </CustomStackFullWidth>
-        </RTL >
+        </RTL>
     )
 }
 

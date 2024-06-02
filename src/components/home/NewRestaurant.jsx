@@ -1,28 +1,30 @@
-import React, { memo, useEffect, useState } from 'react'
+import { Grid, Stack, Typography } from '@mui/material'
+import { memo, useEffect, useState } from 'react'
 import Slider from 'react-slick'
-import { Grid, IconButton, Stack, Typography } from "@mui/material";
 
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
 import { useDispatch, useSelector } from 'react-redux'
+import 'slick-carousel/slick/slick-theme.css'
+import 'slick-carousel/slick/slick.css'
 
-import { useTranslation } from 'react-i18next'
+import { RestaurantsApi } from '@/hooks/react-query/config/restaurantApi'
+import {
+    CustomStackFullWidth,
+    CustomViewAll,
+    SliderCustom,
+} from '@/styled-components/CustomStyles.style'
+import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import Skeleton from '@mui/material/Skeleton'
-import { CustomStackFullWidth, CustomViewAll, SliderCustom } from "@/styled-components/CustomStyles.style";
-import FoodCardShimmer from '../food-card/FoodCarShimmer'
-import { HandleNext, HandlePrev } from '../CustomSliderIcon'
+import Router from 'next/router'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
-import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
-import { onErrorResponse } from "../ErrorResponse";
-import LatestRestaurantCard from "../restaurant-details/LatestRestaurantCard";
-import { CustomGridWithBgColor, CustomSideOverLay } from './food-campaign/FoodCampaign.style'
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import Router from "next/router";
-import useScrollSticky from "./Search-filter-tag/useScrollSticky";
-import NewRestaurantAnimations from "./NewRestaurantAnimation";
-import { setNewRestaurant } from "../../redux/slices/scrollPosition";
+import { setNewRestaurant } from '../../redux/slices/scrollPosition'
+import { HandleNext, HandlePrev } from '../CustomSliderIcon'
+import { onErrorResponse } from '../ErrorResponse'
+import FoodCardShimmer from '../food-card/FoodCarShimmer'
+import LatestRestaurantCard from '../restaurant-details/LatestRestaurantCard'
+import useScrollSticky from './Search-filter-tag/useScrollSticky'
+import { CustomGridWithBgColor } from './food-campaign/FoodCampaign.style'
 
 const NewRestaurant = () => {
     const dispatch = useDispatch()
@@ -31,14 +33,14 @@ const NewRestaurant = () => {
     const [gifShow, setGifShow] = useState(false)
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
-    const { newOffsetElementRef } = useScrollSticky();
+    const { newOffsetElementRef } = useScrollSticky()
     const { newRestaurant } = useSelector((state) => state.scrollPosition)
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            dispatch(setNewRestaurant(false));
-        }, 1500);
-        return () => clearTimeout(timeoutId);
-    });
+            dispatch(setNewRestaurant(false))
+        }, 1500)
+        return () => clearTimeout(timeoutId)
+    })
 
     const { global } = useSelector((state) => state.globalSettings)
     const languageDirection = localStorage.getItem('direction')
@@ -177,7 +179,7 @@ const NewRestaurant = () => {
             pathname: '/home',
 
             query: {
-                restaurantType: "latest",
+                restaurantType: 'latest',
             },
         })
     }
@@ -186,7 +188,9 @@ const NewRestaurant = () => {
         <Grid
             position="relative"
             container
-            paddingTop={newRestuarants?.data?.length > 0 && { xs: "0", sm: "1.9rem" }}
+            paddingTop={
+                newRestuarants?.data?.length > 0 && { xs: '0', sm: '1.9rem' }
+            }
             gap="1.4rem"
             ref={newOffsetElementRef}
         >
@@ -207,23 +211,26 @@ const NewRestaurant = () => {
                         direction="row"
                         alignItems="center"
                         justifyContent="space-between"
-                        paddingBottom={{ xs: "0px", md: "20px" }}
+                        paddingBottom={{ xs: '0px', md: '20px' }}
                     >
                         <Stack direction="row" spacing={1}>
                             <Typography
                                 sx={{
-                                    background: 'linear-gradient(90deg, #414141 0.02%, #FF8B03 40%, #414141 80%)',
-                                    backgroundClip: "text",
+                                    background:
+                                        'linear-gradient(90deg, #414141 0.02%, #FF8B03 40%, #414141 80%)',
+                                    backgroundClip: 'text',
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
                                     backgroundSize: '200% auto',
-                                    animation: 'bgPosition 2s ease-in-out infinite alternate',
-                                    WebkitAnimation: 'bgPosition 2s ease-in-out infinite alternate'
+                                    animation:
+                                        'bgPosition 2s ease-in-out infinite alternate',
+                                    WebkitAnimation:
+                                        'bgPosition 2s ease-in-out infinite alternate',
                                 }}
                                 variant="h3"
                                 color={theme.palette.neutral[1000]}
-                                fontSize={{ xs: "16px", md: "20px" }}
-                                fontWeight={{ xs: "500", md: "700" }}
+                                fontSize={{ xs: '16px', md: '20px' }}
+                                fontWeight={{ xs: '500', md: '700' }}
                             >
                                 {t('New on Stackfood')}
                             </Typography>
@@ -235,7 +242,9 @@ const NewRestaurant = () => {
                             alignItems="center"
                             marginRight="2rem"
                         >
-                            <Typography fontSize="14px" fontWeight="500" >{t('View all')}</Typography>
+                            <Typography fontSize="14px" fontWeight="500">
+                                {t('View all')}
+                            </Typography>
                         </CustomViewAll>
                     </CustomStackFullWidth>
                 )}
@@ -245,7 +254,7 @@ const NewRestaurant = () => {
                         <SliderCustom
                             languageDirection={languageDirection}
                             gap="12px"
-                            paddingBottom={isSmall ? "10px" : "20px"}
+                            paddingBottom={isSmall ? '10px' : '20px'}
                         >
                             <Slider {...settings}>
                                 {newRestuarants?.data?.map((restaurantData) => {
@@ -254,7 +263,9 @@ const NewRestaurant = () => {
                                             <LatestRestaurantCard
                                                 key={restaurantData?.id}
                                                 id={restaurantData.id}
-                                                image={restaurantData?.cover_photo}
+                                                image={
+                                                    restaurantData?.cover_photo
+                                                }
                                                 logo={restaurantData?.logo}
                                                 name={restaurantData?.name}
                                                 restaurantImageUrl={
@@ -272,19 +283,28 @@ const NewRestaurant = () => {
                                                 delivery_time={
                                                     restaurantData?.delivery_time
                                                 }
-
-                                                discount={restaurantData?.discount}
-                                                cuisines={restaurantData?.cuisine}
-                                                coupons={restaurantData?.coupons}
+                                                discount={
+                                                    restaurantData?.discount
+                                                }
+                                                characteristics={
+                                                    restaurantData?.characteristics
+                                                }
+                                                coupons={
+                                                    restaurantData?.coupons
+                                                }
                                                 slug={restaurantData?.slug}
-                                                zone_id={restaurantData?.zone_id}
-                                                distance={restaurantData?.distance}
-                                                foods_count={restaurantData?.foods_count}
+                                                zone_id={
+                                                    restaurantData?.zone_id
+                                                }
+                                                distance={
+                                                    restaurantData?.distance
+                                                }
+                                                foods_count={
+                                                    restaurantData?.foods_count
+                                                }
                                             />
-
                                         </Stack>
                                     )
-
                                 })}
                             </Slider>
                         </SliderCustom>
@@ -299,7 +319,8 @@ const NewRestaurant = () => {
                         <SliderCustom
                             languageDirection={languageDirection}
                             gap="12px"
-                            paddingBottom={isSmall ? "10px" : "20px"}>
+                            paddingBottom={isSmall ? '10px' : '20px'}
+                        >
                             <Slider {...settings}>
                                 <FoodCardShimmer />
                                 <FoodCardShimmer />

@@ -36,10 +36,13 @@ import {
 import { isRTLLanguage } from '../../../utils/customFunctions'
 import { languageLists } from '../../navbar/second-navbar/custom-language/languageLists'
 import cookie from 'js-cookie'
+import ThemeSwitches from "@/components/navbar/top-navbar/ThemeSwitches";
+import { useSettings } from "@/contexts/use-settings";
 
 const label = { inputProps: { 'aria-label': 'Switch demo' } }
 const SettingPage = () => {
     const theme = useTheme()
+    const { settings, saveSettings } = useSettings()
     const isXSmall = useMediaQuery(theme.breakpoints.down("sm"));
     const { t } = useTranslation()
     const dispatch = useDispatch()
@@ -152,27 +155,11 @@ const SettingPage = () => {
                                         textAlign: 'center',
                                     }}
                                 >
-                                    {theme_mode === 'light'
+                                    {settings?.theme === 'light'
                                         ? t('Light Mode')
                                         : t('Dark Mode')}
                                 </Typography>
-                                <FormGroup>
-                                    <FormControlLabel
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                        }}
-                                        control={
-                                            <CustomSwitch
-                                                {...label}
-                                                sx={{ m: 1 }}
-                                                checked={theme_mode === 'light'}
-                                                onChange={changeThemeMode}
-                                            />
-                                        }
-                                        label=""
-                                    />
-                                </FormGroup>
+                                <ThemeSwitches noText />
                             </CustomStackFullWidth>
                         </Card>
                     </Grid>

@@ -1,29 +1,20 @@
-import React from 'react'
-import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
-import {
-    Box,
-    Container,
-    Grid,
-    Stack,
-    Typography,
-    useMediaQuery,
-} from '@mui/material'
-import Link from 'next/link'
-import LogoSide from '../navbar/second-navbar/LogoSide'
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import SocialLinks from './SocialLinks'
-import AppLinks from '../landingpage/AppLinks'
-import RouteLinks from './RouteLinks'
-import { useTheme } from '@mui/material/styles'
-import { QuickLinkData } from './QuickLinkData'
-import { OtherData } from './OtherData'
-import { QuickLinkData1 } from './QuickLinkData1'
-import ContactInfo from './ContactInfo'
-import CustomContainer from '../container'
+import { CustomStackFullWidth } from '@/styled-components/CustomStyles.style'
 import { alpha } from '@material-ui/core'
+import { Box, Grid, Stack, Typography, useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import Link from 'next/link'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import CustomContainer from '../container'
+import AppLinks from '../landingpage/AppLinks'
+import LogoSide from '../navbar/second-navbar/LogoSide'
+import ContactInfo, { CustomSkelenton } from './ContactInfo'
+import { OtherData } from './OtherData'
+import { QuickLinkData } from './QuickLinkData'
+import { QuickLinkData1 } from './QuickLinkData1'
+import RouteLinks from './RouteLinks'
 
-const FooterMiddle = ({ landingPageLink, landingPageData }) => {
+const FooterMiddle = ({ landingPageData, isLoading }) => {
     const { global } = useSelector((state) => state.globalSettings)
     const { token } = useSelector((state) => state.userToken)
     const { t } = useTranslation()
@@ -36,7 +27,10 @@ const FooterMiddle = ({ landingPageLink, landingPageData }) => {
     const isXSmall = useMediaQuery(theme.breakpoints.down('md'))
     const businessLogo = global?.logo
     return (
-        <CustomStackFullWidth alignItems="center" pt={{ xs: "1rem", sm: "2rem" }}>
+        <CustomStackFullWidth
+            alignItems="center"
+            pt={{ xs: '1rem', sm: '2rem' }}
+        >
             <CustomContainer>
                 <Grid
                     container
@@ -59,27 +53,50 @@ const FooterMiddle = ({ landingPageLink, landingPageData }) => {
                             }}
                             justifyContent="flex-start"
                         >
-                            <Link href={zoneid ? '/home' : '/'}>
-                                <LogoSide
-                                    global={global}
-                                    businessLogo={businessLogo}
-                                />
-                            </Link>
-                            <Typography
-                                fontSize="14px"
-                                color={alpha(theme.palette.whiteContainer.main, 0.8)}
-                            >
-                                {landingPageData?.footer_data}
-                            </Typography>
+                            {global ? (
+                                <Link href={zoneid ? '/home' : '/'}>
+                                    <LogoSide
+                                        global={global}
+                                        businessLogo={businessLogo}
+                                    />
+                                </Link>
+                            ) : (
+                                <CustomSkelenton width={200} height={40} />
+                            )}
+                            {isLoading ? (
+                                <>
+                                    <Box>
+                                        <CustomSkelenton width={200} />
+                                        <CustomSkelenton width={140} />
+                                    </Box>
+                                </>
+                            ) : (
+                                <Typography
+                                    fontSize="14px"
+                                    color={alpha(
+                                        theme.palette.whiteContainer.main,
+                                        0.8
+                                    )}
+                                >
+                                    {landingPageData?.footer_data}
+                                </Typography>
+                            )}
                             <ContactInfo global={global} />
-                            <AppLinks
-                                isFooter={true}
-                                global={global}
-                                download_app_data={
-                                    landingPageData?.download_app_section
-                                }
-                                width="140px"
-                            />
+                            {isLoading ? (
+                                <Stack direction="row" gap={1}>
+                                    <CustomSkelenton width={140} height={40} />
+                                    <CustomSkelenton width={140} height={40} />
+                                </Stack>
+                            ) : (
+                                <AppLinks
+                                    isFooter={true}
+                                    global={global}
+                                    width="140px"
+                                    download_app_data={
+                                        landingPageData?.download_app_section
+                                    }
+                                />
+                            )}
                         </CustomStackFullWidth>
                     </Grid>
                     <Grid
@@ -88,8 +105,8 @@ const FooterMiddle = ({ landingPageLink, landingPageData }) => {
                         sm={4}
                         md={2.6}
                         sx={{
-                            display: "flex",
-                            justifyContent: "center"
+                            display: 'flex',
+                            justifyContent: 'center',
                         }}
                     >
                         <Box>
@@ -107,15 +124,15 @@ const FooterMiddle = ({ landingPageLink, landingPageData }) => {
                         sm={4}
                         md={2.6}
                         sx={{
-                            display: "flex",
-                            justifyContent: "center"
+                            display: 'flex',
+                            justifyContent: 'center',
                         }}
                     >
                         <Box>
                             <RouteLinks
                                 token={token}
                                 global={global}
-                                title='Quick Links'
+                                title="Quick Links"
                                 RouteLinksData={QuickLinkData1}
                             />
                         </Box>
@@ -126,8 +143,8 @@ const FooterMiddle = ({ landingPageLink, landingPageData }) => {
                         sm={4}
                         md={2.6}
                         sx={{
-                            display: "flex",
-                            justifyContent: "center"
+                            display: 'flex',
+                            justifyContent: 'center',
                         }}
                     >
                         <Box alignItems="center" justifyContent="center">

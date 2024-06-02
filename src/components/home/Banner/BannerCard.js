@@ -25,13 +25,12 @@ const BannerCard = (props) => {
         <CustomStackFullWidth onClick={() => handleBannerClick(banner)}>
             <CustomImageContainer
                 src={bannerImage}
-               // maxWidth="490px"
+                // maxWidth="390px"
                 width="100%"
-                height="200px"
-                smHeight="125px"
-                objectFit="cover"
+                objectFit="contain"
                 borderRadius="16px"
                 cursor="pointer"
+                aspectRatio="2/1"
             />
         </CustomStackFullWidth>
     )

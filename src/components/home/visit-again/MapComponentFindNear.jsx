@@ -36,7 +36,7 @@ const MapComponentFindNear = ({
     setHoveredMarkerId
 }) => {
     const [map, setMap] = useState(null);
-    const [zoom, setZoom] = useState(15);
+    const [zoom, setZoom] = useState(10);
     const [openUserMsg, setOpenUserMsg] = useState(false);
     const dispatch = useDispatch()
     const theme = useTheme();
@@ -97,7 +97,7 @@ const MapComponentFindNear = ({
 
 
     const onLoad = useCallback(function callback(map) {
-        setZoom(15);
+        setZoom(10);
         setMap(map);
     }, []);
 

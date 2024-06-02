@@ -205,7 +205,7 @@ const FoodCampaign = ({ data, isLoading }) => {
                                 fontWeight={{ xs: "500", md: "700" }}
                                 color={theme.palette.neutral[1000]}
                             >
-                                {t('Today’s Trends')}
+                                {t('Todays Trends')}
                             </Typography>
 
                         </Stack>}
@@ -232,6 +232,7 @@ const FoodCampaign = ({ data, isLoading }) => {
                                             ) {
                                                 return (
                                                     <FoodCard
+                                                        campaign
                                                         key={product?.id}
                                                         product={product}
                                                         productImageUrl={

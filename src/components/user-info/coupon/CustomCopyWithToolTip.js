@@ -1,14 +1,12 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import IconButton from '@mui/material/IconButton'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import { styled } from '@mui/material/styles'
-import toast from 'react-hot-toast'
-import CouponCopy from './CouponCopy'
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import { alpha } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
+import { styled } from '@mui/material/styles'
+import PropTypes from 'prop-types'
+import { useState } from 'react'
+import CouponCopy from './CouponCopy'
 
-const BootstrapTooltip = styled(({ className, ...props }) => (
+const CustomTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} arrow classes={{ popper: className }} />
 ))(({ theme }) => ({
     [`& .${tooltipClasses.arrow}`]: {
@@ -34,10 +32,7 @@ const CustomCopyWithTooltip = (props) => {
     }
 
     return (
-        <BootstrapTooltip
-            placement="top"
-            title={copy ? t('Copied') : t('Copy')}
-        >
+        <CustomTooltip placement="top" title={copy ? t('Copied') : t('Copy')}>
             <IconButton
                 onMouseEnter={() => copy && setCopy(false)}
                 onClick={() => handleCopy(value)}
@@ -45,7 +40,7 @@ const CustomCopyWithTooltip = (props) => {
             >
                 <CouponCopy color="primary.main" style={{ fontSize: 16 }} />
             </IconButton>
-        </BootstrapTooltip>
+        </CustomTooltip>
     )
 }
 

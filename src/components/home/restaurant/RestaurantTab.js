@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Popover, Stack, Tab, Tabs, Typography } from '@mui/material'
-import { mockData } from '../mockData'
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
+import { Button, Popover, Stack, Tab, Tabs, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import FilterCard from '../../products-page/FilterCard'
-import { AllRestaurantFilterData } from './AllRestaurantFilterData'
-import RestaurantFilterCard from './RestaurantFilterCard'
 import { t } from 'i18next'
-import { handleFilterData } from "../../category/helper";
+import { useEffect, useState } from 'react'
+import { handleFilterData } from '../../category/helper'
+import RestaurantFilterCard from './RestaurantFilterCard'
 
 const RestaurantTab = (props) => {
     const {
@@ -24,7 +21,7 @@ const RestaurantTab = (props) => {
         scrollToSection5,
         inView,
         checkedFilterKey,
-        setCheckedFilterKey
+        setCheckedFilterKey,
     } = props
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
@@ -42,7 +39,12 @@ const RestaurantTab = (props) => {
             scrollToSection5()
         }
 
-        handleFilterData(checkedFilterKey,setFilterByData,setOffSet,setForFilter)
+        handleFilterData(
+            checkedFilterKey,
+            setFilterByData,
+            setOffSet,
+            setForFilter
+        )
     }, [checkedFilterKey])
 
     const handleClearAll = () => {
@@ -51,12 +53,11 @@ const RestaurantTab = (props) => {
     const handleReset = () => {
         const data = checkedFilterKey?.map((item) => ({
             ...item,
-            isActive: false
-        }));
+            isActive: false,
+        }))
         setCheckedFilterKey(data)
         handleDropClose()
-
-    };
+    }
     return (
         <div>
             <Stack direction="row" justifyContent="flex-end" spacing={3}>
@@ -143,8 +144,6 @@ const RestaurantTab = (props) => {
                     zIndex: 999,
                     top: '5px',
                 }}
-               // disableScrollLock={true}
-                //disableRestoreFocus
             >
                 <RestaurantFilterCard
                     handleReset={handleReset}
@@ -153,10 +152,8 @@ const RestaurantTab = (props) => {
                     handleDropClose={handleDropClose}
                     anchorEl={anchorEl}
                     setFilterByData={setFilterByData}
-                    // handleFilter={handleFilter}
                     handleClearAll={handleClearAll}
                     setCheckedFilterKey={setCheckedFilterKey}
-                    // foodOrRestaurant={foodOrRestaurant}
                 />
             </Popover>
         </div>

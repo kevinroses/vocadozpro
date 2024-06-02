@@ -1,8 +1,7 @@
-import React from 'react'
-import { Grid, Typography, Divider, Stack, alpha } from '@mui/material'
-import { CustomTypographyGray } from '../../error/Errors.style'
+import { Divider, Grid, Stack, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
+import { CustomTypographyGray } from '../../error/Errors.style'
 const LoyalityPage = ({ data, profileDataLoading }) => {
     const { t } = useTranslation()
     const theme = useTheme()
@@ -36,9 +35,11 @@ const LoyalityPage = ({ data, profileDataLoading }) => {
                         textTransform="capitalize"
                         sx={{ fontSize: '13px', fontWeight: '400' }}
                     >
-                        {t(data?.loyality?.transaction_type).replaceAll(
-                            '_',
-                            ' '
+                        {t(
+                            data?.loyality?.transaction_type.replaceAll(
+                                '_',
+                                ' '
+                            )
                         )}
                     </CustomTypographyGray>
                 </Grid>

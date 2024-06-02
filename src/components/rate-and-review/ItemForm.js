@@ -24,7 +24,7 @@ import toast from 'react-hot-toast'
 import { ReviewApi } from './ReviewApi'
 import { onErrorResponse } from '../ErrorResponse'
 
-const ItemForm = ({ data,notNow,id,refetchOrderReview,refetchTrackData ,setReviewedItem}) => {
+const ItemForm = ({ data,notNow,id,refetchOrderReview,refetchTrackData ,setReviewedItem,refetch}) => {
     const { t } = useTranslation()
 
     const { global } = useSelector((state) => state.globalSettings)
@@ -58,6 +58,7 @@ const ItemForm = ({ data,notNow,id,refetchOrderReview,refetchTrackData ,setRevie
     }
     const handleSuccess=(response)=>{
         setReviewedItem(data)
+        refetch()
         // refetchOrderReview()
         refetchTrackData()
         formik.setFieldValue('rating', 0)

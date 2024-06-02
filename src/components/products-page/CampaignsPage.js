@@ -1,13 +1,10 @@
-import React, { useState } from 'react'
-import { Box, Grid } from '@mui/material'
-import Filter from './Filter'
-import CustomShimmerForBestFood from '../CustomShimmer/CustomShimmerForBestFood'
-import ProductList from './ProductList'
+import { Grid } from '@mui/material'
 import { useQuery } from 'react-query'
 import { CampaignApi } from '../../hooks/react-query/config/campaignApi'
+import CustomShimmerForBestFood from '../CustomShimmer/CustomShimmerForBestFood'
+import ProductList from './ProductList'
 
 import CustomEmptyResult from '../empty-view/CustomEmptyResult'
-import RestaurantsData from '../category/RestaurantsData'
 
 const CampaignsPage = () => {
     const { isLoading, data, isError, error, refetch } = useQuery(

@@ -148,7 +148,6 @@ img {
     margin-top: 34px;
     background: none;
     background-color: transparent !important;
-
 }
 
 /* .location-text-mb {
@@ -172,7 +171,6 @@ img {
 
 .slick-slider .test1 {
     width: 75px !important;
-
 }
 
 .swiper {
@@ -293,7 +291,6 @@ img {
         font-size: 24px;
     }
 
-
     .funfact-item-wrap {
         position: relative;
     }
@@ -332,7 +329,6 @@ img {
         background-position: center;
     }
 
-
     .funfact-item-wrap:nth-child(2) .funfact-item:after {
         content: '';
         position: absolute;
@@ -349,7 +345,6 @@ img {
     }
 
     .arabic:nth-child(2) .funfact-item:after {
-
         content: '';
         position: absolute;
         top: 50%;
@@ -391,7 +386,6 @@ img {
 }
 
 .banner-card-sm.rtlab {
-
     text-align: right;
 }
 
@@ -488,26 +482,26 @@ img {
 }
 
 /* Animation */
-.parallax>use {
+.parallax > use {
     animation: move-forever 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
 }
 
-.parallax>use:nth-child(1) {
+.parallax > use:nth-child(1) {
     animation-delay: -2s;
     animation-duration: 7s;
 }
 
-.parallax>use:nth-child(2) {
+.parallax > use:nth-child(2) {
     animation-delay: -3s;
     animation-duration: 10s;
 }
 
-.parallax>use:nth-child(3) {
+.parallax > use:nth-child(3) {
     animation-delay: -4s;
     animation-duration: 13s;
 }
 
-.parallax>use:nth-child(4) {
+.parallax > use:nth-child(4) {
     animation-delay: -5s;
     animation-duration: 20s;
 }
@@ -586,10 +580,9 @@ img {
         border-radius: 10px;
         display: flex;
         justify-content: center;
-
     }
 
-    .css-3ku79o> :not(style) {
+    .css-3ku79o > :not(style) {
         width: 100%;
         /* height: 400px; */
         max-height: 400px;
@@ -643,7 +636,8 @@ img {
     }
 }
 
-.link-card {}
+.link-card {
+}
 
 .link-item {
     text-align: center;
@@ -719,7 +713,6 @@ img {
 .footer-wrap.lg .footer-logo {
     height: 24px;
 }
-
 
 .footer-wrap.sm .footer-logo {
     margin-top: 20px;
@@ -879,9 +872,7 @@ img {
     /*background-image: url(../../public/static/Vectorprv.png);*/
     background-repeat: no-repeat;
     background-size: 60%, 60% !important;
-
 }
-
 
 .caroselitem img {
     object-fit: cover;
@@ -899,8 +890,6 @@ img {
     /*background-image: url(../../public/static/Vectornext.png);*/
     background-repeat: no-repeat;
     background-size: 60%, 60% !important;
-
-
 }
 
 .carousel-control-next {
@@ -912,11 +901,11 @@ img {
 }
 
 .carousel-control-next:hover {
-    opacity: .5 !important;
+    opacity: 0.5 !important;
 }
 
 .carousel-control-prev:hover {
-    opacity: .5 !important;
+    opacity: 0.5 !important;
 }
 
 /*.simplebar-track,*/
@@ -924,8 +913,6 @@ img {
 /*    width: 7px !important;*/
 /*    !*visibility: hidden !important;*!*/
 /*}*/
-
-
 
 @media screen and (max-width: 768px) {
     .carousel-control-next-icon {
@@ -947,7 +934,6 @@ img {
     top: 40%;
     /* margin-left: -300px; */
     z-index: 1000000;
-
 }
 
 @media screen and (max-width: 768px) {
@@ -976,8 +962,8 @@ img {
     padding-bottom: 10px !important;
 }
 
-.slick__slider .slick-list .slick-track{
-    padding-bottom: 8px ;
+.slick__slider .slick-list .slick-track {
+    padding-bottom: 8px;
 }
 .active-scroll-spy {
 }
@@ -985,7 +971,7 @@ img {
 @media screen and (max-width: 768px) {
     .slick__slider {
         padding-top: 5px;
-        padding-bottom:5px;
+        padding-bottom: 5px;
     }
 }
 
@@ -1002,7 +988,6 @@ img {
 
 @media screen and (max-width: 768px) {
     .catagori__slider {
-
         min-height: 60px !important;
         height: 100%;
     }
@@ -1035,14 +1020,12 @@ img {
     height: 100%;
     object-fit: cover;
     border-radius: 10px;
-
 }
 
 @media screen and (max-width: 768px) {
     .catagori___img {
         display: none;
     }
-
 }
 
 .slick-track {
@@ -1089,7 +1072,7 @@ img {
 
 .icon1__btn {
     border-radius: 50px !important;
-    background: #EF7822 !important;
+    background: #ef7822 !important;
     width: 40px;
     height: 40px;
 }
@@ -1121,12 +1104,11 @@ img {
     }
 }
 
-@media screen and (max-width:1600px) {
+@media screen and (max-width: 1600px) {
     .slider__bestfood {
         right: 95%;
     }
 }
-
 
 .slider__bestfood2 {
     position: absolute;
@@ -1142,7 +1124,7 @@ img {
     }
 }
 
-@media screen and (max-width:1600px) {
+@media screen and (max-width: 1600px) {
     .slider__bestfood2 {
         left: 95%;
     }
@@ -1156,12 +1138,10 @@ img {
 }
 
 @media screen and (max-width: 576px) {
-
     .slider__bestfood2,
     .slider__bestfood {
         display: none;
     }
-
 }
 
 /* nearby popular resturant  */
@@ -1171,7 +1151,6 @@ img {
     padding-bottom: 1rem;
     align-items: center;
 }
-
 
 .nearbytop {
     padding-top: 31px;
@@ -1191,12 +1170,11 @@ img {
 
 @media screen and (max-width: 576px) {
     .cardpopular {
-        gap: .5rem;
-        padding-bottom: .5rem;
-        line-height: .5rem;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+        line-height: 0.5rem;
     }
 }
-
 
 /* .populartext {
     text-align: left;
@@ -1211,14 +1189,12 @@ img {
 .PopularRes_img {
     max-width: 200px;
     height: 120px;
-
 }
 
 @media screen and (max-width: 768px) {
     .PopularRes_img {
         max-width: 80px;
         height: 80px;
-
     }
 }
 
@@ -1245,31 +1221,25 @@ img {
 @media screen and (max-width: 1200px) {
     .resturant__img {
         height: 120px;
-
     }
 }
 
 @media screen and (max-width: 976px) {
     .resturant__img {
         height: 130px;
-
     }
 }
 
 @media screen and (max-width: 768px) {
     .resturant__img {
         height: 100px;
-
     }
-
 }
 
 @media screen and (max-width: 376px) {
     .resturant__img {
         height: 80px;
-
     }
-
 }
 
 .resturant__img img {
@@ -1459,7 +1429,6 @@ img {
 
 .css-1i7ru6l-MuiButtonBase-root-MuiButton-root {
     background-color: rgba(255, 255, 255, 0) !important;
-
 }
 
 .restaurant-section p,
@@ -1478,7 +1447,6 @@ h5 {
 
 .restaurant-section .detail-top-section {
     text-align: center;
-
 }
 
 .restaurant-section .detail-top-section h3 {
@@ -1496,14 +1464,11 @@ h5 {
     border-radius: 10px;
     margin-left: auto;
     margin-right: auto;
-
-
 }
 
 .restaurant-section .favorite-btn:hover {
     background-color: #282c34;
 }
-
 
 .restaurant-section .location-icon {
     background: rgba(239, 120, 34, 0.1);
@@ -1590,8 +1555,6 @@ h5 {
 
 .restaurant-section .font-second {
     font-family: 'Signika Negative', sans-serif !important;
-
-
 }
 
 .restaurant-section .text-20 {
@@ -1654,7 +1617,6 @@ h5 {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-
 }
 
 .selected-btn {
@@ -1686,16 +1648,14 @@ h5 {
 
 .slick-dots li {
     width: 5px !important;
-
 }
 
 .slick-dots li.slick-active button:before {
-    color: #EF7822 !important;
+    color: #ef7822 !important;
 }
 
 .slick-dots li button:before {
-    color: #EF7822 !important;
-
+    color: #ef7822 !important;
 }
 
 .scrollbar-hidden::-webkit-scrollbar {
@@ -1704,7 +1664,6 @@ h5 {
 
 .test123 .simplebar-scrollbar:before {
     left: 6px !important;
-
 }
 .rdrDefinedRangesWrapper {
     display: none !important;
@@ -1728,4 +1687,7 @@ h5 {
     100% {
         background-position: 100% 50%;
     }
+}
+.rdrDateRangePickerWrapper {
+    direction: ltr;
 }

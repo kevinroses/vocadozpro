@@ -64,6 +64,7 @@ const QuickView = (props) => {
         horizontal
     } = props;
     const theme = useTheme();
+
     return (
         <CustomStackFullWidth
             direction="row"
@@ -97,7 +98,7 @@ const QuickView = (props) => {
             )}
 
             {!isInCart ? (
-                <PrimaryToolTip theme={theme} text="Add to cart">
+                <PrimaryToolTip theme={theme} text={product?.item_stock===0?t("out of stock"):t("Add to cart")}>
                     <IconButtonStyled onClick={(e) => addToCart(e)}>
                         <AddShoppingCartIcon />
                     </IconButtonStyled>

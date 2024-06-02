@@ -5,7 +5,7 @@ import MainApi from '../../../api/MainApi'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { CustomHeader } from '../../../api/Headers'
-import { setGlobalSettings } from '../../../redux/slices/global'
+import { setGlobalSettings } from "@/redux/slices/global"
 
 const index = ({ restaurantData, configData }) => {
     const { global } = useSelector((state) => state.globalSettings)

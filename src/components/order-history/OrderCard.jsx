@@ -37,7 +37,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { getToken } from '../checkout-page/functions/getGuestUserId'
 import Reorder from '../order-details/Reorder'
 import ReviewSideDrawer from "@/components/order-details/ReviewSideDrawer";
-const OrderCard = ({ order, index, isXs, offset, limit }) => {
+const OrderCard = ({ order, index, isXs, offset, limit,refetch }) => {
     const { t } = useTranslation()
     const router = useRouter()
     const theme = useTheme()
@@ -86,43 +86,49 @@ const OrderCard = ({ order, index, isXs, offset, limit }) => {
         setOpenReviewModal(true)
     }
     const deliveredInformation = () => (
-        <Stack flexDirection="row" gap="20px" justifyContent="flex-end" pt={{ xs: "10px", sm: "0px", md: "0px" }}>
-            <Button
-                onClick={() => handleRateButtonClick()}
-                variant="outlined"
-                sx={{
-                    p: {
-                        xs: '5px',
-                        sm: '5px',
-                        md: '6px',
-                    },
-                }}
-            >
-                <Stack
-                    alignItems="center"
-                    justifyContent="space-between"
-                    direction="row"
-                    gap={{ xs: "5px", sm: "6px", md: "10px" }}
-                    flexWrap="wrap"
-                >
-                    <CustomImageContainer
-                        src={startReview.src}
-                        width={{ xs: "15px", md: "20px" }}
-                        height={{ xs: "15px", md: "20px" }}
-                    />
-                    <CustomColouredTypography color="primary" fontWeight={600} fontSize="14px" smallFont="12px">
-                        {t('Give Review')}
-                    </CustomColouredTypography>
-                </Stack>
-            </Button>
-            {/*{(global?.repeat_order_option && getToken()) && (*/}
 
-            {/*    <Reorder*/}
-            {/*        // orderData={data?.data?.details}*/}
-            {/*        orderZoneId={order?.restaurant?.zone_id}*/}
-            {/*    />*/}
-            {/*)}*/}
-        </Stack>
+        <>
+            {!order?.is_reviewed &&
+                <Stack flexDirection="row" gap="20px" justifyContent="flex-end" pt={{ xs: "10px", sm: "0px", md: "0px" }}>
+                    <Button
+                        onClick={() => handleRateButtonClick()}
+                        variant="outlined"
+                        sx={{
+                            p: {
+                                xs: '5px',
+                                sm: '5px',
+                                md: '6px',
+                            },
+                        }}
+                    >
+                        <Stack
+                            alignItems="center"
+                            justifyContent="space-between"
+                            direction="row"
+                            gap={{ xs: "5px", sm: "6px", md: "10px" }}
+                            flexWrap="wrap"
+                        >
+                            <CustomImageContainer
+                                src={startReview.src}
+                                width={{ xs: "15px", md: "20px" }}
+                                height={{ xs: "15px", md: "20px" }}
+                            />
+                            <CustomColouredTypography color="primary" fontWeight={600} fontSize="14px" smallFont="12px">
+                                {t('Give Review')}
+                            </CustomColouredTypography>
+                        </Stack>
+                    </Button>
+                    {/*{(global?.repeat_order_option && getToken()) && (*/}
+
+                    {/*    <Reorder*/}
+                    {/*        // orderData={data?.data?.details}*/}
+                    {/*        orderZoneId={order?.restaurant?.zone_id}*/}
+                    {/*    />*/}
+                    {/*)}*/}
+                </Stack>
+            }
+        </>
+
     )
     const notDeliveredInformation = () => (
         <Stack
@@ -255,6 +261,7 @@ const OrderCard = ({ order, index, isXs, offset, limit }) => {
                     open={openReviewModal}
                     onClose={() => setOpenReviewModal(false)}
                     orderId={order?.id}
+                    refetch={refetch}
                 />
             </Card>
         </>

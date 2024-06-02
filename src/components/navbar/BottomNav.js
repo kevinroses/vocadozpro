@@ -1,4 +1,7 @@
-import React, { useState } from 'react'
+import ChatIcon from '@mui/icons-material/Chat'
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
+import HomeIcon from '@mui/icons-material/Home'
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
 import {
     Badge,
     BottomNavigation,
@@ -6,16 +9,12 @@ import {
     Paper,
     styled,
 } from '@mui/material'
-import HomeIcon from '@mui/icons-material/Home'
-import NotificationsIcon from '@mui/icons-material/Notifications'
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
 import Link from 'next/link'
-import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
 import { toast } from 'react-hot-toast'
-import ChatIcon from '@mui/icons-material/Chat'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import CustomDrawerWishlist from './CustomDrawerWishlist'
 
 const BottomNav = (props) => {
@@ -58,6 +57,10 @@ const BottomNav = (props) => {
 
     return (
         <>
+            <CustomDrawerWishlist
+                openWishlistModal={openWishlistModal}
+                setOpenWishlistModal={setOpenWishlistModal}
+            />
             <Paper
                 className="bottom-navigation-wrap"
                 sx={{
@@ -90,7 +93,6 @@ const BottomNav = (props) => {
                         icon={
                             <Badge badgeContent={0} color="error">
                                 <FavoriteBorderOutlinedIcon />
-                                <CustomDrawerWishlist openWishlistModal={openWishlistModal} setOpenWishlistModal={setOpenWishlistModal} />
                             </Badge>
                         }
                     />
@@ -99,7 +101,10 @@ const BottomNav = (props) => {
                         onClick={() => setSideDrawerOpen(true)}
                         // label="Cart"
                         icon={
-                            <Badge badgeContent={cartList?.length} color="error">
+                            <Badge
+                                badgeContent={cartList?.length}
+                                color="error"
+                            >
                                 <ShoppingCartOutlinedIcon />
                             </Badge>
                         }

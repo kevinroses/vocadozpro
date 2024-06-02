@@ -17,7 +17,8 @@ import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControl from '@mui/material/FormControl'
 import { useDispatch } from 'react-redux'
-import { setOfflineInfoStep } from '../../redux/slices/OfflinePayment'
+import { setOfflineInfoStep } from "@/redux/slices/OfflinePayment"
+import test_image from "../../assets/images/footer-logo.png"
 
 const PaymentMethodCard = (props) => {
     const {
@@ -58,6 +59,7 @@ const PaymentMethodCard = (props) => {
                     height="32px"
                     objectfit="contain"
                     src={`${imageUrl}/${image}`}
+                    //test_image={test_image}
                 />
 
                 <Typography

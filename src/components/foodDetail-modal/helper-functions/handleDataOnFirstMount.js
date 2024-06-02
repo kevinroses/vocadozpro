@@ -10,20 +10,25 @@ export const handleInitialTotalPriceVarPriceQuantitySet = (
     setSelectedOptions,
     setTotalWithoutDiscount
 ) => {
+
     setModalData([product])
     if (productUpdate) {
         setTotalPrice(product.totalPrice)
         setVarPrice(product.totalPrice)
     } else {
-        setTotalPrice(product.price)
-        setVarPrice(product.price)
-        setTotalWithoutDiscount(product.price)
+        setTotalPrice(product?.price)
+        setVarPrice(product?.price)
+        setTotalWithoutDiscount(product?.price)
     }
-    if (product.quantity) {
-        setQuantity(product.quantity)
+    if (product?.quantity) {
+        setQuantity(product?.quantity)
+    }
+    else{
+        setQuantity(1)
     }
     let selectedOption = []
     if (product?.variations?.length > 0) {
+
         product?.variations?.forEach((item) => {
             if (item?.values?.length > 0) {
                 item?.values?.forEach((value) => {
@@ -39,6 +44,8 @@ export const handleInitialTotalPriceVarPriceQuantitySet = (
     }else {
         if (selectedOption.length > 0) {
             setSelectedOptions(selectedOption)
+        }else{
+            setSelectedOptions([])
         }
     }
 

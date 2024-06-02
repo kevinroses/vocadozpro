@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { CustomToaster } from '@/components/custom-toaster/CustomToaster'
+import AddIcon from '@mui/icons-material/Add'
+import RemoveIcon from '@mui/icons-material/Remove'
 import {
     ButtonGroup,
     Checkbox,
@@ -7,13 +9,14 @@ import {
     IconButton,
     Typography,
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import RemoveIcon from '@mui/icons-material/Remove'
-import { getAmount } from '../../utils/customFunctions'
-import { CustomTypographyLabel } from '../../styled-components/CustomTypographies.style'
-import { useIsMount } from '../first-render-useeffect-controller/useIsMount'
-import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles'
+import { Stack } from '@mui/system'
+import { t } from 'i18next'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { CustomTypographyLabel } from '../../styled-components/CustomTypographies.style'
+import { getAmount } from '../../utils/customFunctions'
+import { useIsMount } from '../first-render-useeffect-controller/useIsMount'
 
 const IncDecAddOn = ({
     setTotalPrice,
@@ -28,6 +31,10 @@ const IncDecAddOn = ({
     product,
     cartList,
     selectedChoice,
+    itemIsLoading,
+
+    // setCheckAddOn,
+    // checkAddOne
 }) => {
     const [checkAddOne, setCheckAddOn] = useState(false)
     const [addOn, setAddOn] = useState(null)
@@ -46,28 +53,34 @@ const IncDecAddOn = ({
     }
 
     useEffect(() => {
-        if (product?.selectedAddons) {
-            //if selected addons exist
-            setAddOns(product?.selectedAddons)
-            let isAddonExist = product?.selectedAddons.find(
-                (item) => item.id === add_on.id
-            )
-            if (isAddonExist) {
-                setAddOn({ ...isAddonExist })
-                setQuantity(isAddonExist.quantity)
-                setCheckAddOn(true)
+        if (itemIsLoading) {
+            //setAddOn({ ...add_on, quantity: quantity })
+            setCheckAddOn(false)
+            setQuantity(0)
+        } else {
+            if (product?.selectedAddons) {
+                //if selected addons exist
+                setAddOns(product?.selectedAddons)
+                let isAddonExist = product?.selectedAddons.find(
+                    (item) => item.id === add_on.id
+                )
+                if (isAddonExist) {
+                    setAddOn({ ...isAddonExist })
+                    setQuantity(isAddonExist.quantity)
+                    setCheckAddOn(true)
+                } else {
+                    setAddOn({ ...add_on, quantity: quantity })
+                    setCheckAddOn(false)
+                    setQuantity(0)
+                }
             } else {
+                //if no selected addons exist
                 setAddOn({ ...add_on, quantity: quantity })
                 setCheckAddOn(false)
                 setQuantity(0)
             }
-        } else {
-            //if no selected addons exist
-            setAddOn({ ...add_on, quantity: quantity })
-            setCheckAddOn(false)
-            setQuantity(0)
         }
-    }, [product, cartList])
+    }, [product, cartList, itemIsLoading])
     const isMount = useIsMount()
     useEffect(() => {
         if (isMount) {
@@ -100,8 +113,16 @@ const IncDecAddOn = ({
         }
     }
 
-    const incrementAddOnQty = () => {
-        setQuantity((prevState) => prevState + 1)
+    const incrementAddOnQty = (add_on) => {
+        if (add_on?.stock_type !== 'unlimited') {
+            if (quantity + 1 > add_on?.addon_stock) {
+                CustomToaster('error', `${t('Out Of Stock')}`, 'addon')
+            } else {
+                setQuantity((prevState) => prevState + 1)
+            }
+        } else {
+            setQuantity((prevState) => prevState + 1)
+        }
     }
     const decrementAddOnQty = () => {
         setQuantity((prevState) => prevState - 1)
@@ -117,7 +138,11 @@ const IncDecAddOn = ({
                 >
                     <Grid item md={6} sm={5} xs={5}>
                         <FormControlLabel
-                            sx={{marginInlineStart:"-10px"}}
+                            disabled={
+                                add_on?.stock_type !== 'unlimited' &&
+                                add_on?.addon_stock === 0
+                            }
+                            sx={{ marginInlineStart: '-10px' }}
                             key={addOn?.id}
                             control={
                                 <Checkbox
@@ -126,9 +151,31 @@ const IncDecAddOn = ({
                                 />
                             }
                             label={
-                                <CustomTypographyLabel>
-                                    {addOn?.name}
-                                </CustomTypographyLabel>
+                                <Stack direction="row" spacing={1}>
+                                    <CustomTypographyLabel
+                                        sx={{
+                                            color: (theme) =>
+                                                add_on?.stock_type !==
+                                                    'unlimited' &&
+                                                add_on?.addon_stock === 0
+                                                    ? theme.palette.neutral[400]
+                                                    : theme.palette
+                                                          .neutral[1000],
+                                        }}
+                                        span="component"
+                                    >
+                                        {addOn?.name}
+                                    </CustomTypographyLabel>
+                                    <Typography
+                                        fontSize="12px"
+                                        color={theme.palette.error.main}
+                                    >
+                                        {add_on?.stock_type !== 'unlimited' &&
+                                        add_on?.addon_stock === 0
+                                            ? `(${t('out of stock')})`
+                                            : ''}
+                                    </Typography>
+                                </Stack>
                             }
                         />
                     </Grid>
@@ -210,7 +257,7 @@ const IncDecAddOn = ({
                                     disabled={!checkAddOne}
                                     aria-label="add"
                                     sx={{ margin: '0', padding: '2px' }}
-                                    onClick={() => incrementAddOnQty()}
+                                    onClick={() => incrementAddOnQty(add_on)}
                                 >
                                     <AddIcon
                                         fontWeight="700"

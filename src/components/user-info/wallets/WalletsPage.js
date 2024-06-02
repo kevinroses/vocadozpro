@@ -1,12 +1,9 @@
-import React from 'react'
-import { Grid, Typography, Divider, Stack, alpha } from '@mui/material'
-import { useSelector } from 'react-redux'
-import { getAmount } from "@/utils/customFunctions"
-import CustomePagination from '../../pagination/Pagination'
+import { CustomStackFullWidth } from '@/styled-components/CustomStyles.style'
+import { getAmount } from '@/utils/customFunctions'
+import { Grid, Stack, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { CustomTypographyGray } from '../../error/Errors.style'
-import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import { t } from 'i18next'
+import { CustomTypographyGray } from '../../error/Errors.style'
 
 const WalletsPage = (props) => {
     const {
@@ -41,53 +38,60 @@ const WalletsPage = (props) => {
             >
                 <Grid item md={7} xs={4.5}>
                     <CustomStackFullWidth>
-                        <Stack flexDirection="row" gap="8px" alignItems="center">
-                            <Typography 
-                            fontSize="20px"
-                            fontWeight={600}
+                        <Stack
+                            flexDirection="row"
+                            gap="8px"
+                            alignItems="center"
+                        >
+                            <Typography
+                                fontSize="20px"
+                                fontWeight={600}
                                 color={
-                                    (data?.transaction_type === 'order_place' || data?.transaction_type === 'partial_payment')
+                                    data?.transaction_type === 'order_place' ||
+                                    data?.transaction_type === 'partial_payment'
                                         ? theme.palette.error.main
                                         : theme.palette.success.main
-                                }>
-                                {(data?.transaction_type === 'order_place' || data?.transaction_type === 'partial_payment')
-                                    ? '-'
-                                    : '+'
                                 }
-
+                            >
+                                {data?.transaction_type === 'order_place' ||
+                                data?.transaction_type === 'partial_payment'
+                                    ? '-'
+                                    : '+'}
                             </Typography>
-                            <Typography fontWeight="700" fontSize={{xs:"16px",sm:"20px"}}>
+                            <Typography
+                                fontWeight="700"
+                                fontSize={{ xs: '16px', sm: '20px' }}
+                            >
                                 {data?.transaction_type === 'order_place'
                                     ? getAmount(
-                                        debit,
-                                        currencySymbolDirection,
-                                        currencySymbol,
-                                        digitAfterDecimalPoint
-                                    )
-                                    : (
-                                        data?.transaction_type === 'partial_payment' ? (
-                                            getAmount(
-                                                debit,
-                                                currencySymbolDirection,
-                                                currencySymbol,
-                                                digitAfterDecimalPoint
-                                            )
-                                        ) : (
-                                            getAmount(
-                                                credit,
-                                                currencySymbolDirection,
-                                                currencySymbol,
-                                                digitAfterDecimalPoint
-                                            )
-                                        )
-                                    )
-                                }
+                                          debit,
+                                          currencySymbolDirection,
+                                          currencySymbol,
+                                          digitAfterDecimalPoint
+                                      )
+                                    : data?.transaction_type ===
+                                      'partial_payment'
+                                    ? getAmount(
+                                          debit,
+                                          currencySymbolDirection,
+                                          currencySymbol,
+                                          digitAfterDecimalPoint
+                                      )
+                                    : getAmount(
+                                          credit,
+                                          currencySymbolDirection,
+                                          currencySymbol,
+                                          digitAfterDecimalPoint
+                                      )}
                             </Typography>
                         </Stack>
                         {data?.transaction_type === 'add_fund' ? (
                             <CustomTypographyGray
                                 textTransform="capitalize"
-                                sx={{ fontSize: {xs:"12px",sm:"13px"}, fontWeight: '400' }}
+                                sx={{
+                                    fontSize: { xs: '12px', sm: '13px' },
+                                    fontWeight: '400',
+                                }}
                             >
                                 {t('added via')}{' '}
                                 {t(data?.reference).replaceAll('_', ' ')} (
@@ -120,7 +124,8 @@ const WalletsPage = (props) => {
                             textTransform="capitalize"
                             fontSize="13px"
                             color={
-                                (data?.transaction_type === 'order_place' || data?.transaction_type === 'partial_payment')
+                                data?.transaction_type === 'order_place' ||
+                                data?.transaction_type === 'partial_payment'
                                     ? theme.palette.error.main
                                     : theme.palette.success.main
                             }
@@ -128,7 +133,8 @@ const WalletsPage = (props) => {
                                 languageDirection === 'rtl' ? '24px' : '0px'
                             }
                         >
-                            {(data?.transaction_type === 'order_place' || data?.transaction_type === 'partial_payment')
+                            {data?.transaction_type === 'order_place' ||
+                            data?.transaction_type === 'partial_payment'
                                 ? t('debit')
                                 : t('credit')}
                         </Typography>

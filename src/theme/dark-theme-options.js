@@ -17,7 +17,6 @@ const neutral = {
     1600: '#EF78224D',
     1700: '#192238',
     1800: '#1C1919',
-
 }
 
 const table = {
@@ -29,8 +28,10 @@ const background = {
     default: '#0B0F19',
     paper: '#272424',
     profileBackground: '#111827',
+    toaster: '#272727',
 }
 const footerCenterBg = '#2f3645'
+const footerAppBg = '#414141'
 const footerTopBg = 'rgba(255, 235, 221, 0.05)'
 const footerMiddleBg = '#343c4d'
 const divider = '#2D3748'
@@ -48,7 +49,7 @@ const skeletonColorAfter =
     'linear-gradient(78.58deg, #F5F6F8 3.23%, #FDFDFD 53.13%, #F6F7F8 100%)'
 
 const primary = {
-    main: '#EF7822',
+    main: '#FF7918',
     light: '#ff6700',
     dark: '#a3460a',
     contrastText: neutral[900],
@@ -104,6 +105,7 @@ const text = {
     secondary: '#A0AEC0',
     disabled: 'rgba(255, 255, 255, 0.48)',
     footerText: '#F5F6F8',
+    formHeader: neutral[600],
 }
 const pending = {
     primary: '#005F95',
@@ -129,9 +131,9 @@ const customColor = {
     ten: '#2c2c2c',
     eleven: '#039D55',
     twelve: '#334257',
-    thirteen: "#FFE5CD",
-    fourteen: "#FCEA10",
-    fifteen : text.secondary,
+    thirteen: '#464646',
+    fourteen: '#FCEA10',
+    fifteen: text.secondary,
 }
 export const darkThemeOptions = {
     components: {
@@ -268,6 +270,7 @@ export const darkThemeOptions = {
         text,
         warning,
         pending,
+        footerAppBg,
         footerTopBg,
         footerCenterBg,
         footerMiddleBg,
@@ -313,5 +316,8 @@ export const darkThemeOptions = {
         '0px 10px 20px -5px rgba(145, 158, 171, 0.10)',
         '0px 10px 20px -5px rgba(145, 158, 171, 0.20)',
         '0px 0px 2px 0px rgba(51, 66, 87, 0.40)',
+    ],
+    shadows2: [
+        '0px -1px 2px rgba(255, 255, 255, 0.05), 0px 2px 2px rgba(255, 255, 255, 0.1)',
     ],
 }

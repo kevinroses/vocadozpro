@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { createContext, useEffect, useState } from 'react'
 
 const initialSettings = {
     direction: 'ltr',
@@ -9,16 +9,11 @@ const initialSettings = {
 
 export const restoreSettings = () => {
     let settings = null
-
     try {
-        const mode = window.localStorage.getItem('mode')
+        const storedData = window.localStorage.getItem('settings')
 
-        if (mode) {
-            settings = {
-                direction: 'ltr',
-                responsiveFontSizes: true,
-                theme: mode,
-            }
+        if (storedData) {
+            settings = JSON.parse(storedData)
         } else {
             settings = {
                 direction: 'ltr',
@@ -28,11 +23,7 @@ export const restoreSettings = () => {
                     : 'light',
             }
         }
-    } catch (err) {
-
-        // If stored data is not a strigified JSON this will fail,
-        // that's why we catch the error
-    }
+    } catch (err) {}
 
     return settings
 }

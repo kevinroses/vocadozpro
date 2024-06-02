@@ -1,48 +1,46 @@
-
-
-import React, { useEffect, useRef, useState } from 'react'
+import { setOfflineWithPartials } from '@/redux/slices/OfflinePayment'
+import { SignInButton } from '@/styled-components/CustomButtons.style'
+import { CustomStackFullWidth } from '@/styled-components/CustomStyles.style'
+import ChatIcon from '@mui/icons-material/Chat'
+import LockIcon from '@mui/icons-material/Lock'
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+import { Avatar, Box, ButtonBase, NoSsr, Stack } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
 import Toolbar from '@mui/material/Toolbar'
-import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
-import { alpha, Avatar, Box, ButtonBase, NoSsr, Stack } from "@mui/material";
-import DrawerMenu from '../DrawerMenu'
-import { useTranslation } from 'react-i18next'
-import { useRouter } from 'next/router'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { styled } from '@mui/system'
+import { useRouter } from 'next/router'
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
+import useClickOutside from '../../../utils/use-click-outside'
+import CustomLanguage from '../../CustomLanguage'
+import { RTL } from '../../RTL/RTL'
+import AuthModal from '../../auth'
+import {
+    getGuestId,
+    getToken,
+} from '../../checkout-page/functions/getGuestUserId'
+import CustomContainer from '../../container'
+import { CustomTypography } from '../../custom-tables/Tables.style'
+import SearchBox from '../../home/hero-section-with-search/SearchBox'
+import { AccountPopover } from '../AccountPopover'
+import CustomDrawerWishlist from '../CustomDrawerWishlist'
+import { CustomNavSearchIcon, LefRightBorderBox } from '../Navbar.style'
+import ThemeSwitches from '../top-navbar/ThemeSwitches'
+import AddressReselect from '../top-navbar/address-reselect/AddressReselect'
+import LogoSide from './LogoSide'
 import NavLinks from './NavLinks'
 import Wishlist from './Wishlist'
-import CustomContainer from '../../container'
-import { SignInButton } from "@/styled-components/CustomButtons.style"
-import { CustomTypography } from '../../custom-tables/Tables.style'
-import LockIcon from '@mui/icons-material/Lock'
-import AuthModal from '../../auth'
-import IconButton from '@mui/material/IconButton'
-import ChatIcon from '@mui/icons-material/Chat'
-import { AccountPopover } from '../AccountPopover'
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
-import { CustomNavSearchIcon, LefRightBorderBox } from "../Navbar.style";
-import { RTL } from '../../RTL/RTL'
-import CustomLanguage from '../../CustomLanguage'
-import { getGuestId, getToken } from "../../checkout-page/functions/getGuestUserId";
-import { setOfflineWithPartials } from "@/redux/slices/OfflinePayment";
-import ManageSearch from "./ManageSearch";
-import SearchBox from "../../home/hero-section-with-search/SearchBox";
-import { styled } from "@mui/system";
-import useClickOutside from "../../../utils/use-click-outside";
-import LogoSide from './LogoSide';
-import ThemeSwitches from '../top-navbar/ThemeSwitches';
-import CustomDrawerWishlist from '../CustomDrawerWishlist';
-import AddressReselect from '../top-navbar/address-reselect/AddressReselect';
-
 
 export const getSelectedAddons = (addon) => {
     return addon?.filter((item) => {
-        return item?.isChecked !== undefined && item?.isChecked !== false;
-    });
-};
+        return item?.isChecked !== undefined && item?.isChecked !== false
+    })
+}
 export const getSelectedVariations = (variations) => {
-    let selectedItem = [];
+    let selectedItem = []
     if (variations?.length > 0) {
         variations?.forEach((item, index) => {
             item?.values?.forEach((value, optionIndex) => {
@@ -53,26 +51,25 @@ export const getSelectedVariations = (variations) => {
                         label: value?.label,
                         optionIndex: optionIndex,
                         optionPrice: value?.optionPrice,
-                        // type:item?.
-                    };
-                    selectedItem.push(itemObj);
-                }
-            });
-        });
-    }
-    return selectedItem;
-};
+                        current_stock: value?.current_stock,
+                        option_id:value?.option_id,
+                        stock_type:value?.stock_type
 
+
+                        // type:item?.
+                    }
+                    selectedItem.push(itemObj)
+                }
+            })
+        })
+    }
+    return selectedItem
+}
 
 export const CustomNavBox = styled(Box)(({ theme, isSticky }) => ({
-    //  transition:"all ease 0.25s",
-    // transform:isSticky && "translateY(-100%)",
-    // visibility:isSticky?'hidden':'visible',
-    // opacity:isSticky?'0':'1',
     display: isSticky ? 'visible' : 'hidden',
     background: theme.palette.navbarBg,
-    boxShadow: "0px 5px 15px 0px rgba(0, 0, 0, 0.05)",
-
+    boxShadow: '0px 5px 15px 0px rgba(0, 0, 0, 0.05)',
 }))
 const SecondNavbar = ({ isSticky, cartListRefetch }) => {
     const [modalFor, setModalFor] = useState('sign-in')
@@ -86,33 +83,18 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
     const { t } = useTranslation()
     const router = useRouter()
     const { query } = router.query
-    const { global, userLocationUpdate } = useSelector((state) => state.globalSettings)
+    const { global, userLocationUpdate } = useSelector(
+        (state) => state.globalSettings
+    )
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
     const dispatch = useDispatch()
     const anchorRef = useRef(null)
 
-    const [theme_mode, setThemeMode] = useState('')
     const { countryCode, language } = useSelector(
         (state) => state.languageChange
     )
     const businessLogo = global?.fav_icon
-    useEffect(() => {
-        // Perform localStorage action
-        if (typeof window !== 'undefined') {
-            setThemeMode(localStorage.getItem('mode') || 'light')
-        }
-    }, [theme_mode])
-    const changeThemeMode = (e) => {
-        if (theme_mode === 'dark') {
-            localStorage.setItem('mode', 'light')
-        } else {
-            localStorage.setItem('mode', 'dark')
-        }
-        window.location.reload()
-    }
-
-    //SEARCH BOX OPEN//
 
     const handleOpenPopover = () => {
         setOpenPopover(true)
@@ -123,10 +105,8 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
         setOpenSearchBox(true)
     }
     const searchBoxRef = useClickOutside(() => {
-        setOpenSearchBox(false);
-    });
-
-
+        setOpenSearchBox(false)
+    })
 
     const handleOpenAuthModal = () => setOpen(true)
     const handleCloseAuthModal = () => {
@@ -137,7 +117,6 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
     const handleClosePopover = () => {
         setOpenPopover(false)
     }
-
 
     let zoneid = undefined
     let location = undefined
@@ -158,14 +137,11 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
         })
     }
 
-
-
-
     useEffect(() => {
-        if (router.pathname !== "/checkout") {
+        if (router.pathname !== '/checkout') {
             dispatch(setOfflineWithPartials(false))
         }
-    }, []);
+    }, [])
     const handleAuthBasedOnRoute = () => {
         return (
             <RTL direction={languageDirection}>
@@ -225,8 +201,17 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
                             </Box>
                             {token && !isSmall && (
                                 <LefRightBorderBox>
-                                    <Wishlist handleClick={() => setOpenWishlistModal(true)} />
-                                    <CustomDrawerWishlist openWishlistModal={openWishlistModal} setOpenWishlistModal={setOpenWishlistModal} />
+                                    <Wishlist
+                                        handleClick={() =>
+                                            setOpenWishlistModal(true)
+                                        }
+                                    />
+                                    <CustomDrawerWishlist
+                                        openWishlistModal={openWishlistModal}
+                                        setOpenWishlistModal={
+                                            setOpenWishlistModal
+                                        }
+                                    />
                                 </LefRightBorderBox>
                             )}
 
@@ -237,13 +222,17 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
                                 component={ButtonBase}
                                 onClick={handleOpenPopover}
                                 ref={anchorRef}
-                                sx={{ paddingInline: "10px" }}
+                                sx={{ paddingInline: '10px' }}
                             >
                                 <Avatar
                                     sx={{
                                         height: 30,
                                         width: 30,
-                                        backgroundColor: userData?.image ? (theme) => theme.palette.neutral[100] : (theme) => theme.palette.neutral[400]
+                                        backgroundColor: userData?.image
+                                            ? (theme) =>
+                                                  theme.palette.neutral[100]
+                                            : (theme) =>
+                                                  theme.palette.neutral[400],
                                     }}
                                     src={`${customerbaseUrl}/${userData?.image}`}
                                 />
@@ -261,13 +250,17 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
         )
     }
     const handleShowSearch = () => {
-        if ((router.pathname === "/home" && location) || openSearchBox) {
+        if ((router.pathname === '/home' && location) || openSearchBox) {
             return (
-                <Box sx={{ minWidth: '450px', marginInlineEnd: "20px" }}>
+                <Box sx={{ minWidth: '450px', marginInlineEnd: '20px' }}>
                     <SearchBox query={query} />
                 </Box>
             )
-        } else if (router.pathname !== "/home" && location && router.pathname !== "/") {
+        } else if (
+            router.pathname !== '/home' &&
+            location &&
+            router.pathname !== '/'
+        ) {
             return (
                 <Stack
                     onClick={(e) => handleSearchBoxOpen(e)}
@@ -282,35 +275,17 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
                 </Stack>
             )
         }
-
-        // else{
-        //     return (<Stack
-        //         onClick={handleSearchBoxOpen}
-        //         sx={{ transition: 'all ease .4s' }}
-        //     >
-        //         <CustomNavSearchIcon>
-        //             <SearchOutlinedIcon
-        //                 sx={{ fontSize: '20px' }}
-        //                 color="primary"
-        //             />
-        //         </CustomNavSearchIcon>
-        //     </Stack>)
-        // }
-
     }
-
 
     return (
         <NoSsr>
-            <CustomNavBox isSticky={isSticky} >
+            <CustomNavBox isSticky={isSticky}>
                 <CustomContainer>
                     <Toolbar disableGutters={true}>
                         <CustomStackFullWidth
                             ref={searchBoxRef}
                             direction="row"
-                            // alignItems="center"
                             justifyContent="space-between"
-                        //onMouseOver={(event)=>handleClickOutside(event)}
                         >
                             <Stack
                                 direction="row"
@@ -318,15 +293,19 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
                                 justifyContent="center"
                                 gap="1rem"
                             >
-                                {!location &&
+                                {!location && (
                                     <LogoSide
                                         global={global}
                                         width="auto"
                                         businessLogo={businessLogo}
-                                    />}
-                                {!location &&
-                                    <AddressReselect location={location} userLocationUpdate={userLocationUpdate} />
-                                }
+                                    />
+                                )}
+                                {!location && (
+                                    <AddressReselect
+                                        location={location}
+                                        userLocationUpdate={userLocationUpdate}
+                                    />
+                                )}
                                 {!isSmall && location && (
                                     <NavLinks
                                         languageDirection={languageDirection}
@@ -335,27 +314,24 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
                                     />
                                 )}
                             </Stack>
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-
-                            >
+                            <Stack direction="row" alignItems="center">
                                 {handleShowSearch()}
-                                {!isSmall && !location &&
+                                {!isSmall && !location && (
                                     <Stack flexDirection="row" mr="45px">
-                                        <Stack direction="row" spacing={2} justifyContent="end" mr="45px">
-                                            <ThemeSwitches
-                                                checked={theme_mode === 'light'}
-                                                handleThemeChangeMode={changeThemeMode}
-                                                themeMode={theme_mode}
-                                            />
+                                        <Stack
+                                            direction="row"
+                                            spacing={2}
+                                            justifyContent="end"
+                                            mr="45px"
+                                        >
+                                            <ThemeSwitches />
                                         </Stack>
                                         <CustomLanguage
                                             countryCode={countryCode}
                                             language={language}
                                         />
                                     </Stack>
-                                }
+                                )}
                                 <Box
                                     sx={{
                                         display: { xs: 'none', md: 'flex' },
@@ -381,6 +357,3 @@ const SecondNavbar = ({ isSticky, cartListRefetch }) => {
     )
 }
 export default SecondNavbar
-
-
-

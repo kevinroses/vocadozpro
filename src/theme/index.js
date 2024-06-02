@@ -10,7 +10,7 @@ export const createTheme = (config) => {
 
     let theme = createMuiTheme(
         baseThemeOptions,
-        config.mode === 'dark' ? darkThemeOptions : lightThemeOptions,
+        config.mode === 'light' ?  lightThemeOptions: darkThemeOptions ,
         {
             direction: config.direction,
         }

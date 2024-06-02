@@ -91,11 +91,12 @@ export const CustomToasterTokenExpired = (title, subtitle) => {
       duration: 4000,
       position: 'top-center',
       icon: false,
+
     }
   );
 }
 
-export const CustomToaster = (status, title, subtitle, icon, borderColor, isClose) => {
+export const CustomToaster = (status, title,id=null, subtitle, icon, borderColor, isClose) => {
   let toasterIcon;
   if (icon) {
     toasterIcon = icon
@@ -135,8 +136,9 @@ export const CustomToaster = (status, title, subtitle, icon, borderColor, isClos
       duration: 4000,
       position: 'top-center',
       icon: false,
+      id:id
     }
-  );
+  )
 }
 
 //--------- Usage -----------

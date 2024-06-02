@@ -1,12 +1,11 @@
-import moment from 'moment'
-import React from 'react'
 import { t } from 'i18next'
-import { useSelector } from "react-redux";
 import _ from 'lodash'
-import { store } from '../redux/store'
+import moment from 'moment'
+import { useSelector } from 'react-redux'
 import { CustomChip } from '../components/food-card/FoodCard.style'
 import { languageLists } from '../components/navbar/second-navbar/custom-language/languageLists'
 import { rtlLanguageList } from '../components/navbar/second-navbar/custom-language/rtlLanguageList'
+import { store } from '../redux/store'
 
 export function truncate(amountAsString, decimals) {
     let dotIndex = amountAsString?.indexOf('.')
@@ -41,26 +40,34 @@ export const getAmount = (
 ) => {
     let newAmount = truncate(amount?.toString(), digitAfterDecimalPoint)
     if (newAmount > 10000) {
-        if (newAmount >= 1000000000) { // Billion
-            newAmount = (newAmount / 1000000000)?.toFixed(digitAfterDecimalPoint) + "B";
+        if (newAmount >= 1000000000) {
+            // Billion
+            newAmount =
+                (newAmount / 1000000000)?.toFixed(digitAfterDecimalPoint) + 'B'
             return `${currency_symbol}${newAmount}`
-        } else if (newAmount >= 1000000) { // Million
-            newAmount = (newAmount / 1000000)?.toFixed(digitAfterDecimalPoint) + "M";
+        } else if (newAmount >= 1000000) {
+            // Million
+            newAmount =
+                (newAmount / 1000000)?.toFixed(digitAfterDecimalPoint) + 'M'
             return `${currency_symbol}${newAmount}`
-        } else if (newAmount >= 1000) { // Thousand
-            newAmount = (newAmount / 1000)?.toFixed(digitAfterDecimalPoint) + "k";
+        } else if (newAmount >= 1000) {
+            // Thousand
+            newAmount =
+                (newAmount / 1000)?.toFixed(digitAfterDecimalPoint) + 'k'
             return `${currency_symbol}${newAmount}`
         }
-    }
-    else {
+    } else {
         if (currency_symbol_direction === 'left') {
-            return `${currency_symbol}${newAmount?.toFixed(digitAfterDecimalPoint)}`
+            return `${currency_symbol}${newAmount?.toFixed(
+                digitAfterDecimalPoint
+            )}`
         } else if (currency_symbol_direction === 'right') {
-            return `${newAmount?.toFixed(digitAfterDecimalPoint)}${currency_symbol}`
+            return `${newAmount?.toFixed(
+                digitAfterDecimalPoint
+            )}${currency_symbol}`
         }
         return amount
     }
-
 }
 const handleVariationValuesSum = (productVariations) => {
     let sum = 0
@@ -92,7 +99,7 @@ export const getSubTotalPrice = (cartList) => {
             (product.variations.length > 0
                 ? getItemTotalWithoutDiscount(product)
                 : product.price) *
-            product.quantity +
+                product.quantity +
             selectedAddonsTotal(product.selectedAddons) +
             total,
         0
@@ -146,7 +153,12 @@ export const selectedAddonsTotal = (addOns) => {
     }
 }
 
-export const getTaxableTotalPrice = (items, couponDiscount, restaurantData) => {
+export const getTaxableTotalPrice = (
+    items,
+    couponDiscount,
+    restaurantData,
+    referDiscount
+) => {
     const isTaxIncluded =
         store?.getState?.()?.globalSettings?.global?.tax_included === 1
     let tax = restaurantData?.data?.tax
@@ -156,7 +168,7 @@ export const getTaxableTotalPrice = (items, couponDiscount, restaurantData) => {
                 (product?.variations?.length > 0
                     ? handleProductValueWithOutDiscount(product)
                     : product.price) *
-                product.quantity +
+                    product.quantity +
                 selectedAddonsTotal(product.selectedAddons) +
                 total,
             0
@@ -164,7 +176,8 @@ export const getTaxableTotalPrice = (items, couponDiscount, restaurantData) => {
         getProductDiscount(items, restaurantData) -
         (couponDiscount
             ? getCouponDiscount(couponDiscount, restaurantData, items)
-            : 0)
+            : 0) -
+        (referDiscount ? referDiscount : 0)
 
     if (isTaxIncluded) {
         return (total * tax) / (100 + tax)
@@ -225,20 +238,20 @@ export const getProductDiscount = (items, restaurantData) => {
                 (total, product) =>
                     (product.variations.length > 0
                         ? handleProductValueWithOutDiscount(product) -
-                        getConvertDiscount(
-                            restaurentDiscount,
-                            resDisType,
-                            handleProductValueWithOutDiscount(product),
-                            product.restaurant_discount
-                        )
+                          getConvertDiscount(
+                              restaurentDiscount,
+                              resDisType,
+                              handleProductValueWithOutDiscount(product),
+                              product.restaurant_discount
+                          )
                         : product.price -
-                        getConvertDiscount(
-                            restaurentDiscount,
-                            resDisType,
-                            product.price,
-                            product.restaurant_discount
-                        )) *
-                    product.quantity +
+                          getConvertDiscount(
+                              restaurentDiscount,
+                              resDisType,
+                              product.price,
+                              product.restaurant_discount
+                          )) *
+                        product.quantity +
                     total,
                 0
             )
@@ -250,12 +263,12 @@ export const getProductDiscount = (items, restaurantData) => {
                         : product.price) +
                         (product?.selectedAddons?.length > 0
                             ? product?.selectedAddons?.reduce(
-                                (total, addOn) =>
-                                    addOn.price * addOn.quantity + total,
-                                0
-                            )
+                                  (total, addOn) =>
+                                      addOn.price * addOn.quantity + total,
+                                  0
+                              )
                             : 0)) *
-                    product.quantity +
+                        product.quantity +
                     total,
                 0
             )
@@ -269,7 +282,6 @@ export const getProductDiscount = (items, restaurantData) => {
                 return 0
             }
         } else {
-
             //product wise discount
             let total = items.reduce(
                 (total, product) =>
@@ -284,7 +296,6 @@ export const getProductDiscount = (items, restaurantData) => {
                 0
             )
             return total
-
         }
     } else {
         //product wise discount
@@ -295,11 +306,14 @@ export const getProductDiscount = (items, restaurantData) => {
                 product.discount_type,
                 handleProductValueWithOutDiscount(product),
                 product.restaurant_discount
-            );
-            return total + (handleProductValueWithOutDiscount(product) - discountAmount) * product.quantity;
-        }, 0);
-        return totalDiscount;
-
+            )
+            return (
+                total +
+                (handleProductValueWithOutDiscount(product) - discountAmount) *
+                    product.quantity
+            )
+        }, 0)
+        return totalDiscount
     }
 }
 
@@ -355,8 +369,8 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
     const a =
         Math.pow(Math.sin(dLat / 2), 2) +
         Math.pow(Math.sin(dLon / 2), 2) *
-        Math.cos(toRadians(startLatitude)) *
-        Math.cos(toRadians(endLatitude))
+            Math.cos(toRadians(startLatitude)) *
+            Math.cos(toRadians(endLatitude))
     const c = 2 * Math.asin(Math.sqrt(a))
 
     return earthRadius * c
@@ -411,7 +425,6 @@ export const getDeliveryFees = (
     destination,
     extraCharge
 ) => {
-
     //convert m to km
     let convertedDistance = handleDistance(
         distance?.rows?.[0]?.elements,
@@ -423,12 +436,18 @@ export const getDeliveryFees = (
 
     //restaurant self delivery system checking
     if (Number.parseInt(restaurantData?.data?.self_delivery_system) === 1) {
-        if (restaurantData?.data?.free_delivery || orderType === 'take_away' || (restaurantData?.data?.free_delivery_distance_status && convertedDistance < restaurantData?.data?.free_delivery_distance_value)) {
+        if (
+            restaurantData?.data?.free_delivery ||
+            orderType === 'take_away' ||
+            (restaurantData?.data?.free_delivery_distance_status &&
+                convertedDistance <
+                    restaurantData?.data?.free_delivery_distance_value)
+        ) {
             return 0
         } else {
             deliveryFee =
                 convertedDistance *
-                restaurantData?.data?.per_km_shipping_charge || 0
+                    restaurantData?.data?.per_km_shipping_charge || 0
             if (
                 deliveryFee > restaurantData?.data?.minimum_shipping_charge &&
                 deliveryFee < restaurantData?.data?.maximum_shipping_charge
@@ -461,13 +480,14 @@ export const getDeliveryFees = (
             if (
                 restaurantChargeInfo &&
                 Number.parseInt(restaurantData?.data?.self_delivery_system) !==
-                1
+                    1
             ) {
                 if (
                     (global?.free_delivery_over !== null &&
                         global?.free_delivery_over > 0 &&
                         totalOrderAmount > global?.free_delivery_over) ||
-                    orderType === 'take_away' || convertedDistance < global?.free_delivery_distance
+                    orderType === 'take_away' ||
+                    convertedDistance < global?.free_delivery_distance
                 ) {
                     return 0
                 } else {
@@ -476,9 +496,9 @@ export const getDeliveryFees = (
                         (restaurantChargeInfo?.per_km_shipping_charge || 0)
                     if (
                         deliveryFee >=
-                        restaurantChargeInfo?.minimum_shipping_charge &&
+                            restaurantChargeInfo?.minimum_shipping_charge &&
                         deliveryFee + extraCharge <=
-                        restaurantChargeInfo?.maximum_shipping_charge
+                            restaurantChargeInfo?.maximum_shipping_charge
                     ) {
                         return (
                             getDeliveryFeeByBadWeather(
@@ -500,7 +520,7 @@ export const getDeliveryFees = (
                         )
                     } else if (
                         deliveryFee + extraCharge >=
-                        restaurantChargeInfo?.maximum_shipping_charge &&
+                            restaurantChargeInfo?.maximum_shipping_charge &&
                         restaurantChargeInfo?.maximum_shipping_charge !== null
                     ) {
                         return getDeliveryFeeByBadWeather(
@@ -515,8 +535,9 @@ export const getDeliveryFees = (
                             (global?.free_delivery_over !== null &&
                                 global?.free_delivery_over > 0 &&
                                 totalOrderAmount >
-                                global?.free_delivery_over) ||
-                            orderType === 'take_away' || convertedDistance < global?.free_delivery_distance
+                                    global?.free_delivery_over) ||
+                            orderType === 'take_away' ||
+                            convertedDistance < global?.free_delivery_distance
                         ) {
                             return 0
                         } else {
@@ -557,20 +578,20 @@ export const getTotalLoyalityAmount = (data) => {
     return 0
 }
 export const getTotalVariationsPrice = (variations) => {
-    let value = 0;
+    let value = 0
     if (variations?.length > 0) {
         variations?.forEach?.((item) => {
             if (item?.values?.length > 0) {
                 item?.values?.forEach((itemVal) => {
                     if (itemVal?.isSelected) {
-                        value += Number.parseInt(itemVal?.optionPrice);
+                        value += Number.parseInt(itemVal?.optionPrice)
                     }
-                });
+                })
             }
-        });
+        })
     }
-    return value;
-};
+    return value
+}
 export const getConvertDiscount = (
     dis,
     disType,
@@ -597,7 +618,7 @@ export const getCouponDiscount = (couponDiscount, restaurantData, cartList) => {
                 (product.variations.length > 0
                     ? handleProductValueWithOutDiscount(product)
                     : product.price) *
-                product.quantity +
+                    product.quantity +
                 selectedAddonsTotal(product.selectedAddons) +
                 total,
             0
@@ -714,52 +735,6 @@ export const getCouponDiscount = (couponDiscount, restaurantData, cartList) => {
             return 0
         }
     }
-
-    // let totalCouponDiscount = 0
-    // if (cartList?.length > 0) {
-    //     cartList.map((item) => {
-    //         const order = item.price * item.quantity
-    //         if (couponDiscount.coupon_type === 'free_delivery') {
-    //             if (restaurantData.delivery_charge > 0) {
-    //                 if (couponDiscount.min_purchase < order) {
-    //                     restaurantData.free_delivery = true
-    //                 } else {
-    //                     alert('error')
-    //                 }
-    //             } else {
-    //                 alert('error')
-    //             }
-    //         } else {
-    //             if (
-    //                 couponDiscount.min_purchase !== null &&
-    //                 couponDiscount.min_purchase < order
-    //             ) {
-    //                 if ((couponDiscount.discount_type = 'percent')) {
-    //                     if (
-    //                         couponDiscount.max_discount !== null &&
-    //                         couponDiscount.max_discount > 0
-    //                     ) {
-    //                         totalCouponDiscount =
-    //                             (couponDiscount.discount * order) / 100 <
-    //                             couponDiscount.max_discount
-    //                                 ? (couponDiscount.discount * order) / 100
-    //                                 : couponDiscount.discount
-    //
-    //                     } else {
-    //                         totalCouponDiscount =
-    //                             (couponDiscount.discount * order) / 100
-    //                     }
-    //                 } else {
-    //                     totalCouponDiscount = couponDiscount.discount
-    //                 }
-    //             } else {
-    //
-    //             }
-    //         }
-    //         return totalCouponDiscount
-    //     })
-    //     return totalCouponDiscount
-    // }
 }
 export const isAvailable = (start, end) => {
     const startTime = moment(start, 'HH:mm:ss')
@@ -786,7 +761,9 @@ export const getCalculatedTotal = (
     origin,
     destination,
     extraCharge,
-    additionalCharge
+    additionalCharge,
+    extraPackagingCharge,
+    referDiscount
 ) => {
     if (couponDiscount) {
         if (couponDiscount?.coupon_type === 'free_delivery') {
@@ -805,25 +782,27 @@ export const getCalculatedTotal = (
                         getTaxableTotalPrice(
                             cartList,
                             couponDiscount,
-                            restaurantData
+                            restaurantData,
+                            referDiscount
                         )?.toString(),
                         global?.digit_after_decimal_point
                     )) -
                 (couponDiscount
                     ? truncate(
-                        getCouponDiscount(
-                            couponDiscount,
-                            restaurantData,
-                            cartList
-                        )?.toString(),
-                        global?.digit_after_decimal_point
-                    )
+                          getCouponDiscount(
+                              couponDiscount,
+                              restaurantData,
+                              cartList
+                          )?.toString(),
+                          global?.digit_after_decimal_point
+                      )
                     : 0) +
                 truncate(
                     deliveryTip?.toString(),
                     global?.digit_after_decimal_point
                 ) +
-                additionalCharge
+                additionalCharge +
+                extraPackagingCharge
             )
         } else {
             return (
@@ -841,19 +820,20 @@ export const getCalculatedTotal = (
                         getTaxableTotalPrice(
                             cartList,
                             couponDiscount,
-                            restaurantData
+                            restaurantData,
+                            referDiscount
                         ).toString(),
                         global?.digit_after_decimal_point
                     )) -
                 (couponDiscount
                     ? truncate(
-                        getCouponDiscount(
-                            couponDiscount,
-                            restaurantData,
-                            cartList
-                        )?.toString(),
-                        global?.digit_after_decimal_point
-                    )
+                          getCouponDiscount(
+                              couponDiscount,
+                              restaurantData,
+                              cartList
+                          )?.toString(),
+                          global?.digit_after_decimal_point
+                      )
                     : 0) +
                 truncate(
                     getDeliveryFees(
@@ -875,7 +855,8 @@ export const getCalculatedTotal = (
                     deliveryTip?.toString(),
                     global?.digit_after_decimal_point
                 ) +
-                additionalCharge
+                additionalCharge +
+                extraPackagingCharge
             )
         }
     } else {
@@ -894,7 +875,8 @@ export const getCalculatedTotal = (
                     getTaxableTotalPrice(
                         cartList,
                         couponDiscount,
-                        restaurantData
+                        restaurantData,
+                        referDiscount
                     )?.toString(),
                     global?.digit_after_decimal_point
                 )) -
@@ -919,7 +901,8 @@ export const getCalculatedTotal = (
                 deliveryTip?.toString(),
                 global?.digit_after_decimal_point
             ) +
-            additionalCharge
+            additionalCharge +
+            extraPackagingCharge
         )
     }
 }
@@ -951,7 +934,7 @@ export const getDiscountForTag = (restaurantDiscount) => {
     // return restaurantDiscount?.discount
 }
 
-export const getDiscountType = () => { }
+export const getDiscountType = () => {}
 
 export const isFoodAvailableBySchedule = (cart, selectedTime) => {
     // const startTime = moment(start, 'HH:mm:ss')
@@ -1028,7 +1011,6 @@ export const restaurantDiscountTag = (
 }
 
 export const getIndexFromArrayByComparision = (arrayOfObjects, object) => {
-
     // for (let i = 0; i < arrayOfObjects.length; i++) {
     //     if (_.isEqual(arrayOfObjects[i].variations, object.variations)) {
     //         return i
@@ -1152,7 +1134,6 @@ export const handleTotalAmountWithAddonsFF = (
     mainTotalAmount,
     selectedAddOns
 ) => {
-
     if (selectedAddOns?.length > 0) {
         let selectedAddonsTotalPrice = 0
         selectedAddOns.forEach(
@@ -1192,17 +1173,17 @@ export const handleBadge = (
                         label={
                             !product.available_date_ends
                                 ? ` ${getAmount(
-                                    product?.discount,
-                                    currencySymbolDirection,
-                                    currencySymbol,
-                                    digitAfterDecimalPoint
-                                )}`
+                                      product?.discount,
+                                      currencySymbolDirection,
+                                      currencySymbol,
+                                      digitAfterDecimalPoint
+                                  )}`
                                 : ` ${getAmount(
-                                    product?.discount,
-                                    currencySymbolDirection,
-                                    currencySymbol,
-                                    digitAfterDecimalPoint
-                                )} ${OFF}`
+                                      product?.discount,
+                                      currencySymbolDirection,
+                                      currencySymbol,
+                                      digitAfterDecimalPoint
+                                  )} ${OFF}`
                         }
                         campaign={product.available_date_ends}
                     />
@@ -1249,38 +1230,44 @@ export const removeDuplicates = (array, property) => {
 
 export const getReviewCount = (count) => {
     if (Number.parseInt(count) > 999) {
-        return `(${count / 1000}k+)`;
+        return `(${count / 1000}k+)`
     } else if (Number.parseInt(count) === 0) {
         return ''
-    }
-    else {
+    } else {
         return `(${count})`
     }
-};
-
+}
 
 export const DistanceCalculate = ({ distance }) => {
-    const { global } = useSelector((state) => state.globalSettings);
+    const { global } = useSelector((state) => state.globalSettings)
     const distanceValue = (distance / 1000).toFixed(
         global?.digit_after_decimal_point
-    );
+    )
 
     const getDistance = () => {
         if (Number.parseInt(distanceValue) > 1000) {
-            return t("1k+ km");
+            return t('1k+ km')
         } else {
             return `${(distance / 1000).toFixed(
                 global?.digit_after_decimal_point
-            )}km `;
+            )}km `
         }
-    };
+    }
 
-    return distance ? getDistance() : "0 km";
-};
+    return distance ? getDistance() : '0 km'
+}
 
 export function capitalizeEachWord(str) {
     return str
         .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+}
+
+export const getReferDiscount = (totalAmount, discountAmount, discountType) => {
+    if (discountType === 'percentage') {
+        return (discountAmount / 100) * totalAmount
+    } else {
+        return discountAmount
+    }
 }

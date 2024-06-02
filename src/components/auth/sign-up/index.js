@@ -1,76 +1,79 @@
-import React, { useEffect, useState } from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import InputLabel from '@mui/material/InputLabel'
-import InputAdornment from '@mui/material/InputAdornment'
-import IconButton from '@mui/material/IconButton'
+import { CustomToaster } from '@/components/custom-toaster/CustomToaster'
+import { AuthApi } from '@/hooks/react-query/config/authApi'
+import { setWelcomeModal } from '@/redux/slices/utils'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import GroupIcon from '@mui/icons-material/Group'
+import LockIcon from '@mui/icons-material/Lock'
+import MailIcon from '@mui/icons-material/Mail'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import { useDispatch, useSelector } from 'react-redux'
-import { AuthApi } from "@/hooks/react-query/config/authApi"
-import { useMutation } from 'react-query'
-import { useFormik } from 'formik'
-import CustomPhoneInput from '../../CustomPhoneInput'
+import { LoadingButton } from '@mui/lab'
+import { Grid, alpha, styled } from '@mui/material'
+import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import FormHelperText from '@mui/material/FormHelperText'
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
+import InputLabel from '@mui/material/InputLabel'
+import TextField from '@mui/material/TextField'
+import { useTheme } from '@mui/material/styles'
+import { Stack } from '@mui/system'
+import { useFormik } from 'formik'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import SignUpValidation from '../SignUpValidation'
+import { useMutation } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useVerifyPhone } from '../../../hooks/react-query/otp/useVerifyPhone'
+import { setToken } from '../../../redux/slices/userToken'
 import {
     CustomColouredTypography,
     CustomLink,
     CustomStackFullWidth,
 } from '../../../styled-components/CustomStyles.style'
-import { useTheme } from '@mui/material/styles'
-import { useRouter } from 'next/router'
 import CustomImageContainer from '../../CustomImageContainer'
-import { CustomTypography } from '../../custom-tables/Tables.style'
-import { CustomBoxForModal } from '../auth.style'
-import { toast } from 'react-hot-toast'
-import LockIcon from '@mui/icons-material/Lock';
+import CustomPhoneInput from '../../CustomPhoneInput'
 import { onErrorResponse, onSingleErrorResponse } from '../../ErrorResponse'
 import { RTL } from '../../RTL/RTL'
 import CustomModal from '../../custom-modal/CustomModal'
+import { CustomTypography } from '../../custom-tables/Tables.style'
+import SignUpValidation from '../SignUpValidation'
 import OtpForm from '../forgot-password/OtpForm'
-import { useVerifyPhone } from '../../../hooks/react-query/otp/useVerifyPhone'
+import { CustomSigninOutLine } from '../sign-in'
 import SocialLogins from '../sign-in/social-login/SocialLogins'
-import { setToken } from '../../../redux/slices/userToken'
-import { alpha, Grid, styled } from "@mui/material";
-import { Stack } from "@mui/system";
-import { CustomSigninOutLine } from "../sign-in";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import GroupIcon from '@mui/icons-material/Group';
-import { CustomToaster } from "@/components/custom-toaster/CustomToaster";
-import { LoadingButton } from '@mui/lab'
 
 // const CustomSignUpTextField =Styled()
 export const CustomSignUpTextField = styled(TextField)(({ theme }) => ({
-
     '& .MuiInputBase-input': {
-        padding: "12.5px 0px !important",
-        fontSize: "14px",
-        fontWeight: "400",
+        padding: '12.5px 0px !important',
+        fontSize: '14px',
+        fontWeight: '400',
         borderRadius: '4px',
         // Custom styles for the input field
     },
     '& .MuiOutlinedInput-root': {
-        borderRadius: '4px' // Set your desired border radius
+        borderRadius: '4px', // Set your desired border radius
     },
     '& .MuiInputLabel-root': {
         // Custom styles for the label
         color: theme.palette.neutral[1000],
-    }
+    },
     // "&.MuiOutlinedInput-root": {
     //     "& .MuiOutlinedInput-input":{
     //         padding: "11px 0px !important",} // Adjust the padding values as needed
     // },
 }))
 
-const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setUserInfo, handleSuccess }) => {
+const SignUpPage = ({
+    setSignInPage,
+    handleClose,
+    setModalFor,
+    setJwtToken,
+    setUserInfo,
+    handleSuccess,
+}) => {
     const { t } = useTranslation()
     const dispatch = useDispatch()
     const router = useRouter()
@@ -100,7 +103,7 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
         onSubmit: async (values, helpers) => {
             try {
                 formSubmitHandler(values)
-            } catch (err) { }
+            } catch (err) {}
         },
     })
 
@@ -117,10 +120,12 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                 localStorage.setItem('token', response?.data?.token)
             }
             //toast.success(t('Signup successfully.'))
-            CustomToaster("success",'Signup successfully.')
+            CustomToaster('success', 'Signup successfully.')
             dispatch(setToken(response?.data?.token))
             handleClose?.()
-            router.push('/interest')
+            router.push('/interest', {
+                query: { from: 'welcome' },
+            })
         }
     }
 
@@ -133,7 +138,6 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
             password: values.password,
             confirm_password: values.confirm_password,
             ref_code: values.ref_code,
-
         }
 
         mutate(signUpData, {
@@ -157,10 +161,11 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
     const otpFormSubmitHandler = (values) => {
         const onSuccessHandler = (res) => {
             //toast.success(res?.message)
-            CustomToaster("success",res?.message)
+            CustomToaster('success', res?.message)
             setOpenOtpModal(false)
             handleTokenAfterSignUp(mainToken)
             handleClose()
+            dispatch(setWelcomeModal(true))
         }
         otpVerifyMutate(values, {
             onSuccess: onSuccessHandler,
@@ -196,14 +201,14 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                             alt="Logo"
                         />
                         <CustomTypography
-                            sx={{ fontWeight: 'bold', fontSize: "22px" }}
+                            sx={{ fontWeight: 'bold', fontSize: '22px' }}
                         >
                             {t('Sign Up')}
                         </CustomTypography>
                     </CustomStackFullWidth>
                     <form onSubmit={signUpFormik.handleSubmit} noValidate>
                         <Stack>
-                            <Grid container spacing={3} >
+                            <Grid container spacing={3}>
                                 <Grid item xs={12} md={6}>
                                     <CustomSignUpTextField
                                         required
@@ -228,12 +233,21 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <AccountCircleIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
+                                                    <AccountCircleIcon
+                                                        sx={{
+                                                            fontSize: '1.2rem',
+                                                            color: (theme) =>
+                                                                alpha(
+                                                                    theme
+                                                                        .palette
+                                                                        .neutral[400],
+                                                                    0.5
+                                                                ),
+                                                        }}
+                                                    />
                                                 </InputAdornment>
                                             ),
                                         }}
-
-
                                     />
                                 </Grid>
                                 <Grid item xs={12} md={6}>
@@ -259,12 +273,22 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <AccountCircleIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
+                                                    <AccountCircleIcon
+                                                        sx={{
+                                                            fontSize: '1.2rem',
+                                                            color: (theme) =>
+                                                                alpha(
+                                                                    theme
+                                                                        .palette
+                                                                        .neutral[400],
+                                                                    0.5
+                                                                ),
+                                                        }}
+                                                    />
                                                 </InputAdornment>
                                             ),
                                         }}
-                                    //  autoFocus
-
+                                        //  autoFocus
                                     />
                                 </Grid>
                                 <Grid item xs={12} md={6}>
@@ -272,24 +296,40 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                         required
                                         fullWidth
                                         id="email"
-                                        label={t("Email")}
+                                        label={t('Email')}
                                         name="email"
                                         autoComplete="email"
-                                        placeholder={t("Email")}
+                                        placeholder={t('Email')}
                                         value={signUpFormik.values.email}
                                         onChange={signUpFormik.handleChange}
-                                        error={signUpFormik.touched.email && Boolean(signUpFormik.errors.email)}
-                                        helperText={signUpFormik.touched.email && signUpFormik.errors.email}
+                                        error={
+                                            signUpFormik.touched.email &&
+                                            Boolean(signUpFormik.errors.email)
+                                        }
+                                        helperText={
+                                            signUpFormik.touched.email &&
+                                            signUpFormik.errors.email
+                                        }
                                         touched={signUpFormik.touched.email}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <MailIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
+                                                    <MailIcon
+                                                        sx={{
+                                                            fontSize: '1.2rem',
+                                                            color: (theme) =>
+                                                                alpha(
+                                                                    theme
+                                                                        .palette
+                                                                        .neutral[400],
+                                                                    0.5
+                                                                ),
+                                                        }}
+                                                    />
                                                 </InputAdornment>
                                             ),
                                         }}
                                     />
-
                                 </Grid>
                                 <Grid item xs={12} md={6}>
                                     <CustomPhoneInput
@@ -316,21 +356,29 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                         <CustomSigninOutLine
                                             width="100%"
                                             required
-                                            type={showPassword ? 'text' : 'password'}
+                                            type={
+                                                showPassword
+                                                    ? 'text'
+                                                    : 'password'
+                                            }
                                             id="password"
                                             name="password"
-                                            placeholder={t("Password")}
+                                            placeholder={t('Password')}
                                             value={signUpFormik.values.password}
                                             onChange={signUpFormik.handleChange}
                                             error={
                                                 signUpFormik.touched.password &&
-                                                Boolean(signUpFormik.errors.password)
+                                                Boolean(
+                                                    signUpFormik.errors.password
+                                                )
                                             }
                                             helperText={
                                                 signUpFormik.touched.password &&
                                                 signUpFormik.errors.password
                                             }
-                                            touched={signUpFormik.touched.password}
+                                            touched={
+                                                signUpFormik.touched.password
+                                            }
                                             endAdornment={
                                                 <InputAdornment position="end">
                                                     <IconButton
@@ -345,36 +393,81 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                                         edge="end"
                                                     >
                                                         {showPassword ? (
-                                                            <Visibility sx={{ color: theme => alpha(theme.palette.neutral[400], .5) }} />
+                                                            <Visibility
+                                                                sx={{
+                                                                    color: (
+                                                                        theme
+                                                                    ) =>
+                                                                        alpha(
+                                                                            theme
+                                                                                .palette
+                                                                                .neutral[400],
+                                                                            0.5
+                                                                        ),
+                                                                }}
+                                                            />
                                                         ) : (
-                                                            <VisibilityOff sx={{ color: theme => alpha(theme.palette.neutral[400], .5) }} />
+                                                            <VisibilityOff
+                                                                sx={{
+                                                                    color: (
+                                                                        theme
+                                                                    ) =>
+                                                                        alpha(
+                                                                            theme
+                                                                                .palette
+                                                                                .neutral[400],
+                                                                            0.5
+                                                                        ),
+                                                                }}
+                                                            />
                                                         )}
                                                     </IconButton>
                                                 </InputAdornment>
                                             }
-                                            startAdornment={<InputAdornment position="start" sx={{ marginInlineEnd: "0px !important" }}>
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    edge="start"
+                                            startAdornment={
+                                                <InputAdornment
+                                                    position="start"
+                                                    sx={{
+                                                        marginInlineEnd:
+                                                            '0px !important',
+                                                    }}
                                                 >
-                                                    <LockIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
-                                                </IconButton>
-                                            </InputAdornment>}
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        edge="start"
+                                                    >
+                                                        <LockIcon
+                                                            sx={{
+                                                                fontSize:
+                                                                    '1.2rem',
+                                                                color: (
+                                                                    theme
+                                                                ) =>
+                                                                    alpha(
+                                                                        theme
+                                                                            .palette
+                                                                            .neutral[400],
+                                                                        0.5
+                                                                    ),
+                                                            }}
+                                                        />
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            }
                                             label="Password"
                                         />
 
                                         {signUpFormik.errors.password && (
-                                            <FormHelperText sx={{ color: '#FF686A' }}>
+                                            <FormHelperText
+                                                sx={{ color: '#FF686A' }}
+                                            >
                                                 {signUpFormik.errors.password}
                                             </FormHelperText>
                                         )}
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12} md={6}>
-                                    <FormControl
-                                        variant="outlined"
-                                        fullWidth
-                                    >
+                                    <FormControl variant="outlined" fullWidth>
                                         <InputLabel
                                             required
                                             sx={{
@@ -395,21 +488,29 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                             }
                                             id="confirm_password"
                                             name="confirm_password"
-                                            placeholder={t("Confirm Password")}
-                                            value={signUpFormik.values.confirm_password}
+                                            placeholder={t('Confirm Password')}
+                                            value={
+                                                signUpFormik.values
+                                                    .confirm_password
+                                            }
                                             onChange={signUpFormik.handleChange}
                                             error={
-                                                signUpFormik.touched.confirm_password &&
+                                                signUpFormik.touched
+                                                    .confirm_password &&
                                                 Boolean(
-                                                    signUpFormik.errors.confirm_password
+                                                    signUpFormik.errors
+                                                        .confirm_password
                                                 )
                                             }
                                             helperText={
-                                                signUpFormik.touched.confirm_password &&
-                                                signUpFormik.errors.confirm_password
+                                                signUpFormik.touched
+                                                    .confirm_password &&
+                                                signUpFormik.errors
+                                                    .confirm_password
                                             }
                                             touched={
-                                                signUpFormik.touched.confirm_password
+                                                signUpFormik.touched
+                                                    .confirm_password
                                             }
                                             endAdornment={
                                                 <InputAdornment position="end">
@@ -425,65 +526,140 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                                         edge="end"
                                                     >
                                                         {showConfirmPassword ? (
-                                                            <Visibility sx={{ color: theme => alpha(theme.palette.neutral[400], .5) }} />
+                                                            <Visibility
+                                                                sx={{
+                                                                    color: (
+                                                                        theme
+                                                                    ) =>
+                                                                        alpha(
+                                                                            theme
+                                                                                .palette
+                                                                                .neutral[400],
+                                                                            0.5
+                                                                        ),
+                                                                }}
+                                                            />
                                                         ) : (
-                                                            <VisibilityOff sx={{ color: theme => alpha(theme.palette.neutral[400], .5) }} />
+                                                            <VisibilityOff
+                                                                sx={{
+                                                                    color: (
+                                                                        theme
+                                                                    ) =>
+                                                                        alpha(
+                                                                            theme
+                                                                                .palette
+                                                                                .neutral[400],
+                                                                            0.5
+                                                                        ),
+                                                                }}
+                                                            />
                                                         )}
                                                     </IconButton>
                                                 </InputAdornment>
                                             }
-                                            startAdornment={<InputAdornment position="start" sx={{ marginInlineEnd: "0px !important" }}>
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-
-                                                    edge="start"
+                                            startAdornment={
+                                                <InputAdornment
+                                                    position="start"
+                                                    sx={{
+                                                        marginInlineEnd:
+                                                            '0px !important',
+                                                    }}
                                                 >
-                                                    <LockIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
-                                                </IconButton>
-                                            </InputAdornment>}
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        edge="start"
+                                                    >
+                                                        <LockIcon
+                                                            sx={{
+                                                                fontSize:
+                                                                    '1.2rem',
+                                                                color: (
+                                                                    theme
+                                                                ) =>
+                                                                    alpha(
+                                                                        theme
+                                                                            .palette
+                                                                            .neutral[400],
+                                                                        0.5
+                                                                    ),
+                                                            }}
+                                                        />
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            }
                                             label="confirm_password"
                                         />
-                                        {signUpFormik.errors.confirm_password && (
+                                        {signUpFormik.errors
+                                            .confirm_password && (
                                             <FormHelperText
                                                 sx={{
                                                     color: (theme) =>
-                                                        theme.palette.error.main,
+                                                        theme.palette.error
+                                                            .main,
                                                 }}
                                             >
-                                                {signUpFormik.errors.confirm_password}
+                                                {
+                                                    signUpFormik.errors
+                                                        .confirm_password
+                                                }
                                             </FormHelperText>
                                         )}
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={12} md={12}>
-                                    <CustomSignUpTextField
-                                        fullWidth
-                                        id="ref_code"
-                                        label={t('Refer Code (Optional)')}
-                                        placeholder={t('Refer Code (Optional)')}
-                                        name="ref_code"
-                                        autoComplete="ref_code"
-                                        value={signUpFormik.values.ref_code}
-                                        onChange={signUpFormik.handleChange}
-                                        error={
-                                            signUpFormik.touched.ref_code &&
-                                            Boolean(signUpFormik.errors.ref_code)
-                                        }
-                                        helperText={
-                                            signUpFormik.touched.ref_code &&
-                                            signUpFormik.errors.ref_code
-                                        }
-                                        touched={signUpFormik.touched.ref_code}
-                                        //   autoFocus
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <GroupIcon sx={{ fontSize: "1.2rem", color: theme => alpha(theme.palette.neutral[400], .5) }} />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                </Grid>
+                                {global?.customer_wallet_status === 1 &&
+                                global?.ref_earning_status === 1 ? (
+                                    <Grid item xs={12} md={12}>
+                                        <CustomSignUpTextField
+                                            fullWidth
+                                            id="ref_code"
+                                            label={t('Refer Code (Optional)')}
+                                            placeholder={t(
+                                                'Refer Code (Optional)'
+                                            )}
+                                            name="ref_code"
+                                            autoComplete="ref_code"
+                                            value={signUpFormik.values.ref_code}
+                                            onChange={signUpFormik.handleChange}
+                                            error={
+                                                signUpFormik.touched.ref_code &&
+                                                Boolean(
+                                                    signUpFormik.errors.ref_code
+                                                )
+                                            }
+                                            helperText={
+                                                signUpFormik.touched.ref_code &&
+                                                signUpFormik.errors.ref_code
+                                            }
+                                            touched={
+                                                signUpFormik.touched.ref_code
+                                            }
+                                            //   autoFocus
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <GroupIcon
+                                                            sx={{
+                                                                fontSize:
+                                                                    '1.2rem',
+                                                                color: (
+                                                                    theme
+                                                                ) =>
+                                                                    alpha(
+                                                                        theme
+                                                                            .palette
+                                                                            .neutral[400],
+                                                                        0.5
+                                                                    ),
+                                                            }}
+                                                        />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                    </Grid>
+                                ) : (
+                                    ''
+                                )}
                             </Grid>
 
                             <CustomStackFullWidth>
@@ -491,7 +667,10 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                     direction="row"
                                     alignItems="center"
                                     spacing={{ xs: '0', md: '.5' }}
-                                    sx={{ mt: '7px', marginInlineStart: "-8px", }}
+                                    sx={{
+                                        mt: '7px',
+                                        marginInlineStart: '-8px',
+                                    }}
                                 >
                                     <FormControlLabel
                                         sx={{
@@ -504,16 +683,18 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                             },
                                             [theme.breakpoints.down('sm')]: {
                                                 '& .MuiFormControlLabel-label':
-                                                {
-                                                    fontSize: '10px',
-                                                },
+                                                    {
+                                                        fontSize: '10px',
+                                                    },
                                             },
                                         }}
                                         control={
                                             <Checkbox
                                                 value="ff"
                                                 color="primary"
-                                                onChange={(e) => handleCheckbox(e)}
+                                                onChange={(e) =>
+                                                    handleCheckbox(e)
+                                                }
                                                 required="true"
                                             />
                                         }
@@ -551,12 +732,21 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                         </CustomTypography>
                                     )}
                             </CustomStackFullWidth>
-                            <Stack witdh="100%" justifyContent="center" alignItems="center">
+                            <Stack
+                                witdh="100%"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
                                 {!signUpFormik?.values?.tandc ? (
                                     <LoadingButton
                                         type="submit"
                                         fullWidth
-                                        sx={{ mt: 1, mb: 3.5, maxWidth: "400px", height: "45px" }}
+                                        sx={{
+                                            mt: 1,
+                                            mb: 3.5,
+                                            maxWidth: '400px',
+                                            height: '45px',
+                                        }}
                                         loading={isLoading}
                                         variant="contained"
                                         disabled
@@ -567,7 +757,12 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                     <LoadingButton
                                         type="submit"
                                         fullWidth
-                                        sx={{ mt: 1, mb: 3.5, maxWidth: "400px", height: "45px" }}
+                                        sx={{
+                                            mt: 1,
+                                            mb: 3.5,
+                                            maxWidth: '400px',
+                                            height: '45px',
+                                        }}
                                         loading={isLoading}
                                         variant="contained"
                                     >
@@ -575,11 +770,8 @@ const SignUpPage = ({ setSignInPage, handleClose, setModalFor, setJwtToken, setU
                                     </LoadingButton>
                                 )}
                             </Stack>
-
-
                         </Stack>
                     </form>
-
                 </CustomStackFullWidth>
                 {global?.social_login.length > 0 && (
                     <CustomStackFullWidth

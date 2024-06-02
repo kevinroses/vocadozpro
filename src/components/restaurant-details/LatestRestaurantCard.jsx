@@ -1,43 +1,21 @@
-import { alpha, Grid, Stack, styled, Typography } from '@mui/material'
-import { Box } from '@mui/system'
-import React, { useEffect, useState } from 'react'
-import StarIcon from '@mui/icons-material/Star'
-import Link from 'next/link'
-import { HomeTextTypography } from '../home/HomeStyle'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useRouter } from 'next/router'
-import {
-    RestaurantDiscountStack,
-    OfferTypography,
-    CustomChip,
-} from '../food-card/FoodCard.style'
-import {
-    DistanceCalculate,
-    getAmount,
-    getDiscountForTag,
-    handleBadge,
-    restaurantDiscountTag,
-} from '../../utils/customFunctions'
-import { useTranslation } from 'react-i18next'
+import { alpha, Stack, styled, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { Box } from '@mui/system'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import placeholder from '../../../public/static/no-image-found.png'
-import Card from '@mui/material/Card'
-import CustomImageContainer from '../CustomImageContainer'
-import FoodRating from '../food-card/FoodRating'
+import 'slick-carousel/slick/slick-theme.css'
+import 'slick-carousel/slick/slick.css'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
 } from '../../styled-components/CustomStyles.style'
-import { CustomTypographyEllipsis } from '../../styled-components/CustomTypographies.style'
-import { useQuery } from 'react-query'
-import { CouponApi } from '../../hooks/react-query/config/couponApi'
-import { onErrorResponse } from '../ErrorResponse'
-import Slider from 'react-slick'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
+import { DistanceCalculate, getAmount } from '../../utils/customFunctions'
+import CustomImageContainer from '../CustomImageContainer'
+import { CustomChip } from '../food-card/FoodCard.style'
+import { HomeTextTypography } from '../home/HomeStyle'
 // import 'react-multi-carousel/lib/styles.css'
-import DelivaryTruckIcon from "../../assets/images/icons/DelivaryTruckIcon";
+import DelivaryTruckIcon from '../../assets/images/icons/DelivaryTruckIcon'
 import DistanceIcon from '../../assets/images/icons/DistanceIcon'
 import RestaurantItemsIcon from '../../assets/images/icons/RestaurantItemsIcon'
 
@@ -56,16 +34,14 @@ export const SliderStack = styled(Stack)(
         },
     })
 )
-const ProfilePhotoWrapper = styled(Stack)(
-    ({ theme }) => ({
-        justifyContent: "center",
-        alignItems: "center",
-        // height:"100%",
-        // width:"100%",
-        border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
-        borderRadius: "100%",
-    })
-)
+const ProfilePhotoWrapper = styled(Stack)(({ theme }) => ({
+    justifyContent: 'center',
+    alignItems: 'center',
+    // height:"100%",
+    // width:"100%",
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+    borderRadius: '100%',
+}))
 
 const LatestRestaurantCard = (props) => {
     const {
@@ -78,7 +54,7 @@ const LatestRestaurantCard = (props) => {
         open,
         restaurantDiscount,
         delivery_time,
-        cuisines,
+        characteristics,
         coupons,
         slug,
         zone_id,
@@ -86,7 +62,7 @@ const LatestRestaurantCard = (props) => {
         discount,
         foods_count,
         delivery_fee,
-        hoveredMarkerId
+        hoveredMarkerId,
     } = props
     const { t } = useTranslation()
     const theme = useTheme()
@@ -123,17 +99,17 @@ const LatestRestaurantCard = (props) => {
                         label={
                             !discount.end_date
                                 ? ` ${getAmount(
-                                    discount?.discount,
-                                    currencySymbolDirection,
-                                    currencySymbol,
-                                    digitAfterDecimalPoint
-                                )}`
+                                      discount?.discount,
+                                      currencySymbolDirection,
+                                      currencySymbol,
+                                      digitAfterDecimalPoint
+                                  )}`
                                 : ` ${getAmount(
-                                    discount?.discount,
-                                    currencySymbolDirection,
-                                    currencySymbol,
-                                    digitAfterDecimalPoint
-                                )} ${OFF}`
+                                      discount?.discount,
+                                      currencySymbolDirection,
+                                      currencySymbol,
+                                      digitAfterDecimalPoint
+                                  )} ${OFF}`
                         }
                         campaign={discount.end_date}
                     />
@@ -221,10 +197,11 @@ const LatestRestaurantCard = (props) => {
         <>
             <Stack
                 // minWidth={{ xs: "290px", sm: "310px", md: "320px" }}
-                maxWidth={{ xs: "290px", sm: "310px", md: "320px" }}
-                height={{ xs: "195px", md: "210px" }}
-                onClick={handleClick} id={`restaurent-${id}`}>
-
+                maxWidth={{ xs: '290px', sm: '310px', md: '320px' }}
+                height={{ xs: '195px', md: '210px' }}
+                onClick={handleClick}
+                id={`restaurent-${id}`}
+            >
                 <CustomPaperBigCard
                     nopadding="true"
                     border
@@ -233,9 +210,12 @@ const LatestRestaurantCard = (props) => {
                         padding: '10px',
                         cursor: 'pointer',
                         width: '100%',
-                        minWidth:{ xs: "290px", sm: "310px", md: "320px" },
+                        minWidth: { xs: '290px', sm: '310px', md: '320px' },
                         height: '100%',
-                        border: hoveredMarkerId === id ? `1px solid ${theme.palette.primary.main}` : `1px solid rgba(255, 138, 0, 0.10)`,
+                        border:
+                            hoveredMarkerId === id
+                                ? `1px solid ${theme.palette.primary.main}`
+                                : `1px solid rgba(255, 138, 0, 0.10)`,
                         '&:hover': {
                             boxShadow: `0px 0px 2px rgba(145, 158, 171, 0.2), 0px 5px 20px ${theme.palette.paperBoxShadow}`,
                         },
@@ -243,7 +223,11 @@ const LatestRestaurantCard = (props) => {
                 >
                     <CustomStackFullWidth spacing={1}>
                         <Stack
-                            sx={{ overflow: 'hidden', position: 'relative', borderRadius: "8px" }}
+                            sx={{
+                                overflow: 'hidden',
+                                position: 'relative',
+                                borderRadius: '8px',
+                            }}
                         >
                             {restaurantCloseHandler()}
 
@@ -263,18 +247,17 @@ const LatestRestaurantCard = (props) => {
                                         transform: 'scale(1.1)',
                                     },
                                 }}
-                            >{discount &&
-                                <Stack
-                                    position="absolute"
-                                    bottom="10%"
-                                    left="0"
-                                    zIndex="1"
-                                >
-
-                                    {discountChip()}
-                                </Stack>
-
-                                }
+                            >
+                                {discount && (
+                                    <Stack
+                                        position="absolute"
+                                        bottom="10%"
+                                        left="0"
+                                        zIndex="1"
+                                    >
+                                        {discountChip()}
+                                    </Stack>
+                                )}
                                 <CustomImageContainer
                                     src={`${restaurantImageUrl?.restaurant_cover_photo_url}/${image}`}
                                     width="100%"
@@ -284,29 +267,39 @@ const LatestRestaurantCard = (props) => {
                                 />
                             </Box>
                         </Stack>
-                        <Stack flexDirection="row" gap={{ xs: "5px", md: "13px" }} alignItems="center" marginTop="17px">
+                        <Stack
+                            flexDirection="row"
+                            gap={{ xs: '5px', md: '13px' }}
+                            alignItems="center"
+                            marginTop="17px"
+                        >
                             <ProfilePhotoWrapper
-                                width={{ xs: "50px", md: "70px" }}
-                                height={{ xs: "42px", md: "70px" }}
-                                padding={{ xs: "5px", md: "10px" }}
+                                width={{ xs: '50px', md: '70px' }}
+                                height={{ xs: '42px', md: '70px' }}
+                                padding={{ xs: '5px', md: '10px' }}
                             >
                                 <CustomImageContainer
                                     src={`${restaurantImageUrl?.restaurant_image_url}/${logo}`}
-                                    width={{ xs: "30px", md: "50px" }}
-                                    height={{ xs: "30px", md: "50px" }}
+                                    width={{ xs: '30px', md: '50px' }}
+                                    height={{ xs: '30px', md: '50px' }}
                                     objectFit="cover"
                                     borderRadius="100%"
                                 />
-
                             </ProfilePhotoWrapper>
-                            <CustomStackFullWidth paddingX="5px" spacing={0.4} justifyContent="center">
+                            <CustomStackFullWidth
+                                paddingX="5px"
+                                spacing={0.4}
+                                justifyContent="center"
+                            >
                                 <Stack
                                     direction="row"
                                     justifyContent="space-between"
                                     sx={{ position: 'relative' }}
                                 >
                                     <HomeTextTypography>
-                                        {name.length > 30 ? `${name.slice(0, 30)}... ` : name}
+                                        {name.length > 30
+                                            ? `${name.slice(0, 30)}... `
+                                            : name}
                                     </HomeTextTypography>
                                 </Stack>
                                 <Stack
@@ -319,51 +312,74 @@ const LatestRestaurantCard = (props) => {
                                         overflow: 'hidden',
                                     }}
                                 >
-                                    {cuisines?.length > 0 &&
-                                        cuisines?.map((cuisine, index) => (
-                                            <CustomTypographyEllipsis
-                                                align="left"
-                                                fontSize="12px"
-                                                color={theme.palette.neutral[600]}
-                                            >
-                                                {' '}
-                                                {cuisine?.name}{' '}
-                                                {cuisines.length - 1 === index
+                                    {characteristics?.length > 0 &&
+                                        characteristics?.map((item, index) => (
+                                            <>
+                                                {item}{' '}
+                                                {characteristics.length - 1 ===
+                                                index
                                                     ? ''
                                                     : ','}
-                                            </CustomTypographyEllipsis>
+                                            </>
                                         ))}
                                 </Stack>
-                                <Stack flexDirection="row" gap="7px" >
-                                    {!(delivery_fee === "out_of_range" || delivery_fee === "0") &&
-                                        <Stack flexDirection="row" alignItems="center" gap="3px">
+                                <Stack flexDirection="row" gap="7px">
+                                    {!(
+                                        delivery_fee === 'out_of_range' ||
+                                        delivery_fee === '0'
+                                    ) && (
+                                        <Stack
+                                            flexDirection="row"
+                                            alignItems="center"
+                                            gap="3px"
+                                        >
                                             <DelivaryTruckIcon />
-                                            <Typography fontSize="12px" fontWeight={400}>
-                                                {delivery_fee === "free_delivery" ? t("Free") : (
-                                                    getAmount(
-                                                        delivery_fee,
-                                                        currencySymbolDirection,
-                                                        currencySymbol,
-                                                        0
-                                                    )
-                                                )}
+                                            <Typography
+                                                fontSize="12px"
+                                                fontWeight={400}
+                                            >
+                                                {delivery_fee ===
+                                                'free_delivery'
+                                                    ? t('Free')
+                                                    : getAmount(
+                                                          delivery_fee,
+                                                          currencySymbolDirection,
+                                                          currencySymbol,
+                                                          0
+                                                      )}
                                             </Typography>
                                         </Stack>
-
-                                    }
-                                    <Stack flexDirection="row" alignItems="center" gap="3px">
+                                    )}
+                                    <Stack
+                                        flexDirection="row"
+                                        alignItems="center"
+                                        gap="3px"
+                                    >
                                         <DistanceIcon />
-                                        <Typography fontSize="12px" fontWeight={400}>
-                                            <DistanceCalculate distance={distance} />
+                                        <Typography
+                                            fontSize="12px"
+                                            fontWeight={400}
+                                        >
+                                            <DistanceCalculate
+                                                distance={distance}
+                                            />
                                         </Typography>
                                     </Stack>
-                                    <Stack flexDirection="row" alignItems="center" gap="3px">
+                                    <Stack
+                                        flexDirection="row"
+                                        alignItems="center"
+                                        gap="3px"
+                                    >
                                         <RestaurantItemsIcon />
-                                        <Typography fontSize="12px" fontWeight={400}>
-                                            {foods_count.length > 99 ? `${foods_count}+` : `${foods_count}` + `items`}
+                                        <Typography
+                                            fontSize="12px"
+                                            fontWeight={400}
+                                        >
+                                            {foods_count.length > 99
+                                                ? `${foods_count}+`
+                                                : `${foods_count}` + `items`}
                                         </Typography>
                                     </Stack>
-
                                 </Stack>
                                 {/*<Typography*/}
                                 {/*    align="left"*/}
@@ -383,7 +399,6 @@ const LatestRestaurantCard = (props) => {
                                 {/*    )}*/}
                                 {/*</Typography>*/}
                             </CustomStackFullWidth>
-
                         </Stack>
                     </CustomStackFullWidth>
                 </CustomPaperBigCard>

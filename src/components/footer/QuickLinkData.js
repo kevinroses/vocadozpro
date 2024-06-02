@@ -15,7 +15,7 @@ export const QuickLinkData = [
         link: '/customer/loyality',
     },
     {
-        name: ' Cuisines',
+        name: 'Cuisines',
         value: 'cuisines',
         link: '/cuisines',
     }

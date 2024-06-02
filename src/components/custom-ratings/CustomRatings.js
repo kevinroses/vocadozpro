@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from 'prop-types'
-import { Rating } from '@mui/material'
 import { Stack } from '@mui/material'
-import { CustomColouredTypography } from '../../styled-components/CustomStyles.style'
-import { useTheme } from '@mui/material/styles'
+import { useEffect, useState } from 'react'
 import { CustomRating } from './CustomRating.style'
 
 const CustomRatings = ({
@@ -11,11 +7,12 @@ const CustomRatings = ({
     ratingValue,
     readOnly,
     color,
+    fontSize,
 }) => {
     const [value, setValue] = useState(ratingValue ? ratingValue : 0)
     useEffect(() => {
         setValue(ratingValue)
-    }, [ratingValue]);
+    }, [ratingValue])
     const handleChange = (event, newValue) => {
         if (!readOnly) {
             setValue(newValue)
@@ -32,6 +29,7 @@ const CustomRatings = ({
                 name="simple-controlled"
                 value={value}
                 onChange={(event, newValue) => handleChange(event, newValue)}
+                fontSize={fontSize}
             />
             {/*{readOnly && (*/}
             {/*    <CustomColouredTypography color={color} smallFont="12px">*/}

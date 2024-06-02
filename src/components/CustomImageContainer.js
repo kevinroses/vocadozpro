@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CustomImageContainerStyled } from '../styled-components/CustomStyles.style'
+import { CustomImageContainerStyled } from "@/styled-components/CustomStyles.style"
 import placeholder from '../../public/static/notimage.png'
 
 const CustomImageContainer = ({
@@ -18,6 +18,7 @@ const CustomImageContainer = ({
     smMb,
     smMaxWidth,
     smWidth,
+                                  test_image,aspectRatio
 }) => {
     const [imageFile, setState] = useState(null)
     useEffect(() => {
@@ -39,13 +40,14 @@ const CustomImageContainer = ({
             smWidth={smWidth}
             mdHeight={mdHeight}
             cursor={cursor}
+            aspectRatio={aspectRatio}
         >
             <img
                 src={imageFile}
                 alt={alt}
                 onError={(e) => {
                     // currentTarget.onerror = null; // prevents looping
-                    setState(placeholder.src)
+                    setState(test_image?test_image.src:placeholder.src)
                     e.target.style =
                         'objectFit:contain !important;width:auto !important;'
                     e.target.style.margin = 'auto'

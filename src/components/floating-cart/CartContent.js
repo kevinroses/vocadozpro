@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, IconButton, Stack, Typography } from "@mui/material";
+import { Grid, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import CustomImageContainer from "../CustomImageContainer";
 import { ImageSource } from "@/utils/ImageSource";
 import { OrderFoodAmount, OrderFoodName, OrderFoodSubtitle } from "../checkout-page/CheckOut.style";
@@ -24,6 +24,9 @@ import useDeleteCartItem from "../../hooks/react-query/add-cart/useDeleteCartIte
 import useCartItemUpdate from "../../hooks/react-query/add-cart/useCartItemUpdate";
 import { useDispatch, useSelector } from "react-redux";
 import { getGuestId } from "../checkout-page/functions/getGuestUserId";
+import { t } from "i18next";
+import HalalSvg from "@/components/food-card/HalalSvg";
+import { CustomToaster } from "@/components/custom-toaster/CustomToaster";
 
 const CartContent = ({item,handleProductUpdateModal,productBaseUrl,t}) => {
   const dispatch = useDispatch()
@@ -129,8 +132,16 @@ const CartContent = ({item,handleProductUpdateModal,productBaseUrl,t}) => {
     const itemObject=getItemDataForAddToCart(item,updateQuantity,productPrice,guestId)
     updateMutate(itemObject,{
       onSuccess:(res)=> cartUpdateHandleSuccessDecrement(res,item),
-      onError: onErrorResponse,
+      onError:(error) => {
+        error?.response?.data?.errors?.forEach((items) => {
+          CustomToaster('error', items?.message)
+          if(items?.code==="stock_out"){
+            handleProductUpdateModal(item)
+          }
+        })
+      },
     })
+
 
   }
   const handleSuccess = (item) => {
@@ -149,7 +160,7 @@ const CartContent = ({item,handleProductUpdateModal,productBaseUrl,t}) => {
   };
   return (
 
-      <Grid item md={12} xs={12} sm={12}  container >
+      <Grid item md={12} xs={12} sm={12}  container  sx={{alignItems:"center"}} >
         <Grid
           item
           md={3}
@@ -200,18 +211,25 @@ const CartContent = ({item,handleProductUpdateModal,productBaseUrl,t}) => {
               xs={12}
 
             >
-              <OrderFoodName
-                sx={{
-                  cursor: 'pointer',
-                }}
-                onClick={() =>
-                  handleProductUpdateModal(
-                    item
-                  )
-                }
-              >
-                {item.name}
-              </OrderFoodName>
+              <Stack direction="row" spacing={.5} alignItems="center">
+                <OrderFoodName
+                    sx={{
+                      cursor: 'pointer',
+                    }}
+                    onClick={() =>
+                        handleProductUpdateModal(
+                            item
+                        )
+                    }
+                >
+                  {item.name}
+                </OrderFoodName>
+                {item?.halal_tag_status===1 && item?.is_halal===1 &&  <Tooltip arrow title={t("This is a halal food")}>
+                  <IconButton sx={{padding:"0px"}}>
+                    <HalalSvg/>
+                  </IconButton>
+                </Tooltip>}
+              </Stack>
               {item?.variations
                   ?.length >
                 0 && (

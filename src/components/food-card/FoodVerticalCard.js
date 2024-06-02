@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { CustomFoodCard, CustomFoodCardNew } from './FoodCard.style'
-import { Chip, IconButton, Typography, useMediaQuery } from '@mui/material'
+import { Chip, IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material";
 import ProductCardMedia from './ProductCardMedia'
 import VagSvg from '../foodDetail-modal/VagSvg'
 import { Stack } from '@mui/system'
@@ -16,6 +16,7 @@ import { HomeTextTypography } from '../home/HomeStyle'
 import { getReviewCount } from '../../utils/customFunctions'
 import FoodRating from './FoodRating'
 import { t } from 'i18next'
+import HalalSvg from "@/components/food-card/HalalSvg";
 const FoodVerticalCard = (props) => {
     const {
         product,
@@ -113,6 +114,12 @@ const FoodVerticalCard = (props) => {
                                         : theme.palette.success.light
                                 }
                             />
+                            {product?.halal_tag_status===1 && product?.is_halal===1 &&  <Tooltip arrow title={t("This is a halal food")}>
+                                <IconButton sx={{padding:"0px"}}>
+                                    <HalalSvg/>
+                                </IconButton>
+                            </Tooltip>}
+
                         </Stack>
 
                     </Stack>

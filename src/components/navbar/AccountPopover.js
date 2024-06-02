@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 // import toast from 'react-hot-toast'
+import LogoutIcon from '@mui/icons-material/Logout'
 import {
     alpha,
-    Avatar,
     Box,
     Divider,
     ListItemIcon,
@@ -11,31 +11,25 @@ import {
     MenuItem,
     MenuList,
     Popover,
-    Stack,
     Typography,
 } from '@mui/material'
-import LogoutIcon from '@mui/icons-material/Logout'
 import { useDispatch, useSelector } from 'react-redux'
-import Link from 'next/link'
 
-import { useTranslation } from 'react-i18next'
-import { clearWishList } from '../../redux/slices/wishList'
-import { useRoutes } from 'react-router'
-import { toast } from 'react-hot-toast'
+import { setWelcomeModal } from '@/redux/slices/utils'
 import { useEffect, useState } from 'react'
-import CustomDialogConfirm from '../custom-dialog/confirm/CustomDialogConfirm'
-import { logoutSuccessFull } from '../../utils/ToasterMessages'
-import { setClearCart } from '../../redux/slices/cart'
-import loyality from '../../../public/static/profile/loyality.png'
+import { useTranslation } from 'react-i18next'
+import cupons from '../../../public/static/profile/cupons.png'
+import loyalty from '../../../public/static/profile/loyalty.svg'
 import order from '../../../public/static/profile/order.svg'
 import profile from '../../../public/static/profile/profileIcon.svg'
-import cupons from '../../../public/static/profile/cupons.png'
-import wallet from '../../../public/static/profile/wallet.svg'
-import loyalty from '../../../public/static/profile/loyalty.svg'
-import refer from '../../../public/static/refer_code.png'
-import wish from '../../../public/static/profile/wish.svg'
 import settings from '../../../public/static/profile/settings.svg'
+import wallet from '../../../public/static/profile/wallet.svg'
+import wish from '../../../public/static/profile/wish.svg'
+import refer from '../../../public/static/refer_code.png'
 import { removeToken } from '../../redux/slices/userToken'
+import { clearWishList } from '../../redux/slices/wishList'
+import { logoutSuccessFull } from '../../utils/ToasterMessages'
+import CustomDialogConfirm from '../custom-dialog/confirm/CustomDialogConfirm'
 import { CustomToaster } from '../custom-toaster/CustomToaster'
 
 export const menuData = [
@@ -105,12 +99,13 @@ export const AccountPopover = (props) => {
             setTimeout(() => {
                 localStorage.removeItem('token')
                 dispatch(removeToken())
+                dispatch(setWelcomeModal(false))
                 let a = []
                 dispatch(clearWishList(a))
                 cartListRefetch()
                 // dispatch(setClearCart())
                 // toast.success(t(logoutSuccessFull))
-                CustomToaster('success', logoutSuccessFull);
+                CustomToaster('success', logoutSuccessFull)
                 onClose?.()
                 if (router.pathname === '/') {
                     router.push('/')
@@ -176,9 +171,10 @@ export const AccountPopover = (props) => {
                                         onClick={() => handleClick(menu)}
                                         key={menu.id}
                                         sx={{
-                                            justifyContent: `${languageDirection === 'rtl' &&
+                                            justifyContent: `${
+                                                languageDirection === 'rtl' &&
                                                 'flex-end'
-                                                }`,
+                                            }`,
                                             '&:hover': {
                                                 backgroundColor: (theme) =>
                                                     alpha(
@@ -207,10 +203,11 @@ export const AccountPopover = (props) => {
                     <MenuItem
                         onClick={() => setOpenModal(true)}
                         sx={{
-                            justifyContent: `${languageDirection === 'rtl'
+                            justifyContent: `${
+                                languageDirection === 'rtl'
                                     ? 'flex-end'
                                     : 'flex-start'
-                                }`,
+                            }`,
                             '&:hover': {
                                 backgroundColor: (theme) =>
                                     alpha(theme.palette.primary.main, 0.3),

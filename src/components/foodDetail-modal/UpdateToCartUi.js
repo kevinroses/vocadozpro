@@ -4,10 +4,11 @@ import { CustomTypography } from '../custom-tables/Tables.style'
 import { Button } from '@mui/material'
 
 const UpdateToCartUi = (props) => {
-    const { addToCard, t } = props
+
+    const { addToCard, t,isUpdateDisabled } = props
     return (
         <Button
-            // disabled={quantity <= 0}
+             disabled={isUpdateDisabled()}
             onClick={() => addToCard()}
             variant="contained"
             fullWidth

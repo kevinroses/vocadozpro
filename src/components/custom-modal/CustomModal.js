@@ -1,5 +1,5 @@
-import React from 'react'
-import { Modal, useMediaQuery, useTheme } from '@mui/material'
+import { Clear } from '@mui/icons-material'
+import { Box, Modal, Stack, useMediaQuery, useTheme } from '@mui/material'
 import { CustomModalWrapper } from './CustomModal.style'
 
 const CustomModal = ({
@@ -9,6 +9,7 @@ const CustomModal = ({
     disableAutoFocus,
     maxWidth,
     bgColor,
+    closeButton,
 }) => {
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.up('sm'))
@@ -23,6 +24,7 @@ const CustomModal = ({
             setModalOpen(false)
         }
     }
+
     return (
         <div>
             <Modal
@@ -34,6 +36,23 @@ const CustomModal = ({
                 backDrop
             >
                 <CustomModalWrapper bgColor={bgColor} maxWidth={maxWidth}>
+                    {closeButton ? (
+                        <Stack direction={'row'} justifyContent={'flex-end'}>
+                            <Box
+                                onClick={handleClose}
+                                sx={{
+                                    cursor: 'pointer',
+                                    color: theme.palette.text.secondary,
+                                    mt: 1.7,
+                                    mr: 1.7,
+                                }}
+                            >
+                                <Clear />
+                            </Box>
+                        </Stack>
+                    ) : (
+                        ''
+                    )}
                     {children}
                 </CustomModalWrapper>
             </Modal>

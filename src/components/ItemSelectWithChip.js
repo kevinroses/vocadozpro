@@ -1,17 +1,18 @@
-import * as React from 'react'
-import { useState } from 'react'
 import Button from '@mui/material/Button'
+import Fade from '@mui/material/Fade'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import Fade from '@mui/material/Fade'
+import * as React from 'react'
+import { useState } from 'react'
 
-import { useTranslation } from 'react-i18next'
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
+import { useTheme } from '@emotion/react'
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown'
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import { Chip } from '@mui/material'
-import { CustomBoxFullWidth } from './chat/Chat.style'
+import { useTranslation } from 'react-i18next'
 import { RTL } from './RTL/RTL'
+import { CustomBoxFullWidth } from './chat/Chat.style'
 
 const ItemSelectWithChip = (props) => {
     const { title, data, handleChange } = props
@@ -35,9 +36,16 @@ const ItemSelectWithChip = (props) => {
         handleChange?.(null)
     }
     const languageDirection = localStorage.getItem('direction')
+    const theme = useTheme()
     return (
         <RTL direction={languageDirection}>
-            <CustomBoxFullWidth sx={{ height: selected ? '95px' : '40px' }}>
+            <CustomBoxFullWidth
+                sx={{
+                    height: selected ? '95px' : '50px',
+                }}
+                boxShadow={theme.shadows2[0]}
+                borderRadius="8px"
+            >
                 <Button
                     id="fade-button"
                     aria-controls={open ? 'fade-menu' : undefined}
@@ -50,6 +58,7 @@ const ItemSelectWithChip = (props) => {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         textTransform: 'capitalize',
+                        height: selected ? 'unset' : '50px',
                     }}
                 >
                     {t(title)}

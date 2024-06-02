@@ -1,31 +1,38 @@
-import React, { useEffect, useState } from 'react'
-import { Grid, Box, Typography, List, ListItem, useMediaQuery } from '@mui/material'
+import {
+    Box,
+    Grid,
+    List,
+    ListItem,
+    Typography,
+    useMediaQuery,
+} from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { useEffect, useState } from 'react'
 
-import Tropy from '../../../../public/static/profile/loyalty.svg'
-import { useTranslation } from 'react-i18next'
-import LoyalityPage from './LoyalityPage'
-import { useQuery } from 'react-query'
-import { LoyalityApi } from "@/hooks/react-query/config/LoyalityApi"
-import { ProfileApi } from "@/hooks/react-query/config/profileApi"
-import WalletShimmer from '../wallets/WalletShimmer'
-import LoyalityModal from '../../../pages/info/loyality/LoyalityModal'
-import 'simplebar/dist/simplebar.min.css'
-import { WalletBox } from '../wallets/Wallets.style'
-import CustomePagination from '../../pagination/Pagination'
-import CustomEmptyResult from '../../empty-view/CustomEmptyResult'
+import { LoyalityApi } from '@/hooks/react-query/config/LoyalityApi'
+import { ProfileApi } from '@/hooks/react-query/config/profileApi'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from "@/styled-components/CustomStyles.style"
-import { PrimaryButton } from '../../products-page/FoodOrRestaurant'
-import { onSingleErrorResponse } from '../../ErrorResponse'
-import { useSelector } from 'react-redux'
-import CustomImageContainer from '../../CustomImageContainer'
+} from '@/styled-components/CustomStyles.style'
+import { noTransactionFound } from '@/utils/LocalImages'
 import PaidIcon from '@mui/icons-material/Paid'
 import Skeleton from '@mui/material/Skeleton'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import 'simplebar/dist/simplebar.min.css'
+import Tropy from '../../../../public/static/profile/loyalty.svg'
+import LoyalityModal from '../../../pages/info/loyality/LoyalityModal'
+import CustomImageContainer from '../../CustomImageContainer'
+import { onSingleErrorResponse } from '../../ErrorResponse'
 import Meta from '../../Meta'
-import { noTransactionFound } from "@/utils/LocalImages"
+import CustomEmptyResult from '../../empty-view/CustomEmptyResult'
+import CustomePagination from '../../pagination/Pagination'
+import { PrimaryButton } from '../../products-page/FoodOrRestaurant'
+import WalletShimmer from '../wallets/WalletShimmer'
+import { WalletBox } from '../wallets/Wallets.style'
+import LoyalityPage from './LoyalityPage'
 const LoyalityList = () => {
     const theme = useTheme()
     const { t } = useTranslation()
@@ -70,7 +77,7 @@ const LoyalityList = () => {
             />
             <CustomPaperBigCard
                 padding={isXSmall ? '10px 10px' : '30px 40px'}
-                sx={{ minHeight: !isXSmall ? '558px' : "450px" }}
+                sx={{ minHeight: !isXSmall ? '558px' : '450px' }}
             >
                 <Grid container spacing={2}>
                     <Grid item sm={12} xs={12} md={4}>
@@ -148,13 +155,15 @@ const LoyalityList = () => {
                                         fontSize="13px"
                                         fontWeight="400"
                                     >
+                                        {t('Minimum')}{' '}
+                                        {t(global?.minimum_point_to_transfer)}{' '}
                                         {t(
-                                            `Minimum ${global?.minimum_point_to_transfer} points required to convert into currency`
+                                            'points required to convert into currency'
                                         )}
                                     </Typography>
                                 </ListItem>
                             </List>
-                            {profileData?.data?.loyalty_point > 0 &&
+                            {profileData?.data?.loyalty_point > 0 && (
                                 <PrimaryButton
                                     startIcon={<PaidIcon />}
                                     style={{ color: textColor }}
@@ -164,8 +173,7 @@ const LoyalityList = () => {
                                 >
                                     {t('Convert to Currency')}
                                 </PrimaryButton>
-                            }
-
+                            )}
                         </CustomStackFullWidth>
                     </Grid>
 
@@ -180,9 +188,7 @@ const LoyalityList = () => {
                                 <LoyalityPage
                                     key={loyality.id}
                                     data={{ loyality }}
-                                    profileDataLoading={
-                                        profileDataLoading
-                                    }
+                                    profileDataLoading={profileDataLoading}
                                 />
                             ))
                         ) : (

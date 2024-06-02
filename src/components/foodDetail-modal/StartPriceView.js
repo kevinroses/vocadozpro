@@ -1,5 +1,5 @@
 import React from 'react'
-import { Chip, Stack, Typography } from '@mui/material'
+import { alpha, Chip, Stack, Typography } from "@mui/material";
 import { getAmount, getConvertDiscount } from '../../utils/customFunctions'
 import {
     CustomChip,
@@ -21,6 +21,7 @@ const StartPriceView = (props) => {
         marginFoodCard,
         handleBadge,
         available_date_ends,
+        selectedOptions
     } = props
     const { t } = useTranslation()
     const { global } = useSelector((state) => state.globalSettings)
@@ -52,7 +53,7 @@ const StartPriceView = (props) => {
             )
         } else {
             let price =
-                data.price - (data.price * data.restaurant_discount) / 100
+                data?.price - (data?.price * data?.restaurant_discount) / 100
             return getAmount(
                 price,
                 currencySymbolDirection,
@@ -63,7 +64,7 @@ const StartPriceView = (props) => {
     }
 
     const handleDiscountedPriceView = () => {
-        if (data.discount > 0) {
+        if (data?.discount > 0) {
             return (
                 <CustomTypography variant={fontSize ? fontSize : 'h4'}>
                     {data?.price > 0 &&
@@ -79,8 +80,8 @@ const StartPriceView = (props) => {
     }
     return (
         <Stack
-            direction="row"
-            spacing={hideStartFromText === 'false' ? 1 : 0.5}
+             direction="row"
+            gap={hideStartFromText === 'false' ? 1 : 0.5}
             alignItems="center"
             flexWrap="wrap"
         >
@@ -97,7 +98,7 @@ const StartPriceView = (props) => {
                 }}
             >
                 {data?.price > 0 && handleConvertedPrice()}
-                {data.price === handleConvertedPrice() ? (
+                {data?.price === handleConvertedPrice() ? (
                     getAmount(
                         data?.price,
                         currencySymbolDirection,
@@ -112,7 +113,7 @@ const StartPriceView = (props) => {
                         color={theme.palette.neutral[400]}
                         sx={{ fontSize: { xs: '13px', sm: '13px' } }}
                     >
-                        {(data.discount > 0 ||
+                        {(data?.discount > 0 ||
                             data?.restaurant_discount !== 0) && (
                             <del>
                                 {' '}
@@ -128,6 +129,9 @@ const StartPriceView = (props) => {
                 )}
 
             </Typography>
+            {data?.item_stock===0 && selectedOptions?.length===0 &&  data?.stock_type !=="unlimited" && <Stack backgroundColor={alpha(theme.palette.error.light,.2)} padding='3px 6px' borderRadius="10px" alignItems="center" justifyContent="center" >
+                <Typography color={theme.palette.error.main} fontSize="12px">{t("Out Of Stock")}</Typography>
+            </Stack>}
         </Stack>
     )
 }

@@ -1,35 +1,23 @@
-import { alpha, Grid, Stack, styled, Typography } from '@mui/material'
-import { Box } from '@mui/system'
-import React, { useEffect, useState } from 'react'
-import StarIcon from '@mui/icons-material/Star'
-import Link from 'next/link'
-import { HomeTextTypography } from '../home/HomeStyle'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useRouter } from 'next/router'
-import {
-    RestaurantDiscountStack,
-    OfferTypography,
-} from '../food-card/FoodCard.style'
-import {
-    getAmount,
-    getDiscountForTag,
-    getReviewCount,
-    restaurantDiscountTag,
-} from "@/utils/customFunctions"
-import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/material/styles'
-import { useSelector } from 'react-redux'
-import CustomImageContainer from '../CustomImageContainer'
-import FoodRating from '../food-card/FoodRating'
 import {
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from "@/styled-components/CustomStyles.style"
-import { CustomTypographyEllipsis } from "@/styled-components/CustomTypographies.style"
+} from '@/styled-components/CustomStyles.style'
+import { CustomTypographyEllipsis } from '@/styled-components/CustomTypographies.style'
+import { getReviewCount, restaurantDiscountTag } from '@/utils/customFunctions'
+import { Stack, Typography, alpha, styled } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { Box } from '@mui/system'
+import moment from 'moment/moment'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import Slider from 'react-slick'
-import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-import moment from "moment/moment";
+import 'slick-carousel/slick/slick.css'
+import CustomImageContainer from '../CustomImageContainer'
+import { RestaurantDiscountStack } from '../food-card/FoodCard.style'
+import FoodRating from '../food-card/FoodRating'
+import { HomeTextTypography } from '../home/HomeStyle'
 // import 'react-multi-carousel/lib/styles.css'
 
 export const SliderStack = styled(Stack)(
@@ -69,7 +57,8 @@ const RestaurantBoxCard = (props) => {
         rating_count,
         visitAgain,
         foods,
-        opening_time
+        opening_time,
+        characteristics,
     } = props
     const { t } = useTranslation()
     const router = useRouter()
@@ -143,7 +132,7 @@ const RestaurantBoxCard = (props) => {
                                             align={
                                                 hasDiscount
                                                     ? languageDirection ===
-                                                        'rtl'
+                                                      'rtl'
                                                         ? 'right'
                                                         : 'left'
                                                     : 'center'
@@ -196,7 +185,12 @@ const RestaurantBoxCard = (props) => {
                                 zIndex: 1,
                             }}
                         >
-                            {opening_time === "closed" ? t('Closed Now') : ` Open at ${moment(opening_time, "HH:mm:ss").format("hh:mm A")}`}
+                            {opening_time === 'closed'
+                                ? t('Closed Now')
+                                : ` Open at ${moment(
+                                      opening_time,
+                                      'HH:mm:ss'
+                                  ).format('hh:mm A')}`}
                         </Typography>
                     </Stack>
                 )
@@ -225,7 +219,7 @@ const RestaurantBoxCard = (props) => {
                         color={theme.palette.whiteContainer.main}
                         sx={{ textTransform: 'uppercase', fontWeight: '700' }}
                     >
-                        {t("Closed Now")}
+                        {t('Closed Now')}
                     </Typography>
                 </Stack>
             )
@@ -241,12 +235,19 @@ const RestaurantBoxCard = (props) => {
         })
     }
     return (
-        <Stack onClick={handleClick} className={className} height={visitAgain ? "250px" : "100%"}>
+        <Stack
+            onClick={handleClick}
+            className={className}
+            height={visitAgain ? '250px' : '100%'}
+        >
             <CustomPaperBigCard
                 nopadding="true"
                 noboxshadow="true"
                 sx={{
-                    boxShadow: theme.palette.mode === 'dark' ? "0px 8.092px 24.275px 0px rgba(0, 0, 0, 0.20)" : "0px 10px 30px 0px rgba(0, 0, 0, 0.10)",
+                    boxShadow:
+                        theme.palette.mode === 'dark'
+                            ? '0px 8.092px 24.275px 0px rgba(0, 0, 0, 0.20)'
+                            : '0px 10px 30px 0px rgba(0, 0, 0, 0.10)',
                     padding: '10px 10px 25px 10px',
                     cursor: 'pointer',
                     width: visitAgain ? '110%' : '100%',
@@ -257,9 +258,7 @@ const RestaurantBoxCard = (props) => {
                 }}
             >
                 <CustomStackFullWidth spacing={1}>
-                    <Stack
-                        sx={{ overflow: 'hidden', position: 'relative' }}
-                    >
+                    <Stack sx={{ overflow: 'hidden', position: 'relative' }}>
                         {restaurantCloseHandler()}
                         {!visitAgain && restaurantCouponAndDiscount()}
 
@@ -270,12 +269,12 @@ const RestaurantBoxCard = (props) => {
                                 transition: `${theme.transitions.create(
                                     ['background-color', 'transform'],
                                     {
-                                        duration: theme.transitions.duration.standard,
+                                        duration:
+                                            theme.transitions.duration.standard,
                                     }
                                 )}`,
                                 '&:hover': {
                                     transform: 'scale(1.1)',
-
                                 },
                             }}
                         >
@@ -294,9 +293,7 @@ const RestaurantBoxCard = (props) => {
                             justifyContent="space-between"
                             sx={{ position: 'relative' }}
                         >
-                            <HomeTextTypography>
-                                {name}
-                            </HomeTextTypography>
+                            <HomeTextTypography>{name}</HomeTextTypography>
                             <Stack flexDirection="row" gap="5px">
                                 <Typography
                                     fontSize="14px"
@@ -305,7 +302,9 @@ const RestaurantBoxCard = (props) => {
                                 >
                                     {getReviewCount(rating_count)}
                                 </Typography>
-                                {rating !== 0 && <FoodRating product_avg_rating={rating} />}
+                                {rating !== 0 && (
+                                    <FoodRating product_avg_rating={rating} />
+                                )}
                             </Stack>
                         </Stack>
                         <Stack
@@ -314,28 +313,30 @@ const RestaurantBoxCard = (props) => {
                             flexWrap="wrap"
                             sx={{
                                 textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
+                                //whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                             }}
                         >
-                            {cuisines?.length > 0 &&
-                                cuisines?.map((cuisine, index) => (
-                                    <CustomTypographyEllipsis
-                                        align="left"
-                                        fontSize="12px"
-                                        color={theme.palette.neutral[600]}
-                                    >
-                                        {' '}
-                                        {cuisine?.name}{' '}
-                                        {cuisines.length - 1 === index
-                                            ? ''
-                                            : ','}
-                                    </CustomTypographyEllipsis>
+                            <CustomTypographyEllipsis
+                                align="left"
+                                fontSize="12px"
+                                color={theme.palette.neutral[600]}
+                                sx={{WebkitLineClamp:'1 !important'}}
+                            >
+                            {characteristics?.length > 0 &&
+                                characteristics?.map((item, index) => (
+                                        <>
+                                            {item} {" "}
+                                            {characteristics.length - 1 === index
+                                                ? ''
+                                                : ','}
+                                        </>
                                 ))}
+                            </CustomTypographyEllipsis>
                         </Stack>
-                        {visitAgain && foods?.length > 0 &&
+                        {visitAgain && foods?.length > 0 && (
                             <Stack flexDirection="row" gap="3px">
-                                {foods.slice(0, 3).map((item, index) => {
+                                {foods.slice(0, 3)?.map((item, index) => {
                                     return (
                                         <CustomImageContainer
                                             height="30px"
@@ -344,25 +345,29 @@ const RestaurantBoxCard = (props) => {
                                             objectFit="cover"
                                             src={`${global?.base_urls?.product_image_url}/${item?.image}`}
                                         />
-
                                     )
                                 })}
-                                {foods.length > 3 &&
+                                {foods.length > 3 && (
                                     <Stack
                                         height="30px"
                                         width="30px"
                                         borderRadius="8px"
                                         justifyContent="center"
                                         alignItems="center"
-                                        backgroundColor={theme.palette.neutral[400]}
+                                        backgroundColor={
+                                            theme.palette.neutral[400]
+                                        }
                                     >
-                                        <Typography fontSize="12px" fontWeight={700} color={theme.palette.whiteText.main}>{`${foods.length - 3}+`}</Typography>
-                                    </Stack>}
+                                        <Typography
+                                            fontSize="12px"
+                                            fontWeight={700}
+                                            color={theme.palette.whiteText.main}
+                                        >{`${foods.length - 3}+`}</Typography>
+                                    </Stack>
+                                )}
                             </Stack>
-
-
-                        }
-                        {!visitAgain &&
+                        )}
+                        {!visitAgain && (
                             <Typography
                                 align="left"
                                 fontSize="12px"
@@ -380,7 +385,7 @@ const RestaurantBoxCard = (props) => {
                                     </Typography>
                                 )}
                             </Typography>
-                        }
+                        )}
                     </CustomStackFullWidth>
                 </CustomStackFullWidth>
             </CustomPaperBigCard>

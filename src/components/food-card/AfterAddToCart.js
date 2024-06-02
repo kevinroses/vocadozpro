@@ -18,7 +18,7 @@ const AfterAddToCart = ({
 
     return (
         <Stack>
-            {incrOpen && isInCart && (
+            {incrOpen && isInCart && product?.variations?.length===0 && (
                 <FoodCardIncrementAndDecrement
                     getQuantity={getQuantity}
                     product={product}
@@ -29,7 +29,7 @@ const AfterAddToCart = ({
                     horizontal={horizontal}
                 />
             )}
-            {isInCart && !incrOpen && (
+            {isInCart && !incrOpen && product?.variations?.length===0 &&  (
                 <IconButton
                     onClick={(e) => handleClickQuantityButton(e)}
                     sx={{

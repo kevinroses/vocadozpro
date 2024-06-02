@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 
@@ -6,34 +6,27 @@ import {
     alpha,
     Button,
     Grid,
-    Menu,
     MenuItem,
     Popover,
     Stack,
     Typography,
 } from '@mui/material'
-import nodata from '../../../public/static/nodata.png'
-import Fade from '@mui/material/Fade'
-import ResOffer from '../../../public/static/Menu/resturant.png'
-import { useDispatch, useSelector } from 'react-redux'
-import { useQuery } from 'react-query'
 import { useTheme } from '@mui/material/styles'
-import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
+import { makeStyles } from '@mui/styles'
 import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
-import { NavMenuLink } from './Navbar.style'
 import { useTranslation } from 'react-i18next'
-import ResShimmer from './ResShimmer'
+import { useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import ResOffer from '../../../public/static/Menu/resturant.png'
+import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
+import { setPopularRestaurants } from '../../redux/slices/storedData'
+import { noRestaurantsImage } from '../../utils/LocalImages'
 import CustomImageContainer from '../CustomImageContainer'
-import { RTL } from '../RTL/RTL'
 import CustomEmptyResult from '../empty-view/CustomEmptyResult'
 import { onErrorResponse } from '../ErrorResponse'
-import {
-    setPopularFood,
-    setPopularRestaurants,
-} from '../../redux/slices/storedData'
-import { makeStyles } from '@mui/styles'
-import { noRestaurantsImage } from '../../utils/LocalImages'
+import { RTL } from '../RTL/RTL'
+import { NavMenuLink } from './Navbar.style'
 const useStyles = makeStyles((theme) => ({
     popover: {
         pointerEvents: 'none',
@@ -112,13 +105,13 @@ const NavResturant = ({ zoneid }) => {
                 aria-haspopup="true"
                 aria-expanded={openresdrop ? 'true' : undefined}
                 underline="none"
+                fontSize="14px"
+                alignItems="center"
             >
-                <Typography fontSize="14px">
-                    {t('Restaurants')}{' '}
-                    <KeyboardArrowDownIcon
-                        style={{ width: '16px', marginLeft: '5px' }}
-                    />
-                </Typography>
+                {t('Restaurants')}{' '}
+                <KeyboardArrowDownIcon
+                    style={{ width: '16px', marginLeft: '5px' }}
+                />
             </NavMenuLink>
             <RTL direction={languageDirection}>
                 <Popover

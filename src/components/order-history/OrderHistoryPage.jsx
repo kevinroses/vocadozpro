@@ -84,6 +84,7 @@ const OrderHistoryPage = () => {
                                 index={index}
                                 limit={limit}
                                 offset={offset}
+                                refetch={refetch}
                             />
                         ))}
                         {isLoading && (

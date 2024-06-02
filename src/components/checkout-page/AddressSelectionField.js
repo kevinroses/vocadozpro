@@ -42,7 +42,7 @@ const AddressSelectionField = (props) => {
                 >
                     <LocationOnIcon sx={{color:theme=>theme.palette.primary.main,}}/>
                     <Typography fontSize="14px" fontWeight="600">
-                        {address?.address_type}:
+                        {t(address?.address_type)}:
                     </Typography>
                     <InputBase
                         sx={{

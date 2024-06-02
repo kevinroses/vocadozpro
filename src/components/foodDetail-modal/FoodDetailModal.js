@@ -1,66 +1,61 @@
-import CloseIcon from '@mui/icons-material/Close'
-import { Box, Grid, Modal, Typography } from '@mui/material'
-import React, { useCallback, useEffect, useState } from 'react'
+import { Grid, Modal, Tooltip, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import {
-    cart,
-    setCampCart,
-    setCart,
-    setClearCart,
-    setUpdateVariationToCart
-} from "@/redux/slices/cart";
+import { ProductsApi } from '@/hooks/react-query/config/productsApi'
+import { useWishListDelete } from '@/hooks/react-query/config/wish-list/useWishListDelete'
+import { cart, setCampCart, setCart, setClearCart } from '@/redux/slices/cart'
+import { addWishList, removeWishListFood } from '@/redux/slices/wishList'
 import {
     calculateItemBasePrice,
     getConvertDiscount,
-    getIndexFromArrayByComparision, handleProductValueWithOutDiscount,
-    isAvailable
-} from "@/utils/customFunctions";
-import { useTranslation } from 'react-i18next'
-import { FoodDetailModalStyle } from '../home/HomeStyle'
-import toast from 'react-hot-toast'
-import { ProductsApi } from "@/hooks/react-query/config/productsApi"
-import { useMutation } from 'react-query'
+    handleProductValueWithOutDiscount,
+    isAvailable,
+} from '@/utils/customFunctions'
 import { useTheme } from '@mui/material/styles'
-import { useWishListDelete } from "@/hooks/react-query/config/wish-list/useWishListDelete"
-import { addWishList, removeWishListFood } from "@/redux/slices/wishList"
 import { useRouter } from 'next/router'
-import 'simplebar-react/dist/simplebar.min.css'
+import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
+import { useMutation } from 'react-query'
 import SimpleBar from 'simplebar-react'
-import StartPriceView from './StartPriceView'
-import CartClearModal from './CartClearModal'
+import 'simplebar-react/dist/simplebar.min.css'
 import AuthModal from '../auth'
+import { FoodDetailModalStyle } from '../home/HomeStyle'
+import CartClearModal from './CartClearModal'
+import StartPriceView from './StartPriceView'
 
-import { handleProductVariationRequirementsToaster } from './SomeHelperFuctions'
-import AddUpdateOrderToCart from './AddUpdateOrderToCart'
-import AddOrderToCart from './AddOrderToCart'
-import UpdateToCartUi from './UpdateToCartUi'
-import TotalAmountVisibility from './TotalAmountVisibility'
 import AddOnsManager from './AddOnsManager'
+import AddOrderToCart from './AddOrderToCart'
+import AddUpdateOrderToCart from './AddUpdateOrderToCart'
+import { handleProductVariationRequirementsToaster } from './SomeHelperFuctions'
+import TotalAmountVisibility from './TotalAmountVisibility'
+import UpdateToCartUi from './UpdateToCartUi'
 import VariationsManager from './VariationsManager'
 
-import IncrementDecrementManager from './IncrementDecrementManager'
-import { handleDiscountChip } from './helper-functions/handleDiscountChip'
-import { handleInitialTotalPriceVarPriceQuantitySet } from './helper-functions/handleDataOnFirstMount'
-import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
-import CustomImageContainer from '../CustomImageContainer'
-import FoodModalTopSection from './FoodModalTopSection'
+import { CustomToaster } from '@/components/custom-toaster/CustomToaster'
+import { useIsMount } from '@/components/first-render-useeffect-controller/useIsMount'
+import HalalSvg from '@/components/food-card/HalalSvg'
+import { useGetFoodDetails } from '@/hooks/react-query/food/useGetFoodDetails'
+import { CustomStackFullWidth } from '@/styled-components/CustomStyles.style'
+import IconButton from '@mui/material/IconButton'
+import Skeleton from '@mui/material/Skeleton'
 import { Stack } from '@mui/system'
-import VagSvg from './VagSvg'
-import { FoodSubTitleTypography } from '../food-card/FoodCard.style'
-import { t } from 'i18next'
+import useAddCartItem from '../../hooks/react-query/add-cart/useAddCartItem'
+import useCartItemUpdate from '../../hooks/react-query/add-cart/useCartItemUpdate'
+import useDeleteAllCartItem from '../../hooks/react-query/add-cart/useDeleteAllCartItem'
+import { onErrorResponse } from '../ErrorResponse'
+import { handleValuesFromCartItems } from '../checkout-page/CheckoutPage'
+import { getGuestId } from '../checkout-page/functions/getGuestUserId'
+import LocationModalAlert from '../food-card/LocationModalAlert'
 import { ReadMore } from '../landingpage/ReadMore'
-import { getGuestId } from "../checkout-page/functions/getGuestUserId";
-import { handleValuesFromCartItems } from "../checkout-page/CheckoutPage";
-import useAddCartItem from "../../hooks/react-query/add-cart/useAddCartItem";
-import { onErrorResponse } from "../ErrorResponse";
-import useCartItemUpdate from "../../hooks/react-query/add-cart/useCartItemUpdate";
-import useDeleteAllCartItem from "../../hooks/react-query/add-cart/useDeleteAllCartItem";
-import { getSelectedAddons, getSelectedVariations } from "../navbar/second-navbar/SecondNavbar";
-import LocationModalAlert from '../food-card/LocationModalAlert';
-import CustomToasters from "@/gurbage/admin/components/CustomToasters";
-import { CustomToaster } from "@/components/custom-toaster/CustomToaster";
-import customToasters from "@/gurbage/admin/components/CustomToasters";
+import {
+    getSelectedAddons,
+    getSelectedVariations,
+} from '../navbar/second-navbar/SecondNavbar'
+import FoodModalTopSection from './FoodModalTopSection'
+import IncrementDecrementManager from './IncrementDecrementManager'
+import VagSvg from './VagSvg'
+import { handleInitialTotalPriceVarPriceQuantitySet } from './helper-functions/handleDataOnFirstMount'
 
 const FoodDetailModal = ({
     product,
@@ -73,7 +68,9 @@ const FoodDetailModal = ({
     digitAfterDecimalPoint,
     productUpdate,
     handleBadge,
+    campaign,
 }) => {
+    const isMount = useIsMount()
     const router = useRouter()
     const { t } = useTranslation()
     const dispatch = useDispatch()
@@ -93,27 +90,62 @@ const FoodDetailModal = ({
     const { token } = useSelector((state) => state.userToken)
     const { wishLists } = useSelector((state) => state.wishList)
     const [modalData, setModalData] = useState([])
-    const { mutate: addToCartMutate, isLoading: addToCartLoading } = useAddCartItem();
-    const { mutate: updateMutate } = useCartItemUpdate();
-    const { mutate: deleteCartItemMutate } = useDeleteAllCartItem();
+    const [variationStock, setVariationStock] = useState(false)
+    const [errorCode, setErrorCode] = useState('')
+    const { mutate: addToCartMutate, isLoading: addToCartLoading } =
+        useAddCartItem()
+    const { mutate: updateMutate } = useCartItemUpdate()
+    const { mutate: deleteCartItemMutate } = useDeleteAllCartItem()
+
+
+    const itemSuccess = (res) => {
+        if (res) {
+            handleInitialTotalPriceVarPriceQuantitySet(
+                res,
+                setModalData,
+                productUpdate,
+                setTotalPrice,
+                setVarPrice,
+                setQuantity,
+                setSelectedOptions,
+                setTotalWithoutDiscount
+            )
+            setAddOns([])
+            setSelectedOptions([])
+        }
+    }
+    const {
+        data: foodDetails,
+        refetch,
+        isLoading: itemIsLoading,
+        isRefetching,
+    } = useGetFoodDetails({ id: product?.id, campaign }, itemSuccess)
 
     useEffect(() => {
+        if (productUpdate) {
+            handleInitialTotalPriceVarPriceQuantitySet(
+                product,
+                setModalData,
+                productUpdate,
+                setTotalPrice,
+                setVarPrice,
+                setQuantity,
+                setSelectedOptions,
+                setTotalWithoutDiscount
+            )
+        }
+
         //initially setting these states to use further
-        handleInitialTotalPriceVarPriceQuantitySet(
-            product,
-            setModalData,
-            productUpdate,
-            setTotalPrice,
-            setVarPrice,
-            setQuantity,
-            setSelectedOptions,
-            setTotalWithoutDiscount
-        )
     }, [product])
+    useEffect(() => {
+        if (!productUpdate) {
+            refetch()
+        }
+    }, [])
     const notify = (i) => toast(i)
-    let location = undefined;
-    if (typeof window !== "undefined") {
-        location = localStorage.getItem("location");
+    let location = undefined
+    if (typeof window !== 'undefined') {
+        location = localStorage.getItem('location')
     }
     const itemValuesHandler = (itemIndex, variationValues) => {
         const isThisValExistWithinSelectedValues = selectedOptions.filter(
@@ -156,7 +188,7 @@ const FoodDetailModal = ({
     }
     const handleSuccess = (res) => {
         if (res) {
-            let product = {};
+            let product = {}
             res?.forEach((item) => {
                 product = {
                     ...item?.item,
@@ -173,14 +205,14 @@ const FoodDetailModal = ({
                         calculateItemBasePrice(modalData[0], selectedOptions),
                         item?.item?.restaurant_discount
                     ),
-                };
-            });
-            dispatch(setCart(product));
-            CustomToaster("success", "Item added to cart")
-            handleClose();
+                }
+            })
+            dispatch(setCart(product))
+            CustomToaster('success', 'Item added to cart')
+            handleClose()
             //dispatch()
         }
-    };
+    }
 
     const cartListSuccessHandler = (res) => {
         if (res) {
@@ -194,48 +226,52 @@ const FoodDetailModal = ({
                             item?.item?.discount_type,
                             handleProductValueWithOutDiscount(item?.item),
                             item?.item?.restaurant_discount
-                        )
-                        *
-                        item?.quantity
-                    ,
+                        ) * item?.quantity,
                     selectedAddons: getSelectedAddons(item?.item?.addons),
                     quantity: item?.quantity,
                     variations: item?.item?.variations,
                     itemBasePrice: getConvertDiscount(
                         item?.item?.discount,
                         item?.item?.discount_type,
-                        calculateItemBasePrice(item?.item, item?.item?.variations),
+                        calculateItemBasePrice(
+                            item?.item,
+                            item?.item?.variations
+                        ),
                         item?.item?.restaurant_discount
                     ),
-                    selectedOptions: getSelectedVariations(item?.item?.variations)
-                }));
-            };
-            dispatch(cart(setItemIntoCart()));
-            CustomToaster("success", "Item updated successfully")
+                    selectedOptions: getSelectedVariations(
+                        item?.item?.variations
+                    ),
+                }))
+            }
+            dispatch(cart(setItemIntoCart()))
+            CustomToaster('success', 'Item updated successfully')
             //toast.success(t('Item updated successfully'))
-            handleModalClose?.();
+            handleModalClose?.()
         }
     }
+
     const handleAddUpdate = () => {
         if (productUpdate) {
+            console.log({selectedOptions});
             //for updating
-            let totalQty = 0;
+            let totalQty = 0
             const itemObject = {
                 cart_id: product?.cart_id,
                 guest_id: getGuestId(),
-                model: product?.available_date_starts ? "ItemCampaign" : "Food",
+                model: product?.available_date_starts ? 'ItemCampaign' : 'Food',
                 add_on_ids:
                     add_on?.length > 0
                         ? add_on?.map((add) => {
-                            return add.id;
-                        })
+                              return add.id
+                          })
                         : [],
                 add_on_qtys:
                     add_on?.length > 0
                         ? add_on?.map((add) => {
-                            totalQty = add.quantity;
-                            return totalQty;
-                        })
+                              totalQty = add.quantity
+                              return totalQty
+                          })
                         : [],
                 item_id: product?.id,
                 price: getConvertDiscount(
@@ -246,42 +282,56 @@ const FoodDetailModal = ({
                     quantity
                 ),
                 quantity: quantity,
+                variation_options: selectedOptions?.map(
+                    (item) => item.option_id
+                ),
                 variations:
                     getNewVariationForDispatch()?.length > 0
                         ? getNewVariationForDispatch()?.map((variation) => {
-                            return {
-                                name: variation.name,
-                                values: {
-                                    label: handleValuesFromCartItems(variation.values),
-                                },
-                            };
-                        })
+                              return {
+                                  name: variation.name,
+                                  values: {
+                                      label: handleValuesFromCartItems(
+                                          variation.values
+                                      ),
+                                  },
+                              }
+                          })
                         : [],
-            };
+            }
 
             updateMutate(itemObject, {
                 onSuccess: cartListSuccessHandler,
-                onError: onErrorResponse,
-            });
-
+                onError: (error) => {
+                    error?.response?.data?.errors?.forEach((item) => {
+                        CustomToaster('error', item?.message)
+                        if (item?.code === 'stock_out') {
+                            setErrorCode(item?.code)
+                            refetch()
+                        }
+                    })
+                },
+            })
         } else {
             let isOrderNow = false
-            let totalQty = 0;
+            let totalQty = 0
             const itemObject = {
                 guest_id: getGuestId(),
-                model: modalData[0]?.available_date_starts ? "ItemCampaign" : "Food",
+                model: modalData[0]?.available_date_starts
+                    ? 'ItemCampaign'
+                    : 'Food',
                 add_on_ids:
                     add_on?.length > 0
                         ? add_on?.map((add) => {
-                            return add.id;
-                        })
+                              return add.id
+                          })
                         : [],
                 add_on_qtys:
                     add_on?.length > 0
                         ? add_on?.map((add) => {
-                            totalQty = add.quantity;
-                            return totalQty;
-                        })
+                              totalQty = add.quantity
+                              return totalQty
+                          })
                         : [],
                 item_id: modalData[0]?.id,
                 price: getConvertDiscount(
@@ -295,21 +345,32 @@ const FoodDetailModal = ({
                 variations:
                     getNewVariationForDispatch()?.length > 0
                         ? getNewVariationForDispatch()?.map((variation) => {
-                            return {
-                                name: variation.name,
-                                values: {
-                                    label: handleValuesFromCartItems(variation.values),
-                                },
-                            };
-                        })
+                              return {
+                                  name: variation.name,
+                                  values: {
+                                      label: handleValuesFromCartItems(
+                                          variation.values
+                                      ),
+                                  },
+                              }
+                          })
                         : [],
-            };
+                variation_options: selectedOptions?.map(
+                    (item) => item.option_id
+                ),
+            }
             addToCartMutate(itemObject, {
                 onSuccess: handleSuccess,
-                onError: onErrorResponse,
+                onError: (error) => {
+                    error?.response?.data?.errors?.forEach((item) => {
+                        CustomToaster('error', item?.message)
+                        if (item?.code === 'stock_out') {
+                            setErrorCode(item?.code)
+                            refetch()
+                        }
+                    })
+                },
             })
-
-
         }
         // handleClose?.()
     }
@@ -318,7 +379,7 @@ const FoodDetailModal = ({
         if (cartList?.length > 0) {
             //checking same restaurant items already exist or not
             const isRestaurantExist = cartList?.find(
-                (item) => item.restaurant_id === product.restaurant_id
+                (item) => item.restaurant_id === modalData[0].restaurant_id
             )
             if (isRestaurantExist) {
                 handleAddUpdate()
@@ -408,7 +469,7 @@ const FoodDetailModal = ({
 
                             if (
                                 count >=
-                                Number.parseInt(optionalItemIndex.min) &&
+                                    Number.parseInt(optionalItemIndex.min) &&
                                 count <= Number.parseInt(optionalItemIndex.max)
                             ) {
                                 isTrue = true
@@ -444,7 +505,6 @@ const FoodDetailModal = ({
 
         return isTrue
     }
-
     const handleAddToCartOnDispatch = (checkingFor) => {
         let requiredItemsList = []
         modalData?.[0]?.variations?.forEach((item, index) => {
@@ -492,7 +552,7 @@ const FoodDetailModal = ({
                             })
                             if (
                                 selectedOptionCount >=
-                                Number.parseInt(item.min) &&
+                                    Number.parseInt(item.min) &&
                                 selectedOptionCount <= Number.parseInt(item.max)
                             ) {
                                 //call add/update to cart functionalities
@@ -534,9 +594,17 @@ const FoodDetailModal = ({
         }
     }
     const addToCard = () => {
+
         if (location) {
             let checkingFor = 'cart'
-            handleAddToCartOnDispatch(checkingFor)
+            if (
+                modalData[0]?.item_stock === 0 &&
+                selectedOptions?.length === 0 && modalData[0].stock_type!=="unlimited"
+            ) {
+                CustomToaster('error', t('Out Of Stock'), 'add')
+            } else {
+                handleAddToCartOnDispatch(checkingFor)
+            }
         } else {
             setIsLocation(true)
         }
@@ -545,7 +613,7 @@ const FoodDetailModal = ({
         deleteCartItemMutate(getGuestId(), {
             //onSuccess: handleSuccess,
             onError: onErrorResponse,
-        });
+        })
         dispatch(setClearCart())
 
         //setClearCartModal(false)
@@ -572,6 +640,7 @@ const FoodDetailModal = ({
     ) => {
         if (choiceType === 'single') {
             if (checked) {
+                setQuantity(1)
                 //selected or checked variation handling
                 if (selectedOptions.length > 0) {
                     const isExist = selectedOptions.find(
@@ -626,9 +695,9 @@ const FoodDetailModal = ({
                                     Number.parseInt(
                                         isItemExistFromSameVariation.optionPrice
                                     ) *
-                                    quantity +
+                                        quantity +
                                     Number.parseInt(option.optionPrice) *
-                                    quantity
+                                        quantity
                             )
                             setVarPrice(
                                 (prevPrice) =>
@@ -636,9 +705,9 @@ const FoodDetailModal = ({
                                     Number.parseInt(
                                         isItemExistFromSameVariation.optionPrice
                                     ) *
-                                    quantity +
+                                        quantity +
                                     Number.parseInt(option.optionPrice) *
-                                    quantity
+                                        quantity
                             )
                         } else {
                             const newObj = {
@@ -656,13 +725,13 @@ const FoodDetailModal = ({
                                 (prevState) =>
                                     prevState +
                                     Number.parseInt(option.optionPrice) *
-                                    quantity
+                                        quantity
                             )
                             setVarPrice(
                                 (prevPrice) =>
                                     prevPrice +
                                     Number.parseInt(option.optionPrice) *
-                                    quantity
+                                        quantity
                             )
                         }
                     }
@@ -714,6 +783,8 @@ const FoodDetailModal = ({
         } else {
             //for multiple optional variation selection
             if (e.target.checked) {
+                setQuantity(1)
+                // setIsCheck(e.target.checked)
                 setSelectedOptions((prevState) => [
                     ...prevState,
                     {
@@ -781,7 +852,7 @@ const FoodDetailModal = ({
                 price = modalData?.[0]?.price
             }
         } else {
-            price = product?.price
+            price = modalData[0]?.price
         }
         if (selectedOptions?.length > 0) {
             selectedOptions?.forEach(
@@ -791,23 +862,61 @@ const FoodDetailModal = ({
         setTotalPrice(price * quantity)
     }
     useEffect(() => {
-        if (product) {
+        if (modalData[0]) {
             handleTotalPrice()
         }
     }, [quantity, modalData])
     const decrementPrice = () => {
         setQuantity((prevQty) => prevQty - 1)
     }
+    // const isShowStockText = (option) => {
+    //
+    //     return selectedOptions?.some((item) => {
+    //         return item?.option_id === option.option_id && quantity  > option.current_stock;
+    //     });
+    // };
+
     const incrementPrice = () => {
-        if (modalData[0]?.maximum_cart_quantity) {
-            if (modalData[0]?.maximum_cart_quantity <= quantity) {
-                //toast.error('Out Of Limits')
-                CustomToaster("error", "Out Of Limits")
+        const isLimitedOrDaily = modalData[0]?.stock_type !== 'unlimited'
+        const maxCartQuantity = modalData[0]?.maximum_cart_quantity
+        // Helper function to check stock limits and update quantity
+        const tryUpdateQuantity = (stockLimit) => {
+            if (quantity >= stockLimit && isLimitedOrDaily) {
+                CustomToaster('error', t('Out Of Stock'), 'stock')
+            } else if (maxCartQuantity && quantity >= maxCartQuantity) {
+                CustomToaster('error', 'Out Of Limits', 'Quantity')
             } else {
                 setQuantity((prevQty) => prevQty + 1)
             }
+        }
+
+        if (selectedOptions?.length > 0) {
+            // Calculate the minimum stock from selected options
+            const minStock = selectedOptions.reduce(
+                (min, item) => Math.min(min, parseInt(item.current_stock)),
+                Infinity
+            )
+            //setVariationStock(minStock);
+
+            // If stock type is limited or daily, check against minStock
+            if(quantity >= modalData[0]?.item_stock && isLimitedOrDaily){
+                CustomToaster('error', t('Out Of Stock'), 'stock')
+            }else{
+                if (isLimitedOrDaily) {
+                    tryUpdateQuantity(minStock)
+                } else {
+                    // If not limited/daily, just check against max cart quantity
+                    tryUpdateQuantity(Infinity)
+                }
+            }
         } else {
-            setQuantity((prevQty) => prevQty + 1)
+            // No options selected, check directly against item stock or max cart quantity
+            const itemStock = modalData[0]?.item_stock
+            if (isLimitedOrDaily && itemStock !== undefined) {
+                tryUpdateQuantity(itemStock)
+            } else {
+                tryUpdateQuantity(Infinity)
+            }
         }
     }
 
@@ -824,12 +933,12 @@ const FoodDetailModal = ({
                 if (response?.data) {
                     dispatch(addWishList(product))
                     // toast.success(response.data.message)
-                    CustomToaster("success", response.data.message)
+                    CustomToaster('success', response.data.message)
                 }
             },
             onError: (error) => {
                 //toast.error(error.response.data.message)
-                CustomToaster("error", error.response.data.message)
+                CustomToaster('error', error.response.data.message)
             },
         }
     )
@@ -838,20 +947,19 @@ const FoodDetailModal = ({
         if (token) {
             addFavoriteMutation()
             // notify(data.message)
-        } else CustomToaster("error", "You are not logged in")
-
+        } else CustomToaster('error', 'You are not logged in')
     }
 
     const onSuccessHandlerForDelete = (res) => {
         dispatch(removeWishListFood(product.id))
-        CustomToaster("success", res.message)
+        CustomToaster('success', res.message)
     }
     const { mutate } = useWishListDelete()
     const deleteWishlistItem = (id) => {
         mutate(id, {
             onSuccess: onSuccessHandlerForDelete,
             onError: (error) => {
-                CustomToaster("error", error.response.data.message)
+                CustomToaster('error', error.response.data.message)
             },
         })
     }
@@ -894,29 +1002,51 @@ const FoodDetailModal = ({
         router.push(`/checkout?page=campaign`)
     }
     const getFullFillRequirements = () => {
-        let isdisabled = false;
-        if(modalData[0]?.variations?.length>0){
+        let isdisabled = false
+        if (modalData[0]?.variations?.length > 0) {
             modalData[0]?.variations?.forEach((variation, index) => {
-                if(variation?.type==='multi'){
-                    const selectedIndex = selectedOptions?.filter((item) => item.choiceIndex === index);
+                if (variation?.type === 'multi') {
+                    const selectedIndex = selectedOptions?.filter(
+                        (item) => item.choiceIndex === index
+                    )
                     if (selectedIndex && selectedIndex.length > 0) {
-                        isdisabled = selectedIndex.length >= variation.min && selectedIndex.length <= variation.max;
+                        isdisabled =
+                            selectedIndex.length >= variation.min &&
+                            selectedIndex.length <= variation.max
                     }
-                }else{
-                    const singleVariation =modalData[0]?.variations?.filter((item)=>item?.type==='single' && item?.required==="on")
-                    const requiredSelected=selectedOptions?.filter((item)=>item?.type==="required")
-                    if(singleVariation?.length===requiredSelected?.length ){
-                        isdisabled=true
-                    }else{
-                        isdisabled=false
+                } else {
+                    const singleVariation = modalData[0]?.variations?.filter(
+                        (item) =>
+                            item?.type === 'single' && item?.required === 'on'
+                    )
+                    const requiredSelected = selectedOptions?.filter(
+                        (item) => item?.type === 'required'
+                    )
+                    if (singleVariation?.length === requiredSelected?.length) {
+                        isdisabled = true
+                    } else {
+                        isdisabled = false
                     }
                 }
-            });
-        }else {
-            isdisabled=true
+            })
+        } else {
+            isdisabled = true
         }
-        return isdisabled;
+        return isdisabled
     }
+    // if(!modalData){
+    //     return
+    // }
+
+    const isUpdateDisabled = () => {
+        if (selectedOptions && selectedOptions.length > 0) {
+            return selectedOptions.some((option) => option.current_stock === 0)
+        }
+        return false
+    }
+
+    const text1=t("only")
+    const text2=t("items available")
     return (
         <>
             <Modal
@@ -927,201 +1057,391 @@ const FoodDetailModal = ({
                 disableAutoFocus={true}
             >
                 <FoodDetailModalStyle sx={{ bgcolor: 'background.paper' }}>
-                    {isLocation ? (
-                        <LocationModalAlert setOpenAddressModalAlert={setOpen} />
-                    ) : (
+                    {!itemIsLoading && modalData[0] ? (
+                        <>
+                            {isLocation ? (
+                                <LocationModalAlert
+                                    setOpenAddressModalAlert={setOpen}
+                                />
+                            ) : (
+                                <CustomStackFullWidth>
+                                    <FoodModalTopSection
+                                        product={modalData[0]}
+                                        image={image}
+                                        handleModalClose={handleModalClose}
+                                        isInList={isInList}
+                                        deleteWishlistItem={deleteWishlistItem}
+                                        addToFavorite={addToFavorite}
+                                    />
 
-                        <CustomStackFullWidth>
-                            <FoodModalTopSection
-                                product={product}
-                                image={image}
-                                handleModalClose={handleModalClose}
-                                isInList={isInList}
-                                deleteWishlistItem={deleteWishlistItem}
-                                addToFavorite={addToFavorite}
-                            />
-
-                            <CustomStackFullWidth
-                                sx={{ padding: '20px' }}
-                                spacing={2}
-                            >
-                                <SimpleBar
-                                    style={{
-                                        maxHeight: '35vh',
-                                        paddingInlineEnd: '10px',
-                                    }}
-                                    className="test123"
-                                >
-                                    <CustomStackFullWidth spacing={0.5}>
-                                        <Stack
-                                            direction="row"
-                                            justifyContent="flex-start"
-                                            alignItems="center"
-                                            flexWrap="wrap"
-                                            spacing={0.5}
-                                        >
-                                            <Typography variant="h4">
-                                                {modalData.length > 0 &&
-                                                    modalData[0].name}
-                                            </Typography>
-                                            <VagSvg
-                                                color={
-                                                    Number(product?.veg) === 0
-                                                        ? theme.palette.nonVeg
-                                                        : theme.palette.success
-                                                            .light
-                                                }
-                                            />
-                                        </Stack>
-                                        <ReadMore
-                                            limits="100"
-                                            color={theme.palette.neutral[400]}
-                                        >
-                                            {modalData.length > 0 &&
-                                                modalData[0].description}
-                                        </ReadMore>
-                                        <Stack
-                                            spacing={1}
-                                            direction={{
-                                                xs: 'row',
-                                                sm: 'row',
-                                                md: 'row',
-                                            }}
-                                            justifyContent={{
-                                                xs: 'space-between',
-                                                sm: 'space-between',
-                                                md: 'space-between',
-                                            }}
-                                            alignItems="center"
-                                        >
-                                            <StartPriceView
-                                                data={modalData[0]}
-                                                currencySymbolDirection={
-                                                    currencySymbolDirection
-                                                }
-                                                currencySymbol={currencySymbol}
-                                                digitAfterDecimalPoint={
-                                                    digitAfterDecimalPoint
-                                                }
-                                                hideStartFromText="false"
-                                                handleBadge={handleBadge}
-                                            />
-                                            <IncrementDecrementManager
-                                                decrementPrice={decrementPrice}
-                                                totalPrice={totalPrice}
-                                                quantity={quantity}
-                                                incrementPrice={incrementPrice}
-                                            />
-                                        </Stack>
-                                    </CustomStackFullWidth>
-                                    {modalData.length > 0 &&
-                                        modalData[0].variations?.length > 0 && (
-                                            <VariationsManager
-                                                t={t}
-                                                modalData={modalData}
-                                                radioCheckHandler={
-                                                    radioCheckHandler
-                                                }
-                                                changeChoices={changeChoices}
-                                                currencySymbolDirection={
-                                                    currencySymbolDirection
-                                                }
-                                                currencySymbol={currencySymbol}
-                                                digitAfterDecimalPoint={
-                                                    digitAfterDecimalPoint
-                                                }
-                                            />
-                                        )}
-                                    {modalData.length > 0 &&
-                                        modalData[0].add_ons?.length > 0 && (
-                                            <AddOnsManager
-                                                t={t}
-                                                modalData={modalData}
-                                                setTotalPrice={setTotalPrice}
-                                                setVarPrice={setVarPrice}
-                                                changeAddOns={changeAddOns}
-                                                setProductAddOns={setProductAddOns}
-                                                product={product}
-                                                setAddOns={setAddOns}
-                                                add_on={add_on}
-                                                quantity={quantity}
-                                                cartList={cartList}
-                                            />
-                                        )}
-                                </SimpleBar>
-                                <Grid container direction="row">
-                                    <Grid
-                                        item
-                                        md={7}
-                                        sm={12}
-                                        xs={12}
-                                        alignSelf="center"
+                                    <CustomStackFullWidth
+                                        sx={{ padding: '20px' }}
+                                        spacing={2}
                                     >
-                                        <TotalAmountVisibility
-                                            modalData={modalData}
-                                            totalPrice={totalPrice}
-                                            currencySymbolDirection={
-                                                currencySymbolDirection
-                                            }
-                                            currencySymbol={currencySymbol}
-                                            digitAfterDecimalPoint={
-                                                digitAfterDecimalPoint
-                                            }
-                                            t={t}
-                                            productDiscount={product?.discount}
-                                            productDiscountType={
-                                                product?.discount_type
-                                            }
-                                            productRestaurantDiscount={
-                                                product?.restaurant_discount
-                                            }
-                                            selectedAddOns={add_on}
-                                            quantity={quantity}
-                                        />
-                                    </Grid>
-                                    <Grid item md={!isAvailable(
-                                        modalData[0]?.available_time_starts,
-                                        modalData[0]?.available_time_ends
-                                    )?12:5} sm={12} xs={12}>
-                                        {modalData.length > 0 &&
-                                            isAvailable(
-                                                modalData[0].available_time_starts,
-                                                modalData[0].available_time_ends
-                                            ) ? (
-                                            <>
-                                                {isInCart(product.id) && (
-                                                    <UpdateToCartUi
-                                                        addToCard={addToCard}
+                                        <SimpleBar
+                                            style={{
+                                                maxHeight: '35vh',
+                                                paddingInline: '10px',
+                                            }}
+                                            className="test123"
+                                        >
+                                            <CustomStackFullWidth spacing={0.5}>
+                                                <Stack
+                                                    direction="row"
+                                                    justifyContent="flex-start"
+                                                    alignItems="center"
+                                                    flexWrap="wrap"
+                                                    spacing={0.5}
+                                                >
+                                                    <Typography variant="h4">
+                                                        {modalData.length > 0 &&
+                                                            modalData[0]?.name}
+                                                    </Typography>
+                                                    <VagSvg
+                                                        color={
+                                                            Number(
+                                                                modalData[0]
+                                                                    ?.veg
+                                                            ) === 0
+                                                                ? theme.palette
+                                                                      .nonVeg
+                                                                : theme.palette
+                                                                      .success
+                                                                      .light
+                                                        }
+                                                    />
+                                                    {modalData[0]
+                                                        ?.halal_tag_status ===
+                                                        1 &&
+                                                        modalData[0]
+                                                            ?.is_halal ===
+                                                            1 && (
+                                                            <Tooltip
+                                                                arrow
+                                                                title={t(
+                                                                    'This is a halal food'
+                                                                )}
+                                                            >
+                                                                <IconButton
+                                                                    sx={{
+                                                                        padding:
+                                                                            '0px',
+                                                                    }}
+                                                                >
+                                                                    <HalalSvg />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        )}
+                                                    {quantity >= modalData[0]?.item_stock && modalData[0]?.stock_type !== "unlimited" &&
+
+                                                        <Typography fontSize="12px" color={quantity >= modalData[0]?.item_stock && theme.palette.info.main}>
+                                                            ({text1} {modalData[0]?.item_stock} {text2})
+                                                        </Typography>
+                                                        }
+                                                </Stack>
+                                                <ReadMore
+                                                    limits="100"
+                                                    color={
+                                                        theme.palette
+                                                            .neutral[400]
+                                                    }
+                                                >
+                                                    {modalData?.length > 0 &&
+                                                        modalData[0]
+                                                            ?.description}
+                                                </ReadMore>
+                                                <Stack
+                                                    spacing={1}
+                                                    direction={{
+                                                        xs: 'row',
+                                                        sm: 'row',
+                                                        md: 'row',
+                                                    }}
+                                                    justifyContent={{
+                                                        xs: 'space-between',
+                                                        sm: 'space-between',
+                                                        md: 'space-between',
+                                                    }}
+                                                    alignItems="center"
+                                                >
+                                                    <StartPriceView
+                                                        data={modalData[0]}
+                                                        currencySymbolDirection={
+                                                            currencySymbolDirection
+                                                        }
+                                                        currencySymbol={
+                                                            currencySymbol
+                                                        }
+                                                        digitAfterDecimalPoint={
+                                                            digitAfterDecimalPoint
+                                                        }
+                                                        hideStartFromText="false"
+                                                        handleBadge={
+                                                            handleBadge
+                                                        }
+                                                        selectedOptions={
+                                                            selectedOptions
+                                                        }
+                                                    />
+
+                                                    <IncrementDecrementManager
+                                                        decrementPrice={
+                                                            decrementPrice
+                                                        }
+                                                        totalPrice={totalPrice}
+                                                        quantity={quantity}
+                                                        incrementPrice={
+                                                            incrementPrice
+                                                        }
+                                                    />
+                                                </Stack>
+                                            </CustomStackFullWidth>
+                                            {modalData?.length > 0 &&
+                                                modalData[0]?.variations
+                                                    ?.length > 0 && (
+                                                    <VariationsManager
+                                                        variationStock={
+                                                            variationStock
+                                                        }
+                                                        quantity={quantity}
+                                                        selectedOptions={
+                                                            selectedOptions
+                                                        }
                                                         t={t}
+                                                        modalData={modalData}
+                                                        radioCheckHandler={
+                                                            radioCheckHandler
+                                                        }
+                                                        changeChoices={
+                                                            changeChoices
+                                                        }
+                                                        currencySymbolDirection={
+                                                            currencySymbolDirection
+                                                        }
+                                                        currencySymbol={
+                                                            currencySymbol
+                                                        }
+                                                        digitAfterDecimalPoint={
+                                                            digitAfterDecimalPoint
+                                                        }
+                                                        itemIsLoading={
+                                                            isRefetching
+                                                        }
+                                                        productUpdate={
+                                                            productUpdate
+                                                        }
                                                     />
                                                 )}
-                                                {!isInCart(product.id) && (
-                                                    <AddOrderToCart
-                                                        addToCartLoading={addToCartLoading}
-                                                        product={product}
+                                            {modalData?.length > 0 &&
+                                                modalData[0]?.add_ons?.length >
+                                                    0 && (
+                                                    <AddOnsManager
                                                         t={t}
+                                                        modalData={modalData}
+                                                        setTotalPrice={
+                                                            setTotalPrice
+                                                        }
+                                                        setVarPrice={
+                                                            setVarPrice
+                                                        }
+                                                        changeAddOns={
+                                                            changeAddOns
+                                                        }
+                                                        setProductAddOns={
+                                                            setProductAddOns
+                                                        }
+                                                        product={modalData[0]}
+                                                        setAddOns={setAddOns}
+                                                        add_on={add_on}
+                                                        quantity={quantity}
+                                                        cartList={cartList}
+                                                        itemIsLoading={
+                                                            isRefetching
+                                                        }
+                                                    />
+                                                )}
+                                        </SimpleBar>
+                                        <Grid container direction="row">
+                                            <Grid
+                                                item
+                                                md={7}
+                                                sm={12}
+                                                xs={12}
+                                                alignSelf="center"
+                                            >
+                                                <TotalAmountVisibility
+                                                    modalData={modalData}
+                                                    totalPrice={totalPrice}
+                                                    currencySymbolDirection={
+                                                        currencySymbolDirection
+                                                    }
+                                                    currencySymbol={
+                                                        currencySymbol
+                                                    }
+                                                    digitAfterDecimalPoint={
+                                                        digitAfterDecimalPoint
+                                                    }
+                                                    t={t}
+                                                    productDiscount={
+                                                        modalData[0]?.discount
+                                                    }
+                                                    productDiscountType={
+                                                        modalData[0]
+                                                            ?.discount_type
+                                                    }
+                                                    productRestaurantDiscount={
+                                                        modalData[0]
+                                                            ?.restaurant_discount
+                                                    }
+                                                    selectedAddOns={add_on}
+                                                    quantity={quantity}
+                                                />
+                                            </Grid>
+                                            <Grid
+                                                item
+                                                md={
+                                                    !isAvailable(
+                                                        modalData[0]
+                                                            ?.available_time_starts,
+                                                        modalData[0]
+                                                            ?.available_time_ends
+                                                    )
+                                                        ? 12
+                                                        : 5
+                                                }
+                                                sm={12}
+                                                xs={12}
+                                            >
+                                                {modalData?.length > 0 &&
+                                                isAvailable(
+                                                    modalData[0]
+                                                        ?.available_time_starts,
+                                                    modalData[0]
+                                                        ?.available_time_ends
+                                                ) ? (
+                                                    <>
+                                                        {isInCart(
+                                                            modalData[0].id
+                                                        ) && (
+                                                            <UpdateToCartUi
+                                                                addToCard={
+                                                                    addToCard
+                                                                }
+                                                                t={t}
+                                                                isUpdateDisabled={
+                                                                    isUpdateDisabled
+                                                                }
+                                                            />
+                                                        )}
+                                                        {!isInCart(
+                                                            product.id
+                                                        ) && (
+                                                            <AddOrderToCart
+                                                                addToCartLoading={
+                                                                    addToCartLoading
+                                                                }
+                                                                product={
+                                                                    modalData[0]
+                                                                }
+                                                                t={t}
+                                                                addToCard={
+                                                                    addToCard
+                                                                }
+                                                                orderNow={
+                                                                    orderNow
+                                                                }
+                                                                getFullFillRequirements={
+                                                                    getFullFillRequirements
+                                                                }
+                                                            />
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <AddUpdateOrderToCart
+                                                        addToCartLoading={
+                                                            addToCartLoading
+                                                        }
+                                                        modalData={modalData}
+                                                        isInCart={isInCart}
                                                         addToCard={addToCard}
+                                                        t={t}
+                                                        product={modalData[0]}
                                                         orderNow={orderNow}
-                                                        getFullFillRequirements={getFullFillRequirements}
+                                                        getFullFillRequirements={
+                                                            getFullFillRequirements
+                                                        }
+                                                        isUpdateDisabled={
+                                                            isUpdateDisabled
+                                                        }
                                                     />
                                                 )}
-                                            </>
-                                        ) : (
-                                            <AddUpdateOrderToCart
-                                                addToCartLoading={addToCartLoading}
-                                                modalData={modalData}
-                                                isInCart={isInCart}
-                                                addToCard={addToCard}
-                                                t={t}
-                                                product={product}
-                                                orderNow={orderNow}
-                                                getFullFillRequirements={getFullFillRequirements}
-                                            />
-                                        )}
-                                    </Grid>
-                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </CustomStackFullWidth>
+                                </CustomStackFullWidth>
+                            )}
+                        </>
+                    ) : (
+                        !productUpdate && (
+                            <CustomStackFullWidth
+                                sx={{ padding: '10px' }}
+                                spacing={1}
+                            >
+                                <Skeleton
+                                    variant="rectangular"
+                                    witdh="100%"
+                                    height="200px"
+                                />
+                                <Skeleton
+                                    variant="rounded"
+                                    width={100}
+                                    height={10}
+                                />
+                                <Skeleton
+                                    variant="rounded"
+                                    width="50%"
+                                    height={15}
+                                />
+                                <Skeleton
+                                    variant="rounded"
+                                    width={60}
+                                    height={10}
+                                />
+                                <Stack mt="10px" spacing={1}>
+                                    <Skeleton
+                                        variant="rounded"
+                                        width="30%"
+                                        height={15}
+                                    />
+                                    <Skeleton
+                                        variant="rounded"
+                                        width={60}
+                                        height={10}
+                                    />
+                                    <Skeleton
+                                        variant="rounded"
+                                        width={60}
+                                        height={10}
+                                    />
+                                </Stack>
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                >
+                                    <Skeleton
+                                        variant="rounded"
+                                        width="30%"
+                                        height={15}
+                                    />
+                                    <Skeleton
+                                        variant="rounded"
+                                        width="50%"
+                                        height={30}
+                                    />
+                                </Stack>
                             </CustomStackFullWidth>
-                        </CustomStackFullWidth>
+                        )
                     )}
                 </FoodDetailModalStyle>
             </Modal>

@@ -1,22 +1,15 @@
-import React, { useEffect } from 'react'
-import FooterLg from './FooterLg'
-import FooterSm from './FooterSm'
-import footerBg from './footerBg.svg'
-import { StyledFooterBackground } from './Footer.style'
-import { Container } from '@mui/material'
-import FooterTop from './FooterTop'
-import FooterMiddle from './FooterMiddle'
-import FooterBottom from './FooterBottom'
-import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
+import { CustomStackFullWidth } from '@/styled-components/CustomStyles.style'
 import { useRouter } from 'next/router'
-import FooterTopSection from './FooterTopSection'
-import { landingPageApi } from '../landingpage/Api'
-import { useQuery } from 'react-query'
-import { onErrorResponse } from '../ErrorResponse'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { StyledFooterBackground } from './Footer.style'
+import FooterBottom from './FooterBottom'
+import FooterMiddle from './FooterMiddle'
+import FooterTop from './FooterTop'
+import FooterTopSection from './FooterTopSection'
 
-import { useGetLandingPageData } from "@/hooks/react-query/landing-page/useGetLandingPageData"
-import { setLandingPageData } from "@/redux/slices/storedData"
+import { useGetLandingPageData } from '@/hooks/react-query/landing-page/useGetLandingPageData'
+import { setLandingPageData } from '@/redux/slices/storedData'
 const Footer = ({ languageDirection }) => {
     const dispatch = useDispatch()
     const { landingPageData } = useSelector((state) => state.storedData)
@@ -40,12 +33,12 @@ const Footer = ({ languageDirection }) => {
                     height="100%"
                     alignItems="center"
                     justifyContent="space-between"
-                    paddingTop={{ xs: "20px", md: "50px" }}
+                    paddingTop={{ xs: '20px', md: '50px' }}
                 >
                     <FooterTopSection />
                     <FooterMiddle
-                        landingPageLink={landingPageData.landing_page_links}
                         landingPageData={landingPageData}
+                        isLoading={isLoading}
                     />
                     <FooterBottom />
                 </CustomStackFullWidth>

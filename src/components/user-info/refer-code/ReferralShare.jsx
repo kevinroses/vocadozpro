@@ -1,33 +1,32 @@
-import styled from "@emotion/styled";
-import { Button, ClickAwayListener, Dialog, IconButton, Modal, Paper, Stack, Tooltip, Typography, useTheme } from "@mui/material";
-import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import CustomModal from '@/components/custom-modal/CustomModal'
+import { CustomToaster } from '@/components/custom-toaster/CustomToaster'
+import { SliderCustom } from '@/styled-components/CustomStyles.style'
+import { facebookAppId } from '@/utils/staticCredentials'
+import CloseIcon from '@mui/icons-material/Close'
+import ShareIcon from '@mui/icons-material/Share'
+import {
+    Button,
+    ClickAwayListener,
+    IconButton,
+    Paper,
+    Stack,
+    Tooltip,
+    Typography,
+    useTheme,
+} from '@mui/material'
+import { t } from 'i18next'
+import { useEffect, useState } from 'react'
 import {
     EmailIcon,
     EmailShareButton,
-    FacebookIcon,
     FacebookMessengerIcon,
     FacebookMessengerShareButton,
-    FacebookShareButton,
-    HatenaIcon,
-    HatenaShareButton,
-    InstapaperIcon,
-    InstapaperShareButton,
     LineIcon,
     LineShareButton,
     LinkedinIcon,
     LinkedinShareButton,
     LivejournalIcon,
     LivejournalShareButton,
-    MailruIcon,
-    MailruShareButton,
-    OKIcon,
-    OKShareButton,
-    PinterestIcon,
-    PinterestShareButton,
-    PocketIcon,
-    PocketShareButton,
     RedditIcon,
     RedditShareButton,
     TelegramIcon,
@@ -36,41 +35,37 @@ import {
     TumblrShareButton,
     TwitterIcon,
     TwitterShareButton,
-    VKIcon,
-    VKShareButton,
-    WeiboIcon,
-    WeiboShareButton,
     WhatsappIcon,
     WhatsappShareButton,
-    WorkplaceIcon,
-    WorkplaceShareButton,
-} from "react-share";
-import { CodePreviewWrapper, ReferralShareBox, ShareButton } from "./ReferralCode.style";
-import ShareIcon from '@mui/icons-material/Share';
-import CloseIcon from "@mui/icons-material/Close";
-import { t } from "i18next";
-import Slider from "react-slick";
-import { referralSettings } from "./ReferralSettings";
-import { facebookAppId } from "@/utils/staticCredentials";
-import CustomModal from "@/components/custom-modal/CustomModal";
-import { SliderCustom } from "@/styled-components/CustomStyles.style";
-import toast from "react-hot-toast";
-import { CustomToaster } from "@/components/custom-toaster/CustomToaster";
+} from 'react-share'
+import Slider from 'react-slick'
+import {
+    CodePreviewWrapper,
+    ReferralShareBox,
+    ShareButton,
+} from './ReferralCode.style'
+import { referralSettings } from './ReferralSettings'
 
 const ReferralShare = ({ referralCode, configData, horizontal, size }) => {
-    const [currentUrl, setCurrentUrl] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [currentUrl, setCurrentUrl] = useState(null)
+    const [open, setOpen] = useState(false)
     const [tooltipOpen, setTooltipOpen] = useState(false)
-    const theme = useTheme();
-    const companyName = configData?.business_name;
-    const pinId = "patwary6am";
-    const shareUrl = `${t("Hey there welcome to")} ${companyName}! ${t("If you're checking out")} ${companyName} ${t("for the first time, make sure to use the referral code")} ${referralCode} ${t("when you sign up. It's my way of welcoming you to this awesome e-commerce platform! Happy shopping on")} ${companyName}! ${currentUrl}`;
-    const title = `${t("Hey there welcome to")} ${companyName}!`;
+    const theme = useTheme()
+    const companyName = configData?.business_name
+    const pinId = 'patwary6am'
+    const shareUrl = `${t('Hey there welcome to')} ${companyName}! ${t(
+        "If you're checking out"
+    )} ${companyName} ${t(
+        'for the first time, make sure to use the referral code'
+    )} ${referralCode} ${t(
+        "when you sign up. It's my way of welcoming you to this awesome e-commerce platform! Happy shopping on"
+    )} ${companyName}! ${currentUrl}`
+    const title = `${t('Hey there welcome to')} ${companyName}!`
     useEffect(() => {
         setCurrentUrl(
-            window.location.origin + "?referral_earn_code=" + referralCode
-        );
-    }, []);
+            window.location.origin + '?referral_earn_code=' + referralCode
+        )
+    }, [])
     const copyReferCode = async (text) => {
         if (typeof window !== undefined) {
             await window.navigator.clipboard.writeText(text)
@@ -82,8 +77,7 @@ const ReferralShare = ({ referralCode, configData, horizontal, size }) => {
     const handleTooltipOpen = async (referralCode) => {
         setTooltipOpen(true)
         await copyReferCode(referralCode)
-        // toast.success(t('Referral code Copied'))
-        CustomToaster("success", "Referral Code Copied")
+        CustomToaster('success', t('Referral Code Copied'))
     }
 
     return (
@@ -99,7 +93,12 @@ const ReferralShare = ({ referralCode, configData, horizontal, size }) => {
                 <TwitterShareButton url={shareUrl}>
                     <TwitterIcon size={size ? size : 40} round />
                 </TwitterShareButton>
-                <WhatsappShareButton url={shareUrl} separator=":: " title={title} quote={shareUrl}>
+                <WhatsappShareButton
+                    url={shareUrl}
+                    separator=":: "
+                    title={title}
+                    quote={shareUrl}
+                >
                     <WhatsappIcon size={size ? size : 40} round />
                 </WhatsappShareButton>
                 <LinkedinShareButton
@@ -111,44 +110,61 @@ const ReferralShare = ({ referralCode, configData, horizontal, size }) => {
                     <LinkedinIcon size={size ? size : 40} round />
                 </LinkedinShareButton>
                 <ShareButton size={`${size}px`} onClick={() => setOpen(true)}>
-                    <ShareIcon sx={{ fontSize: `${size - 12}px`, color: theme.palette.info.main }} />
+                    <ShareIcon
+                        sx={{
+                            fontSize: `${size - 12}px`,
+                            color: theme.palette.info.main,
+                        }}
+                    />
                 </ShareButton>
                 <CustomModal openModal={open} setModalOpen={setOpen}>
                     <Paper
                         sx={{
-                            position: "relative",
-                            width: "100%",
-                            maxWidth: { xs: "350px", sm: "450px", md: "550px" },
-                            p: "1.2rem",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "15px",
-                            padding: "40px"
+                            position: 'relative',
+                            width: '100%',
+                            maxWidth: { xs: '350px', sm: '450px', md: '550px' },
+                            p: '1.2rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '15px',
+                            padding: '40px',
                         }}
                     >
                         <IconButton
                             onClick={() => setOpen(false)}
-                            sx={{ position: "absolute", top: 10, right: 10 }}
+                            sx={{ position: 'absolute', top: 10, right: 10 }}
                         >
-                            <CloseIcon sx={{ fontSize: "22px" }} />
+                            <CloseIcon sx={{ fontSize: '22px' }} />
                         </IconButton>
-                        <Typography fontSize="16px">{t("Share")}</Typography>
-                        <SliderCustom
-                            nopadding="true"
-                        >
+                        <Typography fontSize="16px">{t('Share')}</Typography>
+                        <SliderCustom nopadding="true">
                             <Slider {...referralSettings}>
                                 <FacebookMessengerShareButton
                                     url={shareUrl}
                                     appId={facebookAppId}
                                     quote={shareUrl}
                                 >
-                                    <FacebookMessengerIcon size={size ? size : 40} round />
+                                    <FacebookMessengerIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </FacebookMessengerShareButton>
                                 <TwitterShareButton url={shareUrl}>
-                                    <TwitterIcon size={size ? size : 40} round />
+                                    <TwitterIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </TwitterShareButton>
-                                <WhatsappShareButton url={shareUrl} separator=":: " title={title} quote={shareUrl}>
-                                    <WhatsappIcon size={size ? size : 40} round />
+                                <WhatsappShareButton
+                                    url={shareUrl}
+                                    separator=":: "
+                                    title={title}
+                                    quote={shareUrl}
+                                >
+                                    <WhatsappIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </WhatsappShareButton>
                                 <LinkedinShareButton
                                     title={title}
@@ -156,10 +172,16 @@ const ReferralShare = ({ referralCode, configData, horizontal, size }) => {
                                     source={currentUrl}
                                     summary={shareUrl}
                                 >
-                                    <LinkedinIcon size={size ? size : 40} round />
+                                    <LinkedinIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </LinkedinShareButton>
                                 <TelegramShareButton url={shareUrl}>
-                                    <TelegramIcon size={size ? size : 40} round />
+                                    <TelegramIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </TelegramShareButton>
                                 <EmailShareButton
                                     url={currentUrl}
@@ -183,8 +205,15 @@ const ReferralShare = ({ referralCode, configData, horizontal, size }) => {
                                 >
                                     <TumblrIcon size={size ? size : 40} round />
                                 </TumblrShareButton>
-                                <LivejournalShareButton url={shareUrl} title={title} description={shareUrl}>
-                                    <LivejournalIcon size={size ? size : 40} round />
+                                <LivejournalShareButton
+                                    url={shareUrl}
+                                    title={title}
+                                    description={shareUrl}
+                                >
+                                    <LivejournalIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </LivejournalShareButton>
                                 <LineShareButton url={shareUrl} title={title}>
                                     <LineIcon size={size ? size : 40} round />
@@ -214,8 +243,11 @@ const ReferralShare = ({ referralCode, configData, horizontal, size }) => {
                             justifyContent="space-between"
                             padding="5px"
                         >
-                            <Typography fontWeight="600" color={theme.palette.primary.main}>
-                                {referralCode}{" "}
+                            <Typography
+                                fontWeight="600"
+                                color={theme.palette.primary.main}
+                            >
+                                {referralCode}{' '}
                             </Typography>
                             <Stack padding="3px">
                                 <ClickAwayListener
@@ -235,9 +267,11 @@ const ReferralShare = ({ referralCode, configData, horizontal, size }) => {
                                     >
                                         <Button
                                             variant="contained"
-                                            onClick={() => handleTooltipOpen(referralCode)}
+                                            onClick={() =>
+                                                handleTooltipOpen(referralCode)
+                                            }
                                         >
-                                            Copy
+                                            {t('Copy')}
                                         </Button>
                                     </Tooltip>
                                 </ClickAwayListener>
@@ -247,6 +281,6 @@ const ReferralShare = ({ referralCode, configData, horizontal, size }) => {
                 </CustomModal>
             </ReferralShareBox>
         </>
-    );
-};
-export default ReferralShare;
+    )
+}
+export default ReferralShare

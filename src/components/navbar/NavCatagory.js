@@ -1,34 +1,31 @@
-import React, { useEffect, useState } from 'react'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { useEffect, useState } from 'react'
 
 import {
     alpha,
     Button,
     Grid,
     ListItemIcon,
-    Menu,
     MenuItem,
     Popover,
     Stack,
     Typography,
 } from '@mui/material'
 
-import Fade from '@mui/material/Fade'
 import Link from 'next/link'
 //import menu from '../../../public/static/Menu/image 18.png'
-import { CategoryApi } from '../../hooks/react-query/config/categoryApi'
+import { useTheme } from '@mui/material/styles'
+import { makeStyles } from '@mui/styles'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
-import { NavMenuLink } from './Navbar.style'
-import { useTranslation } from 'react-i18next'
-import ResShimmer from './ResShimmer'
-import { useTheme } from '@mui/material/styles'
+import { CategoryApi } from '../../hooks/react-query/config/categoryApi'
+import { setFeaturedCategories } from '../../redux/slices/storedData'
 import CustomImageContainer from '../CustomImageContainer'
 import { CustomTypographyGray } from '../error/Errors.style'
 import { onErrorResponse } from '../ErrorResponse'
-import { setFeaturedCategories } from '../../redux/slices/storedData'
-import { makeStyles } from '@mui/styles'
+import { NavMenuLink } from './Navbar.style'
 const useStyles = makeStyles((theme) => ({
     popover: {
         pointerEvents: 'none',
@@ -102,16 +99,14 @@ const NavCatagory = ({
                 aria-controls={opendrop ? 'fade-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={opendrop ? 'true' : undefined}
-                // sx={{ color: 'black',  }}
-                // href="#"
                 underline="none"
+                fontSize="14px"
+                alignItems="center"
             >
-                <Typography fontSize="14px">
-                    {t('Categories')}{' '}
-                    <KeyboardArrowDownIcon
-                        style={{ width: '16px', marginLeft: '5px' }}
-                    />
-                </Typography>
+                {t('Categories')}{' '}
+                <KeyboardArrowDownIcon
+                    style={{ width: '16px', marginLeft: '5px' }}
+                />
             </NavMenuLink>
             <Popover
                 disableScrollLock={true}

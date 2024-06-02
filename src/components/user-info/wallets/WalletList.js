@@ -1,63 +1,53 @@
-import React, { useEffect, useState } from 'react'
-import {
-    Grid,
-    Box,
-    Typography,
-    Stack,
-    List,
-    ListItem,
-    Button,
-    styled,
-    Select,
-    MenuItem,
-    alpha,
-    Paper,
-    useMediaQuery,
-} from '@mui/material'
-import {
-    WallatBox,
-    WallateBox,
-    WalletBox,
-    WalletBoxSection,
-} from './Wallets.style'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import WalletsPage from './WalletsPage'
-import { useQuery } from 'react-query'
-import { WalletApi } from "@/hooks/react-query/config/walletApi"
-import { getAmount, getTotalWalletAmount } from "@/utils/customFunctions"
-import { ProfileApi } from "@/hooks/react-query/config/profileApi"
-import WalletShimmer from './WalletShimmer'
-import 'simplebar/dist/simplebar.min.css'
-import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import CustomePagination from '../../pagination/Pagination'
-import CustomEmptyResult from '../../empty-view/CustomEmptyResult'
+import { ProfileApi } from '@/hooks/react-query/config/profileApi'
+import { WalletApi } from '@/hooks/react-query/config/walletApi'
+import { useAddFundToWallet } from '@/hooks/react-query/useAddFundToWallet'
 import {
     CustomOutlinedInput,
     CustomPaperBigCard,
     CustomStackFullWidth,
-} from "@/styled-components/CustomStyles.style"
-import CustomImageContainer from '../../CustomImageContainer'
-import walletImage from '../../../../public/static/profile/wa.svg'
-import { useTheme } from '@mui/material/styles'
-import { onErrorResponse, onSingleErrorResponse } from '../../ErrorResponse'
+} from '@/styled-components/CustomStyles.style'
+import { noTransactionFound } from '@/utils/LocalImages'
+import { getAmount } from '@/utils/customFunctions'
+import { CheckCircle } from '@mui/icons-material'
+import CloseIcon from '@mui/icons-material/Close'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import {
+    Box,
+    Button,
+    Grid,
+    MenuItem,
+    Paper,
+    Select,
+    Stack,
+    Typography,
+    styled,
+    useMediaQuery,
+} from '@mui/material'
 import Skeleton from '@mui/material/Skeleton'
-import Meta from '../../Meta'
-import { AddCircle, CheckCircle } from '@mui/icons-material'
-import CustomModal from '../../custom-modal/CustomModal'
-import { useAddFundToWallet } from "@/hooks/react-query/useAddFundToWallet"
-import * as Yup from 'yup'
+import { useTheme } from '@mui/material/styles'
 import { useFormik } from 'formik'
 import Router from 'next/router'
-import * as PropTypes from 'prop-types'
-import { PrimaryButton } from '../../products-page/FoodOrRestaurant'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import WalletFundBonus from './WalletBonus'
-import HowToUse from './HowToUse'
-import CloseIcon from '@mui/icons-material/Close'
-import { noTransactionFound } from "@/utils/LocalImages"
-import CustomPopover from '../../custom-popover/CustomPopover'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import 'simplebar/dist/simplebar.min.css'
+import * as Yup from 'yup'
+import walletImage from '../../../../public/static/profile/wa.svg'
 import useWalletBonus from '../../../hooks/react-query/useGetWalletBonus'
+import CustomImageContainer from '../../CustomImageContainer'
+import { onErrorResponse, onSingleErrorResponse } from '../../ErrorResponse'
+import Meta from '../../Meta'
+import CustomModal from '../../custom-modal/CustomModal'
+import CustomPopover from '../../custom-popover/CustomPopover'
+import CustomEmptyResult from '../../empty-view/CustomEmptyResult'
+import CustomePagination from '../../pagination/Pagination'
+import HowToUse from './HowToUse'
+import WalletFundBonus from './WalletBonus'
+import WalletShimmer from './WalletShimmer'
+import { WalletBox } from './Wallets.style'
+import WalletsPage from './WalletsPage'
 const validationSchema = Yup.object({
     amount: Yup.string().required('Please Enter amount'),
     ///payment_method: Yup.string().required('Payment method is required'),
@@ -74,6 +64,10 @@ export const transaction_options = [
     {
         label: 'Add Fund',
         value: 'add_fund',
+    },
+    {
+        label: 'Cashback',
+        value: 'CashBack',
     },
     {
         label: 'Loyalty Points Transaction',
@@ -109,9 +103,9 @@ export const CustomSelect = ({
 }
 const Wallet = ({ page }) => {
     const theme = useTheme()
-    const isXSmall = useMediaQuery(theme.breakpoints.down("sm"))
+    const isXSmall = useMediaQuery(theme.breakpoints.down('sm'))
     const [page_limit, setPageLimit] = useState(10)
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null)
     const [offset, setOffset] = useState(1)
     const [open, setOpen] = useState(false)
     const [transactionType, setTransactionType] = useState('all')
@@ -136,7 +130,11 @@ const Wallet = ({ page }) => {
             enabled: false,
         }
     )
-    const { data: walleBonus, refetch: walletBonusRefetch, isLoading: walletBonusIsLoading } = useWalletBonus()
+    const {
+        data: walleBonus,
+        refetch: walletBonusRefetch,
+        isLoading: walletBonusIsLoading,
+    } = useWalletBonus()
 
     useEffect(() => {
         walletBonusRefetch()
@@ -164,13 +162,12 @@ const Wallet = ({ page }) => {
         validationSchema: validationSchema,
         onSubmit: async (values, helpers) => {
             try {
-
                 if (values?.amount > 0) {
                     formSubmitHandler(values)
                 } else {
                     toast.error(t('Payment amount can not be 0'))
                 }
-            } catch (err) { }
+            } catch (err) {}
         },
     })
 
@@ -245,11 +242,11 @@ const Wallet = ({ page }) => {
         setTransactionType(e.target.value)
     }
     const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+        setAnchorEl(event.currentTarget)
+    }
     const handleClosePopover = () => {
         setAnchorEl(null)
-    };
+    }
     return (
         <>
             <Meta
@@ -260,44 +257,51 @@ const Wallet = ({ page }) => {
             <CustomPaperBigCard
                 padding={isXSmall ? '10px 10px' : '30px 40px'}
                 border={false}
-
-                sx={{ minHeight: !isXSmall && '558px', boxShadow: isXSmall && 'unset' }}
+                sx={{
+                    minHeight: !isXSmall && '558px',
+                    boxShadow: isXSmall && 'unset',
+                }}
             >
                 <Grid container spacing={3.5}>
-                    {!isXSmall &&
+                    {!isXSmall && (
                         <Grid item xs={12} md={12}>
-                        <Typography fontSize="16px" fontWeight="500">
-                            {t('My Wallet')}
-                        </Typography>
-                    </Grid>}
+                            <Typography fontSize="16px" fontWeight="500">
+                                {t('My Wallet')}
+                            </Typography>
+                        </Grid>
+                    )}
                     <Grid item sm={12} xs={12} md={4.5}>
                         <WalletBox>
                             <CustomStackFullWidth gap="15px">
-                                <Stack flexDirection="row" justifyContent="space-between">
+                                <Stack
+                                    flexDirection="row"
+                                    justifyContent="space-between"
+                                >
                                     <CustomImageContainer
                                         src={walletImage.src}
                                         width="34px"
                                         height="34px"
                                         objectFit="contain"
                                     />
-                                    {walleBonus?.length !== 0 &&
-                                        <Stack sx={{
-                                            position: "relative",
-                                            top: "-12px",
-                                            right: "-2px"
-                                        }}>
-
+                                    {walleBonus?.length !== 0 && (
+                                        <Stack
+                                            sx={{
+                                                position: 'relative',
+                                                top: '-12px',
+                                                right: '-2px',
+                                            }}
+                                        >
                                             <InfoOutlinedIcon
                                                 onClick={handleClick}
                                                 sx={{
                                                     color: (theme) =>
-                                                        theme.palette.neutral[100],
-                                                    cursor:"pointer"
+                                                        theme.palette
+                                                            .neutral[100],
+                                                    cursor: 'pointer',
                                                 }}
                                             />
                                         </Stack>
-                                    }
-
+                                    )}
                                 </Stack>
                                 <Typography
                                     fontSize="36px"
@@ -314,15 +318,17 @@ const Wallet = ({ page }) => {
                                         />
                                     ) : (
                                         getAmount(
-                                            profileData?.data
-                                                ?.wallet_balance,
+                                            profileData?.data?.wallet_balance,
                                             currencySymbolDirection,
                                             currencySymbol,
                                             digitAfterDecimalPoint
                                         )
                                     )}
                                 </Typography>
-                                <Stack flexDirection="row" justifyContent="space-between">
+                                <Stack
+                                    flexDirection="row"
+                                    justifyContent="space-between"
+                                >
                                     <Typography
                                         fontSize="12px"
                                         fontWeight="400"
@@ -331,12 +337,12 @@ const Wallet = ({ page }) => {
                                     >
                                         {t('Total Balance')}
                                     </Typography>
-                                    {global?.digital_payment &&
+                                    {global?.digital_payment && (
                                         <Button
                                             sx={{
                                                 backgroundColor: (theme) =>
                                                     theme.palette.neutral[100],
-                                                minWidth: "101px",
+                                                minWidth: '101px',
                                                 color: (theme) =>
                                                     theme.palette.neutral[700],
                                                 cursor: 'pointer',
@@ -346,7 +352,8 @@ const Wallet = ({ page }) => {
                                                 zIndex: 99,
                                                 '&:hover': {
                                                     backgroundColor: (theme) =>
-                                                        theme.palette.neutral[300],
+                                                        theme.palette
+                                                            .neutral[300],
                                                 },
                                             }}
                                             onClick={() => setOpen(!open)}
@@ -355,11 +362,14 @@ const Wallet = ({ page }) => {
                                                 component="span"
                                                 fontWeight="600"
                                                 fontSize="14px"
-                                                color={theme.palette.neutral[1000]}
+                                                color={
+                                                    theme.palette.neutral[1000]
+                                                }
                                             >
                                                 {t('Add fund')}
                                             </Typography>
-                                        </Button>}
+                                        </Button>
+                                    )}
                                 </Stack>
                                 <CustomPopover
                                     anchorEl={anchorEl}
@@ -370,7 +380,6 @@ const Wallet = ({ page }) => {
                                 >
                                     <HowToUse />
                                 </CustomPopover>
-
                             </CustomStackFullWidth>
                             <CustomModal
                                 openModal={open}
@@ -417,14 +426,23 @@ const Wallet = ({ page }) => {
                                             placeholder={t('Enter Amount')}
                                             value={formik.values.amount}
                                             onChange={formik.handleChange}
-                                            error={formik.touched.amount && Boolean(formik.errors.amount)}
-                                            helperText={formik.touched.amount && formik.errors.amount}
+                                            error={
+                                                formik.touched.amount &&
+                                                Boolean(formik.errors.amount)
+                                            }
+                                            helperText={
+                                                formik.touched.amount &&
+                                                formik.errors.amount
+                                            }
                                             onKeyPress={(event) => {
-                                                if (event?.key === '-' || event?.key === '+') {
-                                                    event.preventDefault();
+                                                if (
+                                                    event?.key === '-' ||
+                                                    event?.key === '+'
+                                                ) {
+                                                    event.preventDefault()
                                                 }
                                             }}
-                                            />
+                                        />
                                         <Box mt={3}>
                                             <Typography
                                                 variant="body1"
@@ -455,9 +473,7 @@ const Wallet = ({ page }) => {
                                                 {global?.active_payment_method_list?.map(
                                                     (item, i) => (
                                                         <addFundIsLoading
-                                                            key={
-                                                                item?.gateway
-                                                            }
+                                                            key={item?.gateway}
                                                         >
                                                             <CustomRadioBox>
                                                                 <label
@@ -508,9 +524,7 @@ const Wallet = ({ page }) => {
                                                                     )}
                                                                     <Stack
                                                                         direction="row"
-                                                                        gap={
-                                                                            1
-                                                                        }
+                                                                        gap={1}
                                                                         sx={{
                                                                             img: {
                                                                                 height: '24px',
@@ -555,7 +569,9 @@ const Wallet = ({ page }) => {
                                                 height="50px"
                                                 type="submit"
                                                 loading={addFundIsLoading}
-                                                disabled={formik.values.amount===""}
+                                                disabled={
+                                                    formik.values.amount === ''
+                                                }
                                             >
                                                 <Typography
                                                     color={
@@ -579,7 +595,10 @@ const Wallet = ({ page }) => {
                         </Grid>
                     ) : (
                         <Grid item sm={12} xs={12} md={7.5}>
-                            <WalletFundBonus walleBonus={walleBonus} isLoading={walletBonusIsLoading} />
+                            <WalletFundBonus
+                                walleBonus={walleBonus}
+                                isLoading={walletBonusIsLoading}
+                            />
                         </Grid>
                     )}
                     <Grid item md={12} xs={12}>
@@ -592,17 +611,24 @@ const Wallet = ({ page }) => {
                                 alignItems: 'center',
                             }}
                         >
-                            <Typography fontSize={{xs:"14px",sm:"16px" }} fontWeight="500">
+                            <Typography
+                                fontSize={{ xs: '14px', sm: '16px' }}
+                                fontWeight="500"
+                            >
                                 {t('Wallet History')}
                             </Typography>
                             {page != 'loyalty' && (
                                 <CustomSelect
                                     value={transactionType}
                                     onChange={(e) => handleChange(e)}
-                                    sx={{fontSize:"12px"}}
+                                    sx={{ fontSize: '12px' }}
                                 >
                                     {transaction_options?.map((item, i) => (
-                                        <MenuItem key={i} value={item?.value}   sx={{fontSize:"12px"}} >
+                                        <MenuItem
+                                            key={i}
+                                            value={item?.value}
+                                            sx={{ fontSize: '12px' }}
+                                        >
                                             {t(item?.label)}
                                         </MenuItem>
                                     ))}
@@ -636,9 +662,8 @@ const Wallet = ({ page }) => {
                         )}
                         {/* </ScrollerProvider> */}
                         {data?.data?.data?.length === 0 && (
-
                             <CustomEmptyResult
-                                label='No Transaction History'
+                                label="No Transaction History"
                                 image={noTransactionFound}
                                 height="50px"
                                 width="60px"
@@ -660,7 +685,7 @@ const Wallet = ({ page }) => {
                         </CustomStackFullWidth>
                     </Grid>
                 </Grid>
-            </CustomPaperBigCard >
+            </CustomPaperBigCard>
         </>
     )
 }

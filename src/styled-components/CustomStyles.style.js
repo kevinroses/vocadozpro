@@ -442,6 +442,7 @@ export const CustomImageContainerStyled = styled(Box)(
         smMaxWidth,
         mdHeight,
         cursor,
+         aspectRatio
     }) => ({
         //maxWidth:'20rem',
         display: 'inline-flex',
@@ -469,6 +470,7 @@ export const CustomImageContainerStyled = styled(Box)(
             height: '100%',
             objectFit: objectFit ? objectFit : 'contain',
             borderRadius: borderRadu,
+            aspectRatio: aspectRatio ? aspectRatio : 'auto',
         },
     })
 )

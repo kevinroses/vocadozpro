@@ -21,18 +21,22 @@ const CustomSlider = ({ handleChangePrice,highestPrice ,priceValue }) => {
             setValue([value[0], Math.max(newValue[1], value[0] + minDistance)])
         }
     }
-    useEffect(() => {
-        if (isMount) {
-            //for doing nothing on first render
-        } else {
-            handleChangePrice(value)
-        }
-    }, [value])
+    // useEffect(() => {
+    //     if (isMount) {
+    //         //for doing nothing on first render
+    //     } else {
+    //         handleChangePrice(value)
+    //     }
+    // }, [value])
+    const handleChangeCommitted = (event, newValue) => {
+        handleChangePrice(newValue);
+    };
 
     return (
         <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
             <Typography>0</Typography>
             <Slider
+                onChangeCommitted={handleChangeCommitted}
                 getAriaLabel={() => 'Minimum distance'}
                 value={value}
                 onChange={handleChange}

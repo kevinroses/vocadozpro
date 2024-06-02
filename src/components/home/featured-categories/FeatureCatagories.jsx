@@ -118,7 +118,7 @@ const FeatureCatagories = () => {
                     {!categoryIsSticky &&
                         <Grid item xs={12} md={12}>
                             <Stack direction="row" justifyContent="space-between" width="100%">
-                                <Typography fontSize={{ xs: "16px", md: "20px" }} fontWeight={{ xs: "500", md: "700" }}>{t("What’s on Your Mind?")}</Typography>
+                                <Typography fontSize={{ xs: "16px", md: "20px" }} fontWeight={{ xs: "500", md: "700" }}>{t("Whats on Your Mind?")}</Typography>
                                 <CustomViewAll onClick={() => router.push('/categories')} sx={{ marginInlineEnd: "10px" }}><Typography fontSize="14px" fontWeight="500" >{t("Explore More")}</Typography></CustomViewAll>
                             </Stack>
                         </Grid>}

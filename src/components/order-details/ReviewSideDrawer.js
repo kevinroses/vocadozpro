@@ -8,7 +8,7 @@ import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style";
 import RateAndReview from "@/components/rate-and-review/RateAndReview";
 
 
-const ReviewSideDrawer = ({open,onClose,orderId,refetchTrackData,is_reviewed,is_dm_reviewed}) => {
+const ReviewSideDrawer = ({open,onClose,orderId,refetchTrackData,is_reviewed,is_dm_reviewed,refetch}) => {
     return (
         <Drawer
             anchor="right"
@@ -34,7 +34,7 @@ const ReviewSideDrawer = ({open,onClose,orderId,refetchTrackData,is_reviewed,is_
                 <Typography fontSize="16px" fontWeight="700" paddingTop="24px" >
                     {t('Give your valuable feedback!')}
                 </Typography>
-                    <RateAndReview is_dm_reviewed={is_dm_reviewed} is_reviewed={is_reviewed} id={orderId} onClose={onClose} refetchTrackData={refetchTrackData}  />
+                    <RateAndReview refetch={refetch} is_dm_reviewed={is_dm_reviewed} is_reviewed={is_reviewed} id={orderId} onClose={onClose} refetchTrackData={refetchTrackData}  />
                 </CustomStackFullWidth>
 
             </Stack>

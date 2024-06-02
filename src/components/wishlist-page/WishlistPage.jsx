@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from 'react'
 import { Box, Grid, Stack } from '@mui/material'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import { useEffect } from 'react'
 
-import { useWishListResDelete } from "@/hooks/react-query/config/wish-list/useWishListResDelete"
+import { useWishListResDelete } from '@/hooks/react-query/config/wish-list/useWishListResDelete'
+import { removeWishListRes } from '@/redux/slices/wishList'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeWishListRes } from "@/redux/slices/wishList"
 
-import WishListShimmer from './WishListShimmer'
-import WishListRestaurantCard from './WishListRestaurantCard'
-import { useTranslation } from 'react-i18next'
-import FoodOrRestaurant from '../products-page/FoodOrRestaurant'
-import CustomEmptyResult from '../empty-view/CustomEmptyResult'
-import { CustomPaperBigCard, NoDataFoundWrapper } from "@/styled-components/CustomStyles.style"
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { setFoodOrRestaurant } from '@/redux/slices/searchFilter'
+import { CustomPaperBigCard } from '@/styled-components/CustomStyles.style'
+import { noFoodFoundImage, noRestaurantsImage } from '@/utils/LocalImages'
 import { useTheme } from '@emotion/react'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTranslation } from 'react-i18next'
 import Meta from '../Meta'
-import { noFoodFoundImage, noRestaurantsImage } from "@/utils/LocalImages"
+import CustomEmptyResult from '../empty-view/CustomEmptyResult'
 import FoodCard from '../food-card/FoodCard'
-import { setFoodOrRestaurant } from "@/redux/slices/searchFilter";
+import FoodOrRestaurant from '../products-page/FoodOrRestaurant'
+import WishListRestaurantCard from './WishListRestaurantCard'
+import WishListShimmer from './WishListShimmer'
 
 const WishlistPage = () => {
     const { foodOrRestaurant } = useSelector((state) => state.searchFilterStore)
@@ -44,7 +43,7 @@ const WishlistPage = () => {
         })
     }
 
-    useEffect(() => { }, [wishLists])
+    useEffect(() => {}, [wishLists])
 
     return (
         <>
@@ -57,9 +56,12 @@ const WishlistPage = () => {
             <CustomPaperBigCard
                 padding={isXSmall ? '10px 10px' : '30px 40px'}
                 border={false}
-                sx={{ minHeight: !isXSmall && '558px', boxShadow: isXSmall && 'unset' }}
+                sx={{
+                    minHeight: !isXSmall && '558px',
+                    boxShadow: isXSmall && 'unset',
+                }}
             >
-                <Box sx={{with:"100%"}}>
+                <Box sx={{ with: '100%' }}>
                     <FoodOrRestaurant
                         foodOrRestaurant={foodOrRestaurant}
                         setFoodOrRestaurant={setFoodOrRestaurant}
@@ -72,7 +74,6 @@ const WishlistPage = () => {
                                         container
                                         spacing={2}
                                         sx={{ paddingBlockStart: '1rem' }}
-
                                     >
                                         {wishLists?.food?.map((product) => {
                                             return (
@@ -87,7 +88,8 @@ const WishlistPage = () => {
                                                         product={product}
                                                         inWishListPage="true"
                                                         productImageUrl={
-                                                            global?.base_urls?.product_image_url
+                                                            global?.base_urls
+                                                                ?.product_image_url
                                                         }
                                                         horizontal="true"
                                                         hasBackGroundSection="true"
@@ -96,9 +98,15 @@ const WishlistPage = () => {
                                             )
                                         })}
                                         {wishLists?.food?.length === 0 && (
-                                            <Stack alignItems="center" width="100%" justifyContent="center" minHeight="30vh" pt={{ xs: "40px", md: "110px" }}>
+                                            <Stack
+                                                alignItems="center"
+                                                width="100%"
+                                                justifyContent="center"
+                                                minHeight="30vh"
+                                                pt={{ xs: '40px', md: '110px' }}
+                                            >
                                                 <CustomEmptyResult
-                                                    label='No Favourite Food Found'
+                                                    label="No Favourite Food Found"
                                                     image={noFoodFoundImage}
                                                     height={160}
                                                     width={160}
@@ -124,9 +132,7 @@ const WishlistPage = () => {
                                                     xs={12}
                                                 >
                                                     <WishListRestaurantCard
-                                                        key={
-                                                            restaurantItem?.id
-                                                        }
+                                                        key={restaurantItem?.id}
                                                         restaurant={
                                                             restaurantItem
                                                         }
@@ -134,28 +140,33 @@ const WishlistPage = () => {
                                                             deleteWishlistRes
                                                         }
                                                         restaurantImageUrl={
-                                                            global
-                                                                ?.base_urls
+                                                            global?.base_urls
                                                                 ?.restaurant_image_url
                                                         }
-                                                        rating={restaurantItem?.rating_count}
+                                                        rating={
+                                                            restaurantItem?.rating_count
+                                                        }
                                                     />
                                                 </Grid>
                                             )
                                         }
                                     )}
-                                    {wishLists?.restaurant?.length ===
-                                        0 && (
-                                            <Stack alignItems="center" width="100%" justifyContent="center" minHeight="30vh" pt={{ xs: "60px", md: "110px" }}>
-                                                <CustomEmptyResult
-                                                    label='No Favourite Restaurant Found'
-                                                    image={noRestaurantsImage}
-                                                    height={120}
-                                                    width={120}
-                                                />
-                                            </Stack>
-
-                                        )}
+                                    {wishLists?.restaurant?.length === 0 && (
+                                        <Stack
+                                            alignItems="center"
+                                            width="100%"
+                                            justifyContent="center"
+                                            minHeight="30vh"
+                                            pt={{ xs: '60px', md: '110px' }}
+                                        >
+                                            <CustomEmptyResult
+                                                label="No Favourite Restaurant Found"
+                                                image={noRestaurantsImage}
+                                                height={120}
+                                                width={120}
+                                            />
+                                        </Stack>
+                                    )}
                                 </Grid>
                             )}
                         </>

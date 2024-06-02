@@ -2,14 +2,14 @@
 const neutral = {
     100: '#FFFFFF',
     200: '#F3F4F5',
-    300: '#D1D5DB',
-    400: '#758590',
+    300: '#F5F6F8',
+    400: '#9B9B9B',
     500: '#6B7280',
     600: '#4B5864',
-    700: '#374151',
+    700: '#686B78',
     800: '#1F2937',
-    900: '#212B36',
-    1000: '#000000',
+    900: '#414141',
+    1000: '#141313',
     1100: '#FBFBFB',
     1200: '#4B566B',
     1300: '#EF78224D',
@@ -18,7 +18,6 @@ const neutral = {
     1600: '#FFEBDD',
     1700: '#fff5cf',
     1800: '#FCFCFC',
-
 }
 
 const table = {
@@ -28,6 +27,7 @@ const table = {
 const paperBoxShadow = '#E5EAF1'
 const sectionBg = '#F5F6F8'
 // const footerTopBg = '#3e4655'
+const footerAppBg = '#414141'
 const footerTopBgColor = '#00000050'
 const footerCenterBg = '#2f3645'
 const footerMiddleBg = '#343c4d'
@@ -47,6 +47,7 @@ const background = {
     paper: '#FFFFFF',
     buttonBackground: 'rgba(82, 102, 208, 0.05)',
     profileBackground: '#FBFBFB',
+    toaster: '#FFFFFF',
 }
 const newsletterBG = '#2287FD'
 
@@ -55,7 +56,7 @@ const divider = '#E6E8F0'
 // secondary main: '#ff903f',
 const primary = {
     main: '#FF7918',
-    light: 'rgba(255, 121, 24, 0.8)',
+    light: 'rgba(255, 121, 24, 0.60)',
     dark: '#a3460a',
     contrastText: '#FFFFFF',
     midPrimary: ' #FFF5ED',
@@ -101,7 +102,7 @@ const warning = {
 
 const error = {
     main: '#FF686A',
-    light: '#DA6868',
+    light: '#FF6D6D',
     dark: '#922E2E',
     contrastText: '#FFFFFF',
     info: '#FCECD3',
@@ -122,9 +123,9 @@ const customColor = {
     ten: '#FFFFFF',
     eleven: '#039D55',
     twelve: '#334257',
-    thirteen: "#FFE5CD",
-    fourteen: "#FCEA10",
-    fifteen : "#3E594D",
+    thirteen: '#FFE5CD',
+    fourteen: '#FCEA10',
+    fifteen: '#3E594D',
 }
 
 const text = {
@@ -133,6 +134,7 @@ const text = {
     custom: '#242424',
     disabled: 'rgba(55, 65, 81, 0.48)',
     footerText: '#F5F6F8',
+    formHeader: customColor.twelve,
 }
 
 export const lightThemeOptions = {
@@ -279,7 +281,6 @@ export const lightThemeOptions = {
     },
 
     palette: {
-
         action: {
             active: neutral[500],
             focus: 'rgba(55, 65, 81, 0.12)',
@@ -304,6 +305,7 @@ export const lightThemeOptions = {
         text,
         warning,
         whiteContainer,
+        footerAppBg,
         footerTopBg,
         footerCenterBg,
         footerMiddleBg,
@@ -349,7 +351,9 @@ export const lightThemeOptions = {
         '0px 25px 50px rgba(100, 116, 139, 0.25)',
         '0px 10px 20px -5px rgba(51, 66, 87, 0.05)',
         '0px 0px 2px 0px rgba(51, 66, 87, 0.20)',
-        "0px 0px 2px 0px rgba(51, 66, 87, 0.40)",
-        
+        '0px 0px 2px 0px rgba(51, 66, 87, 0.40)',
+    ],
+    shadows2: [
+        '0px -1px 2px rgba(42, 42, 42, 0.05), 0px 2px 2px rgba(42, 42, 42, 0.1)',
     ],
 }

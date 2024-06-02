@@ -12,6 +12,14 @@ const VariationsManager = (props) => {
         currencySymbolDirection,
         currencySymbol,
         digitAfterDecimalPoint,
+        variationStock,
+        quantity,
+        selectedOptions,
+        isCheck,
+        radioCheckHandler2,
+        itemIsLoading,
+        productUpdate
+
     } = props
 
     return (
@@ -28,6 +36,12 @@ const VariationsManager = (props) => {
                         currencySymbolDirection={currencySymbolDirection}
                         currencySymbol={currencySymbol}
                         digitAfterDecimalPoint={digitAfterDecimalPoint}
+                        variationStock={variationStock}
+                        quantity={quantity}
+                        selectedOptions={selectedOptions}
+                        isCheck={isCheck}
+                        itemIsLoading={itemIsLoading}
+                        productUpdate={productUpdate}
                     />
                 ))
             ) : (

@@ -15,7 +15,7 @@ export const QuickLinkData1 = [
         link: '/products/best-reviewed-foods',
     },
     {
-        name: ' Track Order',
+        name: 'Track Order',
         value: 'track_order',
         link: '/tracking',
     }

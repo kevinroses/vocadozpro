@@ -1,71 +1,49 @@
-import React, { useState } from 'react'
+import RestaurantMapView from '@/components/restaurant-details/RestaurantMapView'
+import RestaurantReviewModal from '@/components/restaurant-details/RestaurantReviewModal'
+import { RestaurantsApi } from '@/hooks/react-query/config/restaurantApi'
+import { useWishListResDelete } from '@/hooks/react-query/config/wish-list/useWishListResDelete'
+import { addWishListRes, removeWishListRes } from '@/redux/slices/wishList'
 import {
-    CustomOverlayBox,
-    CustomStackFullWidth, SliderCustom
-} from "@/styled-components/CustomStyles.style";
-import CustomImageContainer from '../CustomImageContainer'
-import { alpha, Button, Divider, Grid, IconButton, TextField, Typography } from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
+    CustomStackFullWidth,
+    SliderCustom,
+} from '@/styled-components/CustomStyles.style'
+import { getAmount, isAvailable } from '@/utils/customFunctions'
+import CloseIcon from '@mui/icons-material/Close'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import DirectionsOutlinedIcon from '@mui/icons-material/DirectionsOutlined'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
+import {
+    Button,
+    Divider,
+    Grid,
+    IconButton,
+    TextField,
+    Typography,
+    alpha,
+} from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { Box, Stack } from '@mui/system'
-import CustomRatings from '../custom-ratings/CustomRatings'
 import moment from 'moment'
-import {
-    getAmount,
-    getNumberWithConvertedDecimalPoint,
-    isAvailable,
-} from "@/utils/customFunctions"
-import { t } from 'i18next'
-import { addWishListRes, removeWishListRes } from "@/redux/slices/wishList"
-import { useWishListResDelete } from "@/hooks/react-query/config/wish-list/useWishListResDelete"
-import { useMutation } from 'react-query'
-import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { CustomSideOverLay } from '../home/food-campaign/FoodCampaign.style'
-import ClosedNowOverlay from './HeadingBannerSection/ClosedNowOverlay'
-import { RestaurantCommonTypography } from './restaurant-details.style'
-import Link from 'next/link'
-import ShareIcon from '../../assets/images/icons/ShareIcon'
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import FoodRating from '../food-card/FoodRating'
-import DirectionIcon from '../../assets/images/icons/DirectionIcon'
-import DirectionsOutlinedIcon from '@mui/icons-material/DirectionsOutlined';
-import CustomModal from '../custom-modal/CustomModal'
-import CloseIcon from "@mui/icons-material/Close";
-import { CustomButton } from '../custom-cards/CustomCards.style'
-import { useRouter } from 'next/router'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import MapComponent from "./google-address/MapComponent";
-import { RTL } from '../RTL/RTL'
+import { useMutation } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
 import {
     EmailIcon,
     EmailShareButton,
-    FacebookIcon,
     FacebookMessengerIcon,
     FacebookMessengerShareButton,
-    FacebookShareButton,
-    HatenaIcon,
-    HatenaShareButton,
-    InstapaperIcon,
-    InstapaperShareButton,
     LineIcon,
     LineShareButton,
     LinkedinIcon,
     LinkedinShareButton,
     LivejournalIcon,
     LivejournalShareButton,
-    MailruIcon,
-    MailruShareButton,
-    OKIcon,
-    OKShareButton,
-    PinterestIcon,
-    PinterestShareButton,
-    PocketIcon,
-    PocketShareButton,
     RedditIcon,
     RedditShareButton,
     TelegramIcon,
@@ -76,12 +54,15 @@ import {
     TwitterShareButton,
     WhatsappIcon,
     WhatsappShareButton,
-} from "react-share";
-import Slider from "react-slick";
-import { shareSettings } from "./shareSettings";
-import { facebookAppId } from "../../utils/staticCredentials";
-import RestaurantMapView from "@/components/restaurant-details/RestaurantMapView";
-import RestaurantReviewModal from "@/components/restaurant-details/RestaurantReviewModal";
+} from 'react-share'
+import Slider from 'react-slick'
+import CustomImageContainer from '../CustomImageContainer'
+import { RTL } from '../RTL/RTL'
+import CustomModal from '../custom-modal/CustomModal'
+import FoodRating from '../food-card/FoodRating'
+import ClosedNowOverlay from './HeadingBannerSection/ClosedNowOverlay'
+import { RestaurantCommonTypography } from './restaurant-details.style'
+import { shareSettings } from './shareSettings'
 const RestaurantLeftDetails = (props) => {
     const {
         details,
@@ -93,23 +74,24 @@ const RestaurantLeftDetails = (props) => {
         data,
     } = props
     const dispatch = useDispatch()
-    const router = useRouter();
+    const router = useRouter()
     const { wishLists } = useSelector((state) => state.wishList)
     const { global } = useSelector((state) => state.globalSettings)
     const { token } = useSelector((state) => state.userToken)
     const theme = useTheme()
-    const currentRoute = typeof window !== 'undefined' ? window.location.href : '';
+    const currentRoute =
+        typeof window !== 'undefined' ? window.location.href : ''
     const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
     const [openModal, setOpenModal] = useState(false)
     const [openShareModal, setOpenShareModal] = useState(false)
-    const [openReviewModal, setOpenReviewModal]=useState(false)
+    const [openReviewModal, setOpenReviewModal] = useState(false)
     const { t } = useTranslation()
     let languageDirection = undefined
     if (typeof window !== 'undefined') {
         languageDirection = localStorage.getItem('direction')
     }
-    const facebookAppId=facebookAppId
-    const size=isSmall ? 30 : 40
+    const facebookAppId = facebookAppId
+    const size = isSmall ? 30 : 40
     const {
         logo,
         name,
@@ -151,7 +133,7 @@ const RestaurantLeftDetails = (props) => {
                 //setOpen(false)
             }
         },
-        onError: (error) => { },
+        onError: (error) => {},
     })
     const addToFavorite = () => {
         if (token) {
@@ -183,11 +165,7 @@ const RestaurantLeftDetails = (props) => {
     }
     const handleCopy = (url) => {
         navigator.clipboard.writeText(url)
-        toast(() => (
-            <span>
-                {t("Your restaurant URL has been copied")}
-            </span>
-        ))
+        toast(() => <span>{t('Your restaurant URL has been copied')}</span>)
     }
     const closedNowHandler = () => {
         if (active) {
@@ -279,89 +257,115 @@ const RestaurantLeftDetails = (props) => {
                                 scrollPosition === 0
                                     ? '5%'
                                     : isSmall
-                                        ? '15%'
-                                        : '45%'
+                                    ? '15%'
+                                    : '45%'
                             }
                             right="5%"
                             zIndex="999"
                             gap="10px"
                         >
-
-                            {!isInList(id)
-                                ? (
-                                    <IconButton
+                            {!isInList(id) ? (
+                                <IconButton
+                                    sx={{
+                                        borderRadius: '8px',
+                                        border: `1px solid ${theme.palette.primary.main}`,
+                                        background: (theme) =>
+                                            theme.palette.neutral[100],
+                                        padding: {
+                                            xs: '3px',
+                                            sm: '5px',
+                                            md: '7px',
+                                        },
+                                    }}
+                                    onClick={(e) => addToFavorite(e)}
+                                >
+                                    <FavoriteBorderIcon
+                                        color="primary"
                                         sx={{
-                                            borderRadius: "8px",
-                                            border: `1px solid ${theme.palette.primary.main}`,
-                                            background: (theme) =>
-                                                theme.palette.neutral[100],
-                                            padding: { xs: "3px", sm: "5px", md: "7px" }
-
+                                            fontSize: {
+                                                xs: '16px',
+                                                sm: '18px',
+                                                md: '20px',
+                                            },
                                         }}
-                                        onClick={(e) => addToFavorite(e)}
-                                    >
-                                        <FavoriteBorderIcon
-                                            color="primary"
-                                            sx={{
-                                                fontSize: { xs: "16px", sm: "18px", md: "20px" }
-                                            }}
-                                        />
-                                    </IconButton>
-                                ) : (
-                                    <IconButton
+                                    />
+                                </IconButton>
+                            ) : (
+                                <IconButton
+                                    sx={{
+                                        borderRadius: '8px',
+                                        border: `1px solid ${theme.palette.primary.main}`,
+                                        background: (theme) =>
+                                            theme.palette.neutral[100],
+                                        padding: {
+                                            xs: '3px',
+                                            sm: '5px',
+                                            md: '7px',
+                                        },
+                                    }}
+                                    onClick={(e) => deleteWishlistRes(id, e)}
+                                >
+                                    <FavoriteIcon
+                                        color="primary"
                                         sx={{
-                                            borderRadius: "8px",
-                                            border: `1px solid ${theme.palette.primary.main}`,
-                                            background: (theme) =>
-                                                theme.palette.neutral[100],
-                                            padding: { xs: "3px", sm: "5px", md: "7px" }
+                                            fontSize: {
+                                                xs: '16px',
+                                                sm: '18px',
+                                                md: '20px',
+                                            },
                                         }}
-                                        onClick={(e) => deleteWishlistRes(id, e)}
-                                    >
-                                        <FavoriteIcon
-                                            color="primary"
-                                            sx={{
-                                                fontSize: { xs: "16px", sm: "18px", md: "20px" }
-                                            }}
-                                        />
-                                    </IconButton>
-                                )}
-
+                                    />
+                                </IconButton>
+                            )}
 
                             <IconButton
                                 sx={{
-
-                                    borderRadius: "8px",
+                                    borderRadius: '8px',
                                     // padding: "5px",
                                     border: `1px solid ${theme.palette.primary.main}`,
                                     background: (theme) =>
                                         theme.palette.neutral[100],
-                                    padding: { xs: "3px", sm: "5px", md: "7px" }
+                                    padding: {
+                                        xs: '3px',
+                                        sm: '5px',
+                                        md: '7px',
+                                    },
                                 }}
                                 onClick={() => setOpenModal(true)}
                             >
                                 <DirectionsOutlinedIcon
                                     color="primary"
                                     sx={{
-                                        fontSize: { xs: "16px", sm: "18px", md: "20px" }
+                                        fontSize: {
+                                            xs: '16px',
+                                            sm: '18px',
+                                            md: '20px',
+                                        },
                                     }}
                                 />
                             </IconButton>
                             <IconButton
                                 sx={{
-                                    borderRadius: "8px",
+                                    borderRadius: '8px',
                                     border: `1px solid ${theme.palette.primary.main}`,
                                     background: (theme) =>
                                         theme.palette.neutral[100],
-                                    padding: { xs: "3px", sm: "5px", md: "7px" }
-
+                                    padding: {
+                                        xs: '3px',
+                                        sm: '5px',
+                                        md: '7px',
+                                    },
                                 }}
                                 onClick={(e) => setOpenShareModal(true)}
                             >
                                 <ShareOutlinedIcon
                                     color="primary"
                                     sx={{
-                                        fontSize: { xs: "16px", sm: "18px", md: "20px" }
+                                        fontSize: {
+                                            xs: '16px',
+                                            sm: '18px',
+                                            md: '20px',
+                                        },
                                     }}
                                 />
                             </IconButton>
@@ -372,14 +376,14 @@ const RestaurantLeftDetails = (props) => {
                                     scrollPosition === 0
                                         ? '100px'
                                         : isSmall
-                                            ? '74px'
-                                            : '100px',
+                                        ? '74px'
+                                        : '100px',
                                 height:
                                     scrollPosition === 0
                                         ? '100px'
                                         : isSmall
-                                            ? '74px'
-                                            : '100px',
+                                        ? '74px'
+                                        : '100px',
                                 borderRadius: '50%',
                                 position: 'relative',
                             }}
@@ -391,7 +395,10 @@ const RestaurantLeftDetails = (props) => {
                                     top={scrollPosition === 0 ? '-35px' : '0px'}
                                     sx={{ zIndex: 9999 }}
                                     height={{
-                                        xs: scrollPosition === 0 ? '100px' : '74px',
+                                        xs:
+                                            scrollPosition === 0
+                                                ? '100px'
+                                                : '74px',
                                         sm: '100px',
                                         md: '100px',
                                     }}
@@ -403,8 +410,8 @@ const RestaurantLeftDetails = (props) => {
                                             scrollPosition === 0
                                                 ? '100px'
                                                 : isSmall
-                                                    ? '74px'
-                                                    : '100px'
+                                                ? '74px'
+                                                : '100px'
                                         }
                                         height="100%"
                                         borderRadius="50%"
@@ -419,8 +426,8 @@ const RestaurantLeftDetails = (props) => {
                                         scrollPosition === 0
                                             ? '100px'
                                             : isSmall
-                                                ? '74px'
-                                                : '100px'
+                                            ? '74px'
+                                            : '100px'
                                     }
                                     height="100%"
                                     borderRadius="50%"
@@ -436,14 +443,23 @@ const RestaurantLeftDetails = (props) => {
                                 {details?.name}
                             </Typography>
 
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                <FoodRating product_avg_rating={details?.avg_rating} />
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                alignItems="center"
+                            >
+                                <FoodRating
+                                    product_avg_rating={details?.avg_rating}
+                                />
                             </Stack>
-                            {details?.rating_count ?
-                                <Stack direction="row" spacing={1} alignItems="center">
-
+                            {details?.rating_count ? (
+                                <Stack
+                                    direction="row"
+                                    spacing={1}
+                                    alignItems="center"
+                                >
                                     <Typography
-                                        onClick={()=>setOpenReviewModal(true)}
+                                        onClick={() => setOpenReviewModal(true)}
                                         color={theme.palette.neutral[1000]}
                                         fontSize="13px"
                                         sx={{
@@ -455,10 +471,20 @@ const RestaurantLeftDetails = (props) => {
                                         {t('Ratings')}
                                     </Typography>
 
-                                    <Divider orientation="vertical" flexItem width="3px" height="100%" sx={{ opacity: 1, backgroundColor: theme.palette.neutral[300] }} />
+                                    <Divider
+                                        orientation="vertical"
+                                        flexItem
+                                        width="3px"
+                                        height="100%"
+                                        sx={{
+                                            opacity: 1,
+                                            backgroundColor:
+                                                theme.palette.neutral[300],
+                                        }}
+                                    />
 
                                     <Typography
-                                        onClick={()=>setOpenReviewModal(true)}
+                                        onClick={() => setOpenReviewModal(true)}
                                         color={theme.palette.neutral[1000]}
                                         fontSize="13px"
                                         sx={{
@@ -466,12 +492,13 @@ const RestaurantLeftDetails = (props) => {
                                             cursor: 'pointer',
                                         }}
                                     >
-                                        {JSON.stringify(details?.reviews_comments_count)}{' '}
+                                        {JSON.stringify(
+                                            details?.reviews_comments_count
+                                        )}{' '}
                                         {t('Reviews')}
                                     </Typography>
-
-                                </Stack>:null}
-
+                                </Stack>
+                            ) : null}
 
                             {/* <Typography
                             fontSize="12px"
@@ -482,7 +509,6 @@ const RestaurantLeftDetails = (props) => {
                         </Stack>
                     </CustomStackFullWidth>
                 </Grid>
-
             </RTL>
         )
     }
@@ -494,7 +520,10 @@ const RestaurantLeftDetails = (props) => {
                 xs={12}
                 sm={12}
                 md={12}
-                sx={{ paddingX: '20px', background: theme.palette.neutral[1800] }}
+                sx={{
+                    paddingX: '20px',
+                    background: theme.palette.neutral[1800],
+                }}
                 justifyContent="space-between"
                 alignItems="center"
             >
@@ -513,37 +542,40 @@ const RestaurantLeftDetails = (props) => {
                     </Grid>
                 ) : null}
 
-                {details?.minimum_order ? (<Grid xs={4} sm={4} md={4}>
-                    <RestaurantCommonTypography>
-                        {' '}
-                        {getAmount(
-                            details?.minimum_order,
-                            currencySymbolDirection,
-                            currencySymbol,
-                            digitAfterDecimalPoint
-                        )}
-                    </RestaurantCommonTypography>
-                    <RestaurantCommonTypography
-                        fontSize="12px"
-                        smFontSize="12px"
-                        fontWeight="400"
-                    >
-                        {t('Minimum Order')}
-                    </RestaurantCommonTypography>
-                </Grid>) : null}
-                {details?.delivery_time ? (<Grid xs={4} sm={4} md={4}>
-                    <RestaurantCommonTypography>
-                        {details?.delivery_time}
-                    </RestaurantCommonTypography>
-                    <RestaurantCommonTypography
-                        fontSize="12px"
-                        smFontSize="12px"
-                        fontWeight="400"
-                    >
-                        {t('Delivery Time')}
-                    </RestaurantCommonTypography>
-                </Grid>) : null}
-
+                {details?.minimum_order ? (
+                    <Grid xs={4} sm={4} md={4}>
+                        <RestaurantCommonTypography>
+                            {' '}
+                            {getAmount(
+                                details?.minimum_order,
+                                currencySymbolDirection,
+                                currencySymbol,
+                                digitAfterDecimalPoint
+                            )}
+                        </RestaurantCommonTypography>
+                        <RestaurantCommonTypography
+                            fontSize="12px"
+                            smFontSize="12px"
+                            fontWeight="400"
+                        >
+                            {t('Minimum Order')}
+                        </RestaurantCommonTypography>
+                    </Grid>
+                ) : null}
+                {details?.delivery_time ? (
+                    <Grid xs={4} sm={4} md={4}>
+                        <RestaurantCommonTypography>
+                            {details?.delivery_time}
+                        </RestaurantCommonTypography>
+                        <RestaurantCommonTypography
+                            fontSize="12px"
+                            smFontSize="12px"
+                            fontWeight="400"
+                        >
+                            {t('Delivery Time')}
+                        </RestaurantCommonTypography>
+                    </Grid>
+                ) : null}
             </Grid>
         )
     }
@@ -589,29 +621,36 @@ const RestaurantLeftDetails = (props) => {
                     direction="row"
                     alignItems="center"
                     justifyContent="flex-end"
-                    sx={{ position: "relative" }}
+                    sx={{ position: 'relative' }}
                 >
                     <IconButton
                         onClick={() => setOpenShareModal(false)}
                         sx={{
-                            zIndex: "99",
-                            position: "absolute",
+                            zIndex: '99',
+                            position: 'absolute',
                             top: 10,
                             right: 10,
-                            backgroundColor: (theme) => theme.palette.neutral[100],
-                            borderRadius: "50%",
-                            [theme.breakpoints.down("md")]: {
+                            backgroundColor: (theme) =>
+                                theme.palette.neutral[100],
+                            borderRadius: '50%',
+                            [theme.breakpoints.down('md')]: {
                                 top: 10,
                                 right: 5,
                             },
                         }}
                     >
-                        <CloseIcon sx={{ fontSize: "24px", fontWeight: "500" }} />
+                        <CloseIcon
+                            sx={{ fontSize: '24px', fontWeight: '500' }}
+                        />
                     </IconButton>
                 </CustomStackFullWidth>
                 <CustomStackFullWidth padding="20px">
-                    <Typography fontWeight={600} fontSize="20px" color={theme.palette.neutral[1000]}>
-                        {t("Share")}
+                    <Typography
+                        fontWeight={600}
+                        fontSize="20px"
+                        color={theme.palette.neutral[1000]}
+                    >
+                        {t('Share')}
                     </Typography>
                     <Stack padding="10px" flexDirection="row" gap="10px">
                         <TextField
@@ -623,42 +662,61 @@ const RestaurantLeftDetails = (props) => {
                                 style: {
                                     height: '40px !important', // Adjust the height as needed
                                     fontSize: '12px',
-
                                 },
                                 readOnly: true,
                             }}
                         />
-                        <Button sx={{minWidth:"45px",padding:"8px 10px"}} variant="contained" onClick={() => handleCopy(currentRoute)}><ContentCopyIcon /></Button>
+                        <Button
+                            sx={{ minWidth: '45px', padding: '8px 10px' }}
+                            variant="contained"
+                            onClick={() => handleCopy(currentRoute)}
+                        >
+                            <ContentCopyIcon />
+                        </Button>
                     </Stack>
                     <Stack marginTop=".5rem">
-                        <SliderCustom
-                            nopadding="true"
-                        >
+                        <SliderCustom nopadding="true">
                             <Slider {...shareSettings}>
                                 <FacebookMessengerShareButton
                                     url={currentRoute}
                                     appId={facebookAppId}
                                 >
-                                    <FacebookMessengerIcon size={size ? size : 40} round />
+                                    <FacebookMessengerIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </FacebookMessengerShareButton>
                                 <TwitterShareButton url={currentRoute}>
-                                    <TwitterIcon size={size ? size : 40} round />
+                                    <TwitterIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </TwitterShareButton>
-                                <WhatsappShareButton url={currentRoute} separator=":: ">
-                                    <WhatsappIcon size={size ? size : 40} round />
+                                <WhatsappShareButton
+                                    url={currentRoute}
+                                    separator=":: "
+                                >
+                                    <WhatsappIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </WhatsappShareButton>
                                 <LinkedinShareButton
                                     url={currentRoute}
                                     source={currentRoute}
                                 >
-                                    <LinkedinIcon size={size ? size : 40} round />
+                                    <LinkedinIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </LinkedinShareButton>
                                 <TelegramShareButton url={currentRoute}>
-                                    <TelegramIcon size={size ? size : 40} round />
+                                    <TelegramIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </TelegramShareButton>
-                                <EmailShareButton
-                                    url={currentRoute}
-                                >
+                                <EmailShareButton url={currentRoute}>
                                     <EmailIcon size={size ? size : 40} round />
                                 </EmailShareButton>
                                 <RedditShareButton
@@ -673,10 +731,13 @@ const RestaurantLeftDetails = (props) => {
                                 >
                                     <TumblrIcon size={size ? size : 40} round />
                                 </TumblrShareButton>
-                                <LivejournalShareButton url={currentRoute} >
-                                    <LivejournalIcon size={size ? size : 40} round />
+                                <LivejournalShareButton url={currentRoute}>
+                                    <LivejournalIcon
+                                        size={size ? size : 40}
+                                        round
+                                    />
                                 </LivejournalShareButton>
-                                <LineShareButton url={currentRoute} >
+                                <LineShareButton url={currentRoute}>
                                     <LineIcon size={size ? size : 40} round />
                                 </LineShareButton>
                             </Slider>
@@ -693,29 +754,37 @@ const RestaurantLeftDetails = (props) => {
                     direction="row"
                     alignItems="center"
                     justifyContent="flex-end"
-                    sx={{ position: "relative" }}
+                    sx={{ position: 'relative' }}
                 >
                     <IconButton
                         onClick={() => setOpenModal(false)}
                         sx={{
-                            zIndex: "99",
-                            position: "absolute",
-                            top: "-4%",
-                            right: "-5%",
-                            backgroundColor: (theme) => theme.palette.neutral[100],
-                            borderRadius: "50%",
-                            "&:hover": {
-                                backgroundColor:(theme) => theme.palette.neutral[200]},
-                            [theme.breakpoints.down("md")]: {
-                                top: "2%",
-                                right: "0%",
+                            zIndex: '99',
+                            position: 'absolute',
+                            top: '-4%',
+                            right: '-5%',
+                            backgroundColor: (theme) =>
+                                theme.palette.neutral[100],
+                            borderRadius: '50%',
+                            '&:hover': {
+                                backgroundColor: (theme) =>
+                                    theme.palette.neutral[200],
+                            },
+                            [theme.breakpoints.down('md')]: {
+                                top: '2%',
+                                right: '0%',
                             },
                         }}
                     >
-                        <CloseIcon sx={{ fontSize: "16px", fontWeight: "500" }} />
+                        <CloseIcon
+                            sx={{ fontSize: '16px', fontWeight: '500' }}
+                        />
                     </IconButton>
                 </CustomStackFullWidth>
-               <RestaurantMapView details={details} restaurantCoverUrl={restaurantCoverUrl}/>
+                <RestaurantMapView
+                    details={details}
+                    restaurantCoverUrl={restaurantCoverUrl}
+                />
             </CustomModal>
             <CustomModal
                 openModal={openReviewModal}
@@ -726,35 +795,40 @@ const RestaurantLeftDetails = (props) => {
                     direction="row"
                     alignItems="center"
                     justifyContent="flex-end"
-                    sx={{ position: "relative",padding:"1rem" }}
-
+                    sx={{ position: 'relative', padding: '1rem' }}
                 >
                     <IconButton
                         onClick={() => setOpenReviewModal(false)}
                         sx={{
-                            zIndex: "99",
-                            position: "absolute",
-                            top: "-4%",
-                            right: "-5%",
-                            backgroundColor: (theme) => theme.palette.neutral[100],
-                            borderRadius: "50%",
-                            "&:hover": {
-                                backgroundColor:(theme) => theme.palette.neutral[200]},
-                            [theme.breakpoints.down("md")]: {
-                                top: "1%",
-                                right: "0%",
+                            zIndex: '99',
+                            position: 'absolute',
+                            top: '-4%',
+                            right: '-5%',
+                            backgroundColor: (theme) =>
+                                theme.palette.neutral[100],
+                            borderRadius: '50%',
+                            '&:hover': {
+                                backgroundColor: (theme) =>
+                                    theme.palette.neutral[200],
+                            },
+                            [theme.breakpoints.down('md')]: {
+                                top: '1%',
+                                right: '0%',
                             },
                         }}
                     >
-                        <CloseIcon sx={{ fontSize: "16px", fontWeight: "500" }} />
+                        <CloseIcon
+                            sx={{ fontSize: '16px', fontWeight: '500' }}
+                        />
                     </IconButton>
-                    <RestaurantReviewModal product_avg_rating={details?.avg_rating}
-                                           reviews_comments_count={details?.reviews_comments_count}
-                                           rating_count={details?.rating_count}
-                                           id={details?.id}
+                    <RestaurantReviewModal
+                        product_avg_rating={details?.avg_rating}
+                        reviews_comments_count={details?.reviews_comments_count}
+                        rating_count={details?.rating_count}
+                        id={details?.id}
+                        restaurantDetails={details}
                     />
                 </CustomStackFullWidth>
-
             </CustomModal>
         </CustomStackFullWidth>
     )

@@ -16,6 +16,9 @@ const AddOnsManager = (props) => {
         add_on,
         quantity,
         cartList,
+        setCheckAddOn,
+        checkAddOne,
+        itemIsLoading
     } = props
     return (
         <Box
@@ -48,6 +51,9 @@ const AddOnsManager = (props) => {
                             productQuantity={quantity}
                             product={modalData[0]}
                             cartList={cartList}
+                            setCheckAddOn={setCheckAddOn}
+                            checkAddOne={checkAddOne}
+                            itemIsLoading={itemIsLoading}
                         />
                     ))}
             </FormGroup>

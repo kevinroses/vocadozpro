@@ -1,29 +1,24 @@
-import React, { memo, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import FoodDetailModal from '../foodDetail-modal/FoodDetailModal'
-import {
-    getConvertDiscount,
-    handleBadge,
-    isAvailable,
-} from "@/utils/customFunctions"
-import { useSelector, useDispatch } from 'react-redux'
-import moment from 'moment/moment'
+import { CustomToaster } from '@/components/custom-toaster/CustomToaster'
+import { ProductsApi } from '@/hooks/react-query/config/productsApi'
+import { useWishListDelete } from '@/hooks/react-query/config/wish-list/useWishListDelete'
+import { setCart, setClearCart } from '@/redux/slices/cart'
+import { addWishList, removeWishListFood } from '@/redux/slices/wishList'
+import { getConvertDiscount, handleBadge } from '@/utils/customFunctions'
 import { useTheme } from '@mui/material/styles'
+import React, { memo, useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import { ProductsApi } from "@/hooks/react-query/config/productsApi"
-import { addWishList, removeWishListFood } from "@/redux/slices/wishList"
-import { useWishListDelete } from "@/hooks/react-query/config/wish-list/useWishListDelete"
+import { useDispatch, useSelector } from 'react-redux'
+import useAddCartItem from '../../hooks/react-query/add-cart/useAddCartItem'
+import { onErrorResponse } from '../ErrorResponse'
 import { RTL } from '../RTL/RTL'
-import HorizontalFoodCard from './HorizontalFoodCard'
-import FoodVerticalCard from './FoodVerticalCard'
-import { CustomChip } from './FoodCard.style'
-import { setCart, setClearCart } from "@/redux/slices/cart"
-import CartClearModal from '../foodDetail-modal/CartClearModal'
-import useAddCartItem from "../../hooks/react-query/add-cart/useAddCartItem";
-import { onErrorResponse } from "../ErrorResponse";
-import { getGuestId } from "../checkout-page/functions/getGuestUserId";
+import { getGuestId } from '../checkout-page/functions/getGuestUserId'
 import CustomModal from '../custom-modal/CustomModal'
+import CartClearModal from '../foodDetail-modal/CartClearModal'
+import FoodDetailModal from '../foodDetail-modal/FoodDetailModal'
+import FoodVerticalCard from './FoodVerticalCard'
+import HorizontalFoodCard from './HorizontalFoodCard'
 import LocationModalAlert from './LocationModalAlert'
 
 const FoodCard = ({
@@ -35,7 +30,8 @@ const FoodCard = ({
     isRestaurantDetails,
     inWishListPage,
     inWishListModal,
-    setOpenWishlistModal
+    setOpenWishlistModal,
+    campaign,
 }) => {
     const theme = useTheme()
     const dispatch = useDispatch()
@@ -60,15 +56,16 @@ const FoodCard = ({
     const imageUrl = `${productImageUrl}/${image}`
     const [modalData, setModalData] = useState([])
     const [incrOpen, setIncrOpen] = useState(false)
-    let location = undefined;
-    if (typeof window !== "undefined") {
-        location = localStorage.getItem("location");
+    let location = undefined
+    if (typeof window !== 'undefined') {
+        location = localStorage.getItem('location')
     }
     const [clearCartModal, setClearCartModal] = React.useState(false)
     const handleClearCartModalOpen = () => setClearCartModal(true)
     const { wishLists } = useSelector((state) => state.wishList)
     const { cartList } = useSelector((state) => state.cart)
-    const { mutate: addToCartMutate, isLoading: addToCartLoading } = useAddCartItem();
+    const { mutate: addToCartMutate, isLoading: addToCartLoading } =
+        useAddCartItem()
     let currencySymbol
     let currencySymbolDirection
     let digitAfterDecimalPoint
@@ -136,7 +133,6 @@ const FoodCard = ({
         })
     }
 
-
     const isInList = (id) => {
         return !!wishLists?.food?.find((wishFood) => wishFood.id === id)
     }
@@ -150,7 +146,7 @@ const FoodCard = ({
 
     const handleSuccess = (res) => {
         if (res) {
-            let product = {};
+            let product = {}
             res?.forEach((item) => {
                 product = {
                     ...item?.item,
@@ -170,9 +166,9 @@ const FoodCard = ({
                         item?.item?.price,
                         item?.item?.restaurant_discount
                     ),
-                };
-            });
-            dispatch(setCart(product));
+                }
+            })
+            dispatch(setCart(product))
             toast.success(t('Item added to cart'))
             setClearCartModal(false)
             //dispatch()
@@ -182,15 +178,15 @@ const FoodCard = ({
         const itemObject = {
             guest_id: getGuestId(),
             model: modalData[0]?.available_date_starts
-                ? "ItemCampaign"
-                : "Food",
+                ? 'ItemCampaign'
+                : 'Food',
             add_on_ids: [],
             add_on_qtys: [],
             item_id: modalData[0]?.id,
             price: modalData[0]?.price,
             quantity: modalData[0]?.quantity ?? 1,
             variations: [],
-        };
+        }
         if (cartList.length > 0) {
             const isRestaurantExist = cartList.find(
                 (item) => item.restaurant_id === product.restaurant_id
@@ -200,7 +196,6 @@ const FoodCard = ({
                     onSuccess: handleSuccess,
                     onError: onErrorResponse,
                 })
-
             } else {
                 if (cartList.length !== 0) {
                     handleClearCartModalOpen()
@@ -212,25 +207,31 @@ const FoodCard = ({
                     onSuccess: handleSuccess,
                     onError: onErrorResponse,
                 })
-
             }
         }
     }
 
     const addToCart = (e) => {
         if (location) {
-            if (product?.variations.length > 0 || product?.add_ons?.length > 0) {
+            if (
+                product?.variations.length > 0 ||
+                product?.add_ons?.length > 0
+            ) {
                 setOpenModal(true)
             } else if (product?.available_date_ends) {
                 setOpenModal(true)
             } else {
-                addToCartHandler()
-                e.stopPropagation()
+                if (product?.item_stock === 0) {
+                    e.stopPropagation()
+                    CustomToaster('error', t('Out Of Stock'), product?.id)
+                } else {
+                    addToCartHandler()
+                    e.stopPropagation()
+                }
             }
         } else {
             e.stopPropagation()
             setOpenAddressModalAlert(true)
-
         }
     }
     const getQuantity = (id) => {
@@ -255,15 +256,15 @@ const FoodCard = ({
         const itemObject = {
             guest_id: getGuestId(),
             model: modalData[0]?.available_date_starts
-                ? "ItemCampaign"
-                : "Food",
+                ? 'ItemCampaign'
+                : 'Food',
             add_on_ids: [],
             add_on_qtys: [],
             item_id: modalData[0]?.id,
             price: modalData[0]?.price,
             quantity: modalData[0]?.quantity ?? 1,
             variations: [],
-        };
+        }
         dispatch(setClearCart())
         addToCartMutate(itemObject, {
             onSuccess: handleSuccess,
@@ -346,6 +347,7 @@ const FoodCard = ({
                         currencySymbol={currencySymbol}
                         digitAfterDecimalPoint={digitAfterDecimalPoint}
                         handleBadge={handleBadge}
+                        campaign={campaign}
                     />
                 </RTL>
             )}
@@ -354,7 +356,9 @@ const FoodCard = ({
                     openModal={openAddressModalAlert}
                     setModalOpen={setOpenAddressModalAlert}
                 >
-                    <LocationModalAlert setOpenAddressModalAlert={setOpenAddressModalAlert} />
+                    <LocationModalAlert
+                        setOpenAddressModalAlert={setOpenAddressModalAlert}
+                    />
                 </CustomModal>
             }
             <CartClearModal

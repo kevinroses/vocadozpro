@@ -1,47 +1,43 @@
-import { styled } from '@mui/material/styles'
-import React, { useEffect, useState } from 'react'
+import LockIcon from '@mui/icons-material/Lock'
+import MenuIcon from '@mui/icons-material/Menu'
+import { Button, IconButton, Stack, Typography, alpha } from '@mui/material'
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
-import MenuIcon from '@mui/icons-material/Menu'
-import { ButtonContainer, CustomDrawer, CustomSwitch } from './Navbar.style'
-import CollapsableMenu from './CollapsableMenu'
-import LockIcon from '@mui/icons-material/Lock'
-import {
-    alpha,
-    Button,
-    Container,
-    IconButton,
-    Stack,
-    Typography,
-} from '@mui/material'
-import AuthModal from '../auth'
-import { useDispatch, useSelector } from 'react-redux'
+import { styled } from '@mui/material/styles'
 import Router, { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import AuthModal from '../auth'
+import CollapsableMenu from './CollapsableMenu'
+import { ButtonContainer, CustomDrawer } from './Navbar.style'
 
+import { setWelcomeModal } from '@/redux/slices/utils'
 import { useTranslation } from 'react-i18next'
-import { CategoryApi } from '../../hooks/react-query/config/categoryApi'
 import { useQuery } from 'react-query'
+import { CategoryApi } from '../../hooks/react-query/config/categoryApi'
 import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
-import { RTL } from '../RTL/RTL'
-import CustomLanguage from '../CustomLanguage'
 import { useGetCuisines } from '../../hooks/react-query/cuisines/useGetCuisines'
+import { setClearCart } from '../../redux/slices/cart'
 import {
     setCuisines,
     setFeaturedCategories,
 } from '../../redux/slices/storedData'
-import { onErrorResponse } from '../ErrorResponse'
 import { removeToken } from '../../redux/slices/userToken'
 import { clearWishList } from '../../redux/slices/wishList'
-import { setClearCart } from '../../redux/slices/cart'
-import { toast } from 'react-hot-toast'
+import {
+    CustomLink,
+    CustomStackFullWidth,
+} from '../../styled-components/CustomStyles.style'
 import { logoutSuccessFull } from '../../utils/ToasterMessages'
-import ThemeSwitches from './top-navbar/ThemeSwitches'
+import CustomLanguage from '../CustomLanguage'
+import { onErrorResponse } from '../ErrorResponse'
+import { RTL } from '../RTL/RTL'
 import { getToken } from '../checkout-page/functions/getGuestUserId'
-import { CustomLink, CustomStackFullWidth } from "../../styled-components/CustomStyles.style";
-import { CustomTypography } from "../custom-tables/Tables.style";
+import { CustomTypography } from '../custom-tables/Tables.style'
 import { CustomToaster } from '../custom-toaster/CustomToaster'
+import ThemeSwitches from './top-navbar/ThemeSwitches'
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -82,8 +78,6 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
     const router = useRouter()
     const dispatch = useDispatch()
     const [openDrawer, setOpenDrawer] = useState(false)
-    // const { token } = useSelector((state) => state.userToken)
-    // const token = getToken()
     const token = getToken()
     const [authModalOpen, setOpen] = useState(false)
     const handleOpenAuthModal = (page) => {
@@ -96,7 +90,7 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
         setOpen(false)
         setForSignup('sign-in')
     }
-    const [theme_mode, setThemeMode] = useState('')
+
     const handleLogout = async () => {
         try {
             await localStorage.removeItem('token')
@@ -105,17 +99,15 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
             let a = []
             dispatch(clearWishList(a))
             dispatch(setClearCart())
+            dispatch(setWelcomeModal(false))
             await cartListRefetch()
-            // toast.success(t(logoutSuccessFull))
-            CustomToaster('success', logoutSuccessFull);
+            CustomToaster('success', logoutSuccessFull)
             if (router.pathname === '/') {
                 router.push('/')
             } else {
                 router.push('/home')
             }
-        } catch (err) {
-            //   toast.error('Unable to logout.');
-        }
+        } catch (err) {}
     }
 
     const toggleDrawer = (openDrawer) => (event) => {
@@ -204,24 +196,7 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
     if (typeof window !== 'undefined') {
         languageDirection = localStorage.getItem('direction')
     }
-    useEffect(() => {
-        // Perform localStorage action
-        if (typeof window !== 'undefined') {
-            setThemeMode(localStorage.getItem('mode') || 'light')
-        }
-    }, [theme_mode])
-    const changeThemeMode = (e) => {
-        if (e.target.checked) {
-            localStorage.setItem('mode', 'light')
-            setThemeMode('light')
-            // saveSettings({ ...values, theme: 'light' })
-        } else {
-            localStorage.setItem('mode', 'dark')
-            setThemeMode('dark')
-            // saveSettings({ ...values, theme: 'dark' })
-        }
-        window.location.reload()
-    }
+
     const handleRoute = (path) => {
         router.push(`/${path}`)
         setOpenDrawer(false)
@@ -236,85 +211,113 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
             { shallow: true }
         )
         setOpenDrawer(false)
-
     }
     const menuList = () => (
         <RTL direction={languageDirection ? languageDirection : 'ltr'}>
             <Box
-                sx={{ width: 'auto', paddingInline: "10px", height: '100%' }}
+                sx={{ width: 'auto', paddingInline: '10px', height: '100%' }}
                 role="presentation"
                 onKeyDown={toggleDrawer(false)}
             >
                 <Stack height="100%">
-                    <List component="nav" aria-labelledby="nested-list-subheader" >
-                        <ListItemButton sx={{
-                            marginTop: location ? '20px' : "10px",
-                            borderBottom: location && "1px solid",
-                            borderBottomColor: theme => alpha(theme.palette.neutral[300], .3)
-                        }}>
-                            {location && <ListItemText
-                                primary={<Typography sx={{ fontSize: '12px' }}>
-                                    {t('Home')}
-                                </Typography>}
-                                onClick={() => handleRoute('/home')}
-                            />}
-
-                        </ListItemButton>
-
-                        {location && <>
-                            <CollapsableMenu
-                                value={collapsableMenu.cat}
-                                setOpenDrawer={setOpenDrawer}
-                                toggleDrawers={toggleDrawer}
-                                pathName="/categories"
-                            />
-                            <CollapsableMenu
-                                value={collapsableMenu.res}
-                                setOpenDrawer={setOpenDrawer}
-                                toggleDrawers={toggleDrawer}
-                                pathName="/restaurant"
-                            />
-                            <CollapsableMenu
-                                value={collapsableMenu.cuisine}
-                                setOpenDrawer={setOpenDrawer}
-                                toggleDrawers={toggleDrawer}
-                                pathName="/cuisines"
-                            />
-                            {/*<CollapsableMenu value={collapsableMenu.profile} setOpenDrawer={setOpenDrawer} toggleDrawers={toggleDrawer}/>*/}
-                            <ListItemButton
-                                sx={{
-                                    borderBottom: "1px solid",
-                                    borderBottomColor: theme => alpha(theme.palette.neutral[300], .3),
-                                    '&:hover': {
-                                        backgroundColor: 'primary.main',
-                                    },
-                                }}
-                            >
+                    <List
+                        component="nav"
+                        aria-labelledby="nested-list-subheader"
+                    >
+                        <ListItemButton
+                            sx={{
+                                marginTop: location ? '20px' : '10px',
+                                borderBottom: location && '1px solid',
+                                borderBottomColor: (theme) =>
+                                    alpha(theme.palette.neutral[300], 0.3),
+                            }}
+                        >
+                            {location && (
                                 <ListItemText
-                                    primary={<Typography sx={{ fontSize: '12px' }}>{t('Profile')}</Typography>}
-                                    onClick={handleRouteToUserInfo}
+                                    primary={
+                                        <Typography sx={{ fontSize: '12px' }}>
+                                            {t('Home')}
+                                        </Typography>
+                                    }
+                                    onClick={() => handleRoute('/home')}
                                 />
-                            </ListItemButton>
-                        </>}
+                            )}
+                        </ListItemButton>
+
+                        {location && (
+                            <>
+                                <CollapsableMenu
+                                    value={collapsableMenu.cat}
+                                    setOpenDrawer={setOpenDrawer}
+                                    toggleDrawers={toggleDrawer}
+                                    pathName="/categories"
+                                />
+                                <CollapsableMenu
+                                    value={collapsableMenu.res}
+                                    setOpenDrawer={setOpenDrawer}
+                                    toggleDrawers={toggleDrawer}
+                                    pathName="/restaurant"
+                                />
+                                <CollapsableMenu
+                                    value={collapsableMenu.cuisine}
+                                    setOpenDrawer={setOpenDrawer}
+                                    toggleDrawers={toggleDrawer}
+                                    pathName="/cuisines"
+                                />
+                                {/*<CollapsableMenu value={collapsableMenu.profile} setOpenDrawer={setOpenDrawer} toggleDrawers={toggleDrawer}/>*/}
+                                <ListItemButton
+                                    sx={{
+                                        borderBottom: '1px solid',
+                                        borderBottomColor: (theme) =>
+                                            alpha(
+                                                theme.palette.neutral[300],
+                                                0.3
+                                            ),
+                                        '&:hover': {
+                                            backgroundColor: 'primary.main',
+                                        },
+                                    }}
+                                >
+                                    <ListItemText
+                                        primary={
+                                            <Typography
+                                                sx={{ fontSize: '12px' }}
+                                            >
+                                                {t('Profile')}
+                                            </Typography>
+                                        }
+                                        onClick={handleRouteToUserInfo}
+                                    />
+                                </ListItemButton>
+                            </>
+                        )}
 
                         <ListItemButton
                             sx={{
-                                borderBottom: "1px solid",
-                                borderBottomColor: theme => alpha(theme.palette.neutral[300], .3),
+                                borderBottom: '1px solid',
+                                borderBottomColor: (theme) =>
+                                    alpha(theme.palette.neutral[300], 0.3),
                                 '&:hover': {
                                     backgroundColor: 'primary.main',
                                 },
                             }}
                         >
                             <ListItemText
-                                primary={<Typography sx={{ fontSize: '12px' }}>{t('Terms & Conditions')}</Typography>}
-                                onClick={() => handleRoute('terms-and-conditions')}
+                                primary={
+                                    <Typography sx={{ fontSize: '12px' }}>
+                                        {t('Terms & Conditions')}
+                                    </Typography>
+                                }
+                                onClick={() =>
+                                    handleRoute('terms-and-conditions')
+                                }
                             />
                         </ListItemButton>
                         <ListItemButton
                             sx={{
-                                borderBottom: "1px solid",
-                                borderBottomColor: theme => alpha(theme.palette.neutral[300], .3),
+                                borderBottom: '1px solid',
+                                borderBottomColor: (theme) =>
+                                    alpha(theme.palette.neutral[300], 0.3),
 
                                 '&:hover': {
                                     backgroundColor: 'primary.main',
@@ -322,24 +325,31 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
                             }}
                         >
                             <ListItemText
-                                primary={<Typography sx={{ fontSize: '12px' }}>{t('Privacy Policy')}</Typography>}
+                                primary={
+                                    <Typography sx={{ fontSize: '12px' }}>
+                                        {t('Privacy Policy')}
+                                    </Typography>
+                                }
                                 onClick={() => handleRoute('privacy-policy')}
-                            />
-                        </ListItemButton>
-                        <ListItemButton >
-                            <ListItemText
-                                primary={<Typography sx={{ fontSize: '12px' }}>{t('Theme Mode')}</Typography>}
-                            />
-                            <ThemeSwitches
-                                noText
-                                checked={theme_mode === 'light'}
-                                handleThemeChangeMode={changeThemeMode}
-                                themeMode={theme_mode}
                             />
                         </ListItemButton>
                         <ListItemButton>
                             <ListItemText
-                                primary={<Typography sx={{ fontSize: '12px' }}>{t('Language')}</Typography>}
+                                primary={
+                                    <Typography sx={{ fontSize: '12px' }}>
+                                        {t('Theme Mode')}
+                                    </Typography>
+                                }
+                            />
+                            <ThemeSwitches noText />
+                        </ListItemButton>
+                        <ListItemButton>
+                            <ListItemText
+                                primary={
+                                    <Typography sx={{ fontSize: '12px' }}>
+                                        {t('Language')}
+                                    </Typography>
+                                }
                             />
                             <CustomLanguage
                                 countryCode={countryCode}
@@ -347,14 +357,13 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
                                 isMobile={true}
                             />
                         </ListItemButton>
-
                     </List>
 
                     <ButtonContainer>
                         <Button
                             variant="contained"
                             fullWidth
-                            sx={{ mt: 3, mb: 1, borderRadius: "5px" }}
+                            sx={{ mt: 3, mb: 1, borderRadius: '5px' }}
                             onClick={() => handleLogout()}
                         >
                             {t('Logout')}
@@ -368,29 +377,38 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
     const withOutLogin = () => (
         <RTL direction={languageDirection}>
             <Box
-                sx={{ width: 'auto', paddingInline: "10px", height: '100%' }}
+                sx={{ width: 'auto', paddingInline: '10px', height: '100%' }}
                 role="presentation"
                 onKeyDown={toggleDrawer(false)}
             >
                 <Stack height="100%">
-                    <List component="nav" aria-labelledby="nested-list-subheader">
-
+                    <List
+                        component="nav"
+                        aria-labelledby="nested-list-subheader"
+                    >
                         <>
-
-                            <ListItemButton sx={{
-                                marginTop: location ? '20px' : "10px",
-                                borderBottom: location && "1px solid",
-                                borderBottomColor: theme => alpha(theme.palette.neutral[300], .3)
-                            }}>
-                                {location && <ListItemText
-                                    primary={<Typography sx={{ fontSize: '12px' }}>
-                                        {t('Home')}
-                                    </Typography>}
-                                    onClick={() => handleRoute('/home')}
-                                />}
-
+                            <ListItemButton
+                                sx={{
+                                    marginTop: location ? '20px' : '10px',
+                                    borderBottom: location && '1px solid',
+                                    borderBottomColor: (theme) =>
+                                        alpha(theme.palette.neutral[300], 0.3),
+                                }}
+                            >
+                                {location && (
+                                    <ListItemText
+                                        primary={
+                                            <Typography
+                                                sx={{ fontSize: '12px' }}
+                                            >
+                                                {t('Home')}
+                                            </Typography>
+                                        }
+                                        onClick={() => handleRoute('/home')}
+                                    />
+                                )}
                             </ListItemButton>
-                            {location &&
+                            {location && (
                                 <>
                                     <CollapsableMenu
                                         value={collapsableMenu.cat}
@@ -411,50 +429,67 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
                                         pathName="/cuisines"
                                     />
                                 </>
-                            }
+                            )}
 
                             <ListItemButton
                                 sx={{
-                                    borderBottom: "1px solid",
-                                    borderBottomColor: theme => alpha(theme.palette.neutral[300], .3),
+                                    borderBottom: '1px solid',
+                                    borderBottomColor: (theme) =>
+                                        alpha(theme.palette.neutral[300], 0.3),
                                     '&:hover': {
                                         backgroundColor: 'primary.main',
                                     },
                                 }}
                             >
                                 <ListItemText
-                                    primary={<Typography sx={{ fontSize: '12px' }}>{t('Terms & Conditions')}</Typography>}
-                                    onClick={() => handleRoute('terms-and-conditions')}
+                                    primary={
+                                        <Typography sx={{ fontSize: '12px' }}>
+                                            {t('Terms & Conditions')}
+                                        </Typography>
+                                    }
+                                    onClick={() =>
+                                        handleRoute('terms-and-conditions')
+                                    }
                                 />
                             </ListItemButton>
                             <ListItemButton
                                 sx={{
-                                    borderBottom: "1px solid",
-                                    borderBottomColor: theme => alpha(theme.palette.neutral[300], .3),
+                                    borderBottom: '1px solid',
+                                    borderBottomColor: (theme) =>
+                                        alpha(theme.palette.neutral[300], 0.3),
                                     '&:hover': {
                                         backgroundColor: 'primary.main',
                                     },
                                 }}
                             >
                                 <ListItemText
-                                    primary={<Typography sx={{ fontSize: '12px' }}>{t('Privacy Policy')}</Typography>}
-                                    onClick={() => handleRoute('privacy-policy')}
+                                    primary={
+                                        <Typography sx={{ fontSize: '12px' }}>
+                                            {t('Privacy Policy')}
+                                        </Typography>
+                                    }
+                                    onClick={() =>
+                                        handleRoute('privacy-policy')
+                                    }
                                 />
                             </ListItemButton>
                             <ListItemButton>
                                 <ListItemText
-                                    primary={<Typography sx={{ fontSize: '12px' }}>{t('Theme Mode')}</Typography>}
+                                    primary={
+                                        <Typography sx={{ fontSize: '12px' }}>
+                                            {t('Theme Mode')}
+                                        </Typography>
+                                    }
                                 />
-                                <ThemeSwitches
-                                    noText
-                                    checked={theme_mode === 'light'}
-                                    handleThemeChangeMode={changeThemeMode}
-                                    themeMode={theme_mode}
-                                />
+                                <ThemeSwitches noText />
                             </ListItemButton>
                             <ListItemButton>
                                 <ListItemText
-                                    primary={<Typography sx={{ fontSize: '12px' }}>{t('Language')}</Typography>}
+                                    primary={
+                                        <Typography sx={{ fontSize: '12px' }}>
+                                            {t('Language')}
+                                        </Typography>
+                                    }
                                 />
                                 <CustomLanguage
                                     countryCode={countryCode}
@@ -463,16 +498,15 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
                                 />
                             </ListItemButton>
                         </>
-
                     </List>
                     <ButtonContainer marginBottom="50px">
                         <Button
                             variant="contained"
                             fullWidth
-                            sx={{ mt: 0, mb: 1, borderRadius: "5px" }}
+                            sx={{ mt: 0, mb: 1, borderRadius: '5px' }}
                             startIcon={<LockIcon />}
                             onClick={() => handleOpenAuthModal('sign-in')}
-                        //  onClick={() => setLogin(true)}
+                            //  onClick={() => setLogin(true)}
                         >
                             {t('Sign In')}
                         </Button>
@@ -482,9 +516,8 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
                             justifyContent="center"
                             spacing={0.5}
                             marginTop="1rem"
-
                         >
-                            <CustomTypography fontSize="14px" >
+                            <CustomTypography fontSize="14px">
                                 {t("Don't have an account?")}
                             </CustomTypography>
                             <CustomLink
@@ -497,7 +530,6 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
                             </CustomLink>
                         </CustomStackFullWidth>
                     </ButtonContainer>
-
                 </Stack>
             </Box>
         </RTL>
@@ -513,7 +545,6 @@ const DrawerMenu = ({ zoneid, cartListRefetch }) => {
                     modalFor={modalFor}
                     setModalFor={setModalFor}
                     cartListRefetch={cartListRefetch}
-
                 />
             )}
             <IconButton

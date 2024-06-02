@@ -1,13 +1,14 @@
-import * as React from 'react';
-import {useEffect} from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
+import { t } from 'i18next'
+import * as React from 'react'
+import { useEffect } from 'react'
 
-const CustomSelect = props => {
-    const {value, inputLabel, handleValue, renderData} = props
-    const [age, setAge] = React.useState('');
+const CustomSelect = (props) => {
+    const { value, inputLabel, handleValue, renderData } = props
+    const [age, setAge] = React.useState('')
     useEffect(() => {
         if (age !== '') {
             handleValue?.(age)
@@ -15,8 +16,8 @@ const CustomSelect = props => {
     }, [age])
 
     const handleChange = (event) => {
-        setAge(event.target.value);
-    };
+        setAge(event.target.value)
+    }
 
     return (
         <FormControl fullWidth>
@@ -28,16 +29,18 @@ const CustomSelect = props => {
                 label={inputLabel}
                 onChange={handleChange}
             >
-                {
-                    renderData?.map(item => {
-                        return <MenuItem value={item?.value}>{item?.label}</MenuItem>
-                    })
-                }
+                {renderData?.map((item) => {
+                    return (
+                        <MenuItem value={item?.value}>
+                            {t(item?.label)}
+                        </MenuItem>
+                    )
+                })}
             </Select>
         </FormControl>
-    );
-};
+    )
+}
 
-CustomSelect.propTypes = {};
+CustomSelect.propTypes = {}
 
-export default CustomSelect;
+export default CustomSelect

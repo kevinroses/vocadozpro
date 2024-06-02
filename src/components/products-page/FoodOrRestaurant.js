@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
+import { alpha, Stack, styled, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
-import { alpha, Grid, Stack, styled, Typography } from '@mui/material'
-import buttonImg from '../../../public/static/buttonImg/image 30.png'
-import buttonImg2 from '../../../public/static/buttonImg/image 29.png'
-import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { useDispatch } from "react-redux";
-import { setProductsOrRestaurants, setSelectedName, setSelectedValue } from "@/redux/slices/searchTagSlice";
-import { setFoodOrRestaurant } from "../../redux/slices/searchFilter";
+import {
+    setSelectedName,
+    setSelectedValue,
+} from '@/redux/slices/searchTagSlice'
+import { useDispatch } from 'react-redux'
 export const PrimaryButton = styled(Button)(
     ({
         backgroundColor,
@@ -34,11 +34,11 @@ export default function FoodOrRestaurant({
     foodOrRestaurant,
     setFoodOrRestaurant,
     handleFilter,
-                                             filterData
+    filterData,
 }) {
     const { t } = useTranslation()
     const theme = useTheme()
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
     const orangeColor = theme.palette.primary.main
     const isProduct = foodOrRestaurant === 'products'
     const isRestaurant = foodOrRestaurant === 'restaurants'
@@ -50,9 +50,8 @@ export default function FoodOrRestaurant({
     }, [])
     const handleClick = (value) => {
         dispatch(setFoodOrRestaurant(value))
-        dispatch(setSelectedValue(""))
-        dispatch(setSelectedName(""))
-        
+        dispatch(setSelectedValue(''))
+        dispatch(setSelectedName(''))
     }
     return (
         <>
@@ -87,11 +86,15 @@ export default function FoodOrRestaurant({
                             }}
                         ></Typography>
                     </Typography>
-                    {
-                        filterData?.sortBy !== "low" && filterData?.sortBy !=="high"  && (
+                    {filterData?.sortBy !== 'low' &&
+                        filterData?.sortBy !== 'high' && (
                             <Typography
                                 onClick={() => handleClick('restaurants')}
-                                fontSize={{ xs: '14px', sm: '16px', md: '16px' }}
+                                fontSize={{
+                                    xs: '14px',
+                                    sm: '16px',
+                                    md: '16px',
+                                }}
                                 fontWeight={isRestaurant ? '600' : '400'}
                                 sx={{
                                     color: isRestaurant
@@ -111,9 +114,7 @@ export default function FoodOrRestaurant({
                                     }}
                                 />
                             </Typography>
-                        )
-                    }
-
+                        )}
                 </Stack>
             )}
         </>

@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { CustomStackFullWidth } from '../../styled-components/CustomStyles.style'
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style"
 import { FoodTitleTypography } from '../food-card/FoodCard.style'
 import FormControl from '@mui/material/FormControl'
 import RadioGroup from '@mui/material/RadioGroup'
-import {alpha, Checkbox, FormControlLabel, styled} from '@mui/material'
+import { alpha, Checkbox, FormControlLabel, styled, Typography } from "@mui/material";
 import Radio from '@mui/material/Radio'
-import { CustomTypographyLabel } from '../../styled-components/CustomTypographies.style'
-import { getAmount } from '../../utils/customFunctions'
+import { CustomTypographyLabel } from "@/styled-components/CustomTypographies.style"
+import { getAmount } from "@/utils/customFunctions"
 import VariationRequiredWarningAlert from './VariationRequiredWarningAlert'
 import InfoIcon from '@mui/icons-material/Info';
 import Tooltip, {tooltipClasses} from '@mui/material/Tooltip';
+import { useTheme } from "@mui/styles";
+import { Stack } from "@mui/system";
+import MultiCheckBox from "@/components/foodDetail-modal/MultiCheckBox";
 const CustomTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} arrow classes={{ popper: className }} />
 ))(({ theme }) => ({
     [`& .${tooltipClasses.arrow}`]: {
-       color: alpha(theme.palette.primary.main,.8),
+        color: alpha(theme.palette.primary.main,.8),
     },
     [`& .${tooltipClasses.tooltip}`]: {
         backgroundColor: theme.palette.primary.main,
@@ -31,19 +34,26 @@ export const ChoiceValues = (props) => {
         currencySymbolDirection,
         currencySymbol,
         digitAfterDecimalPoint,
+        variationStock,
+        quantity,
+        selectedOptions,
+        itemIsLoading,
+        productUpdate
     } = props
     const [radioData, setRadioData] = useState({ isChecked: false })
+
+    const theme=useTheme()
     useEffect(() => {
         radioData?.option &&
-            changeChoices(
-                radioData.e,
-                radioData.option,
-                radioData.index,
-                radioData.choiceIndex,
-                radioData.choiceRequired,
-                radioData.choiceType,
-                radioData.isChecked
-            )
+        changeChoices(
+            radioData.e,
+            radioData.option,
+            radioData.index,
+            radioData.choiceIndex,
+            radioData.choiceRequired,
+            radioData.choiceType,
+            radioData.isChecked
+        )
     }, [radioData])
     const handleRadioData = (
         e,
@@ -88,8 +98,20 @@ export const ChoiceValues = (props) => {
             'items.'
         )}`
     }
+
+    const isShowStockText = (option) => {
+        /// console.log({quantity});
+        return selectedOptions?.some((item) => {
+            return item?.option_id === option.option_id && quantity  >= option.current_stock;
+        });
+    };
+
+    const text1=t("only")
+    const text2=t("items available")
+
     return (
         <CustomStackFullWidth
+
         >
             <FoodTitleTypography
                 gutterBottom
@@ -117,18 +139,19 @@ export const ChoiceValues = (props) => {
                 >
                     {choice.values?.map((option, index) => (
                         <label htmlFor={`radio-${choiceIndex}-${index}`}>
-                        <CustomStackFullWidth
-                            key={index}
-                            direction="row"
-                            justifyContent="space-between"
-                            spacing={1}
-                            sx={{cursor:"pointer"}}
-                        >
+                            <CustomStackFullWidth
+                                key={index}
+                                direction="row"
+                                justifyContent="space-between"
+                                spacing={1}
+                                sx={{cursor:"pointer"}}
+                            >
                                 <FormControlLabel
                                     value={option.label}
                                     control={
                                         choice?.type === 'single' ? (
                                             <Radio
+                                                disabled={ option.current_stock===0 && option?.stock_type!=="unlimited"}
                                                 sx={{
                                                     '&:hover': {
                                                         backgroundColor: 'transparent',
@@ -152,46 +175,47 @@ export const ChoiceValues = (props) => {
                                                 id={`radio-${choiceIndex}-${index}`}
                                             />
                                         ) : (
-                                            <Checkbox
-                                                sx={{
-                                                    '&:hover': {
-                                                        backgroundColor: 'transparent',
+                                            <MultiCheckBox changeChoices={changeChoices} option={option}
+                                                           index={index}
+                                                           choiceIndex={choiceIndex}
+                                                           choice={choice}
+                                                           radioData={radioData}
+                                                           itemIsLoading={itemIsLoading}
+                                                           productUpdate={productUpdate}
 
-                                                    },}}
-                                                defaultChecked={option?.isSelected}
-                                                onChange={(e) =>
-                                                    changeChoices(
-                                                        e,
-                                                        option,
-                                                        index,
-                                                        choiceIndex,
-                                                        choice.required,
-                                                        choice?.type,
-                                                        radioData.isChecked
-                                                    )
-                                                }
-                                                id={`radio-${choiceIndex}-${index}`}
+
                                             />
+
+
                                         )
                                     }
                                     label={
-                                        <CustomTypographyLabel>
-                                            {option.label}
-                                        </CustomTypographyLabel>
+                                        <Stack direction="row" spacing={1}>
+                                            <CustomTypographyLabel sx={{
+                                                color:theme=>option.current_stock===0 && option?.stock_type!=="unlimited"?theme.palette.neutral[400]:theme.palette.neutral[1000]
+                                            }} span="component" >
+                                                {option.label}
+                                            </CustomTypographyLabel>
+                                            <Typography fontSize="12px" color={isShowStockText(option)? theme.palette.info.main:theme.palette.error.main}>
+                                                {isShowStockText(option) && option?.stock_type !== "unlimited" ?`(${text1} ${option.current_stock} ${text2})`:(option.current_stock===0 && option?.stock_type !== "unlimited") ? "(out of stock)" :""   }
+
+                                            </Typography>
+                                        </Stack>
+
                                     }
                                 />
 
-                            <CustomTypographyLabel>
-                                {option.optionPrice === '0'
-                                    ? 'Free'
-                                    : `+${getAmount(
-                                        option.optionPrice,
-                                        currencySymbolDirection,
-                                        currencySymbol,
-                                        digitAfterDecimalPoint
-                                    )}`}
-                            </CustomTypographyLabel>
-                        </CustomStackFullWidth>
+                                <CustomTypographyLabel>
+                                    {option.optionPrice === '0'
+                                        ? 'Free'
+                                        : `+${getAmount(
+                                            option.optionPrice,
+                                            currencySymbolDirection,
+                                            currencySymbol,
+                                            digitAfterDecimalPoint
+                                        )}`}
+                                </CustomTypographyLabel>
+                            </CustomStackFullWidth>
                         </label>
                     ))}
                 </RadioGroup>

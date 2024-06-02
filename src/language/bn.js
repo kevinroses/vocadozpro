@@ -758,7 +758,7 @@ export const bengali = {
     "Created at:": "এ নির্মিত:",
     "Subscription date:": "সাবস্ক্রিপশন তারিখ:",
     "Subscription type:": "সাবস্ক্রিপশন প্রকার:",
-    "Subscription Schedule:": "সাবস্ক্রিপশন শিডিউল:",
+    "Subscription Schedule: ": "সাবস্ক্রিপশন শিডিউল:",
     "Delivery Log": "বিতরণ লগ",
     "Pause Log": "বিরতি লগ",
     "Cancellation note can not be empty.": "বাতিল নোট খালি হতে পারে না।",

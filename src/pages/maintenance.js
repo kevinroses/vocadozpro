@@ -1,11 +1,11 @@
 import React from 'react'
-import { Container, Typography } from '@mui/material'
 import { t } from 'i18next'
-import MaintenanceImage from '../../public/static/maintenance.png'
-import { Stack } from '@mui/system'
-import { CustomStackFullWidth } from '../styled-components/CustomStyles.style'
-import CustomImageContainer from '../components/CustomImageContainer'
-import Meta from '../components/Meta'
+import CustomImageContainer from "@/components/CustomImageContainer";
+import Meta from "@/components/Meta";
+import { CustomStackFullWidth } from "@/styled-components/CustomStyles.style";
+import { Stack } from "@mui/system";
+import { Container, Typography } from "@mui/material";
+import MaintenanceImage from '/public/static/maintenance.png'
 
 const Maintenance = () => {
     return (

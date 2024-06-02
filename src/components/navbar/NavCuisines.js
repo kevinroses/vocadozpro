@@ -1,33 +1,18 @@
-import React, { useEffect, useState } from 'react'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import React, { useEffect, useState } from 'react'
 
-import {
-    Button,
-    Grid,
-    ListItemIcon,
-    Menu,
-    MenuItem,
-    Stack,
-    Typography,
-} from '@mui/material'
+import { Button, Grid, Menu, Stack } from '@mui/material'
 
-import Fade from '@mui/material/Fade'
-import Link from 'next/link'
 //import menu from '../../../public/static/Menu/image 18.png'
-import { CategoryApi } from '../../hooks/react-query/config/categoryApi'
-import { useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
-import { NavMenuLink } from './Navbar.style'
-import { useTranslation } from 'react-i18next'
-import ResShimmer from './ResShimmer'
 import { useTheme } from '@mui/material/styles'
-import CustomImageContainer from '../CustomImageContainer'
-import { CustomTypographyGray } from '../error/Errors.style'
-import { useGetCuisines } from '../../hooks/react-query/cuisines/useGetCuisines'
-import NavCuisinesList from '../cuisines-page/NavCuisinesList'
-import { setCuisines } from '../../redux/slices/storedData'
 import { makeStyles } from '@mui/styles'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
+import { useGetCuisines } from '../../hooks/react-query/cuisines/useGetCuisines'
+import { setCuisines } from '../../redux/slices/storedData'
+import NavCuisinesList from '../cuisines-page/NavCuisinesList'
+import { NavMenuLink } from './Navbar.style'
 const useStyles = makeStyles((theme) => ({
     popover: {
         pointerEvents: 'none',
@@ -92,16 +77,14 @@ const NavCuisines = ({
                 aria-controls={opendrop ? 'fade-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={opendrop ? 'true' : undefined}
-                // sx={{ color: 'black',  }}
-                // href="#"
                 underline="none"
+                fontSize="14px"
+                alignItems="center"
             >
-                <Typography fontSize="14px">
-                    {t('Cuisines')}{' '}
-                    <KeyboardArrowDownIcon
-                        style={{ width: '16px', marginLeft: '5px' }}
-                    />
-                </Typography>
+                {t('Cuisines')}{' '}
+                <KeyboardArrowDownIcon
+                    style={{ width: '16px', marginLeft: '5px' }}
+                />
             </NavMenuLink>
             <Menu
                 disableScrollLock={true}
@@ -127,13 +110,9 @@ const NavCuisines = ({
                             <>
                                 {cuisines?.slice(0, 12)?.map((item, index) => {
                                     return (
-                                        <React.Fragment   key={item?.id}>
+                                        <React.Fragment key={item?.id}>
                                             {index % 2 === 0 ? (
-                                                <Grid
-                                                    item
-                                                    md={6}
-
-                                                >
+                                                <Grid item md={6}>
                                                     <NavCuisinesList
                                                         item={item}
                                                         handledropClose={

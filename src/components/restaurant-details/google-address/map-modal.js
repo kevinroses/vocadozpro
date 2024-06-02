@@ -1,28 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import CloseIcon from '@mui/icons-material/Close'
 import {
     Box,
-    IconButton,
-    InputBase,
+    Button,
     Modal,
-    Paper,
+    Stack,
+    TextField,
     Typography,
     styled,
-    Button,
-    Autocomplete,
-    TextField,
 } from '@mui/material'
-import LoadingButton from '@mui/lab/LoadingButton'
-import GpsFixedIcon from '@mui/icons-material/GpsFixed'
-import SearchIcon from '@mui/icons-material/Search'
-import CloseIcon from '@mui/icons-material/Close'
-//import GoogleMapComponent from './GoogleMapComponent'
+import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import { GoogleApi } from '../../../hooks/react-query/config/googleApi'
 import { useSelector } from 'react-redux'
-import GoogleMap from '../../google-map/GoogleMap'
+import { GoogleApi } from '../../../hooks/react-query/config/googleApi'
 import MapComponent from './MapComponent'
-import { LocationView } from './addressStyle'
-import { Stack } from 'react-bootstrap'
 
 const style = {
     position: 'absolute',
@@ -33,7 +23,6 @@ const style = {
     boxShadow: 24,
     padding: '1rem',
     width: '845px',
-    // height: '491px',
     background: '#FFFFFF',
     borderRadius: '5px',
 }
@@ -70,7 +59,6 @@ const MapModal = ({ open, handleClose, latitude, longitude, address }) => {
     const [isLoadingCurrentLocation, setLoadingCurrentLocation] =
         useState(false)
     const [currentLocation, setCurrentLocation] = useState(undefined)
-
 
     const {
         isLoading,
@@ -125,7 +113,6 @@ const MapModal = ({ open, handleClose, latitude, longitude, address }) => {
     )
 
     if (isErrorLocation) {
-
     }
 
     // if (zoneData) {
@@ -133,7 +120,6 @@ const MapModal = ({ open, handleClose, latitude, longitude, address }) => {
     // }
     useEffect(() => {
         if (zoneData) {
-
             setZoneId(zoneData?.data?.zone_id)
             //  setLocation(undefined)
             setLocationEnabled(false)
@@ -169,10 +155,6 @@ const MapModal = ({ open, handleClose, latitude, longitude, address }) => {
         },
     }))
 
-    // const timerid = setTimeout(() => {
-    //     setLocationEnabled(true)
-    //     localStorage.setItem('zoneid', zoneId)
-    // }, 2000)
     return (
         <Modal
             open={open}
@@ -183,7 +165,6 @@ const MapModal = ({ open, handleClose, latitude, longitude, address }) => {
         >
             <Box sx={style} className="modalresposive">
                 <Box
-                    // direction={{ xs: 'column', md: 'row' }}
                     spacing={2}
                     className="mapsearch"
                     sx={{
@@ -202,18 +183,6 @@ const MapModal = ({ open, handleClose, latitude, longitude, address }) => {
 
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                     <MapComponent latitude={latitude} longitude={longitude} />
-                    {/* <GoogleMap /> */}
-                    {/* <GoogleMapComponent
-                        setDisablePickButton={setDisablePickButton}
-                        setLocationEnabled={setLocationEnabled}
-                        setLocation={setLocation}
-                        setCurrentLocation={setCurrentLocation}
-                        locationLoading={locationLoading}
-                        location={location}
-                        setPlaceDetailsEnabled={setPlaceDetailsEnabled}
-                        placeDetailsEnabled={placeDetailsEnabled}
-                        locationEnabled={locationEnabled}
-                    /> */}
                 </Typography>
             </Box>
         </Modal>
